@@ -267,6 +267,10 @@ public class Block {
     public TileEntity getEntity() {
         return new TileEntity();
     }
+	
+	public boolean syncEntity() { // IntelliJ says this is not used, but it is overwritten by extending classes.
+		return true; // TODO: Check if this method is really used.
+	}
 
     /**
      * Tries to put this item into a nearby container, if there are no available
