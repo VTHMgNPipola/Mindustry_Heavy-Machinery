@@ -25,7 +25,7 @@ import static io.anuke.mindustry.Vars.state;
 import static io.anuke.ucore.core.Core.scene;
 import static io.anuke.ucore.core.Core.skin;
 
-public class ChatFragment extends Table implements Fragment{
+public class ChatFragment extends Table implements Fragment {
     private final static int messagesShown = 10;
     private final static int maxLength = 150;
     private Array<ChatMessage> messages = new Array<>();
@@ -43,7 +43,7 @@ public class ChatFragment extends Table implements Fragment{
     private int historyPos = 0;
     private int scrollPos = 0;
 
-    public ChatFragment(){
+    public ChatFragment() {
         super();
 
         setFillParent(true);
@@ -53,11 +53,11 @@ public class ChatFragment extends Table implements Fragment{
 
         //TODO put it in input?
         update(() -> {
-            if(!Net.active() && chatOpen){
+            if (!Net.active() && chatOpen) {
                 hide();
             }
 
-            if(Net.active() && Inputs.keyTap("chat")){
+            if (Net.active() && Inputs.keyTap("chat")) {
                 toggle();
             }
 
@@ -71,7 +71,7 @@ public class ChatFragment extends Table implements Fragment{
                     historyPos--;
                     updateChat();
                 }
-                scrollPos = (int)Mathf.clamp(scrollPos + Inputs.getAxis("chat_scroll"), 0, Math.max(0, messages.size - messagesShown));
+                scrollPos = (int) Mathf.clamp(scrollPos + Inputs.getAxis("chat_scroll"), 0, Math.max(0, messages.size - messagesShown));
             }
         });
 
@@ -84,13 +84,13 @@ public class ChatFragment extends Table implements Fragment{
         scene.add(this);
     }
 
-    public void clearMessages(){
+    public void clearMessages() {
         messages.clear();
         history.clear();
         history.insert(0, "");
     }
 
-    private void setup(){
+    private void setup() {
         fieldlabel.setStyle(new LabelStyle(fieldlabel.getStyle()));
         fieldlabel.getStyle().font = font;
         fieldlabel.setStyle(fieldlabel.getStyle());
@@ -103,27 +103,27 @@ public class ChatFragment extends Table implements Fragment{
         chatfield.setStyle(chatfield.getStyle());
         Platform.instance.addDialog(chatfield, maxLength);
 
-        bottom().left().marginBottom(offsety).marginLeft(offsetx*2).add(fieldlabel).padBottom(4f);
+        bottom().left().marginBottom(offsety).marginLeft(offsetx * 2).add(fieldlabel).padBottom(4f);
 
         add(chatfield).padBottom(offsety).padLeft(offsetx).growX().padRight(offsetx).height(28);
 
-        if(Vars.mobile) {
+        if (Vars.mobile) {
             marginBottom(105f);
             marginRight(240f);
         }
 
-        if(Vars.mobile) {
+        if (Vars.mobile) {
             addImageButton("icon-arrow-right", 14 * 2, this::toggle).size(46f, 51f).visible(() -> chatOpen).pad(2f);
         }
     }
 
     @Override
-    public void draw(Batch batch, float alpha){
+    public void draw(Batch batch, float alpha) {
 
         batch.setColor(shadowColor);
 
-        if(chatOpen)
-            batch.draw(skin.getRegion("white"), offsetx, chatfield.getY(), chatfield.getWidth() + 15f, chatfield.getHeight()-1);
+        if (chatOpen)
+            batch.draw(skin.getRegion("white"), offsetx, chatfield.getY(), chatfield.getWidth() + 15f, chatfield.getHeight() - 1);
 
         super.draw(batch, alpha);
 
@@ -135,21 +135,21 @@ public class ChatFragment extends Table implements Fragment{
         batch.setColor(shadowColor);
 
         float theight = offsety + spacing + getMarginBottom();
-        for(int i = scrollPos; i < messages.size && i < messagesShown + scrollPos && (i < fadetime || chatOpen); i++){
+        for (int i = scrollPos; i < messages.size && i < messagesShown + scrollPos && (i < fadetime || chatOpen); i++) {
 
             layout.setText(font, messages.get(i).formattedMessage, Color.WHITE, textWidth, Align.bottomLeft, true);
-            theight += layout.height+textspacing;
-            if(i - scrollPos == 0) theight -= textspacing+1;
+            theight += layout.height + textspacing;
+            if (i - scrollPos == 0) theight -= textspacing + 1;
 
             font.getCache().clear();
             font.getCache().addText(messages.get(i).formattedMessage, fontoffsetx + offsetx, offsety + theight, textWidth, Align.bottomLeft, true);
 
-            if(!chatOpen && fadetime-i < 1f && fadetime-i >= 0f){
-                font.getCache().setAlphas(fadetime-i);
-                batch.setColor(0, 0, 0, shadowColor.a*(fadetime-i));
+            if (!chatOpen && fadetime - i < 1f && fadetime - i >= 0f) {
+                font.getCache().setAlphas(fadetime - i);
+                batch.setColor(0, 0, 0, shadowColor.a * (fadetime - i));
             }
 
-            batch.draw(skin.getRegion("white"), offsetx, theight-layout.height-2, textWidth + Unit.dp.scl(4f), layout.height+textspacing);
+            batch.draw(skin.getRegion("white"), offsetx, theight - layout.height - 2, textWidth + Unit.dp.scl(4f), layout.height + textspacing);
             batch.setColor(shadowColor);
 
             font.getCache().draw(batch);
@@ -157,27 +157,27 @@ public class ChatFragment extends Table implements Fragment{
 
         batch.setColor(Color.WHITE);
 
-        if(fadetime > 0 && !chatOpen)
-            fadetime -= Timers.delta()/180f;
+        if (fadetime > 0 && !chatOpen)
+            fadetime -= Timers.delta() / 180f;
     }
 
-    private void sendMessage(){
+    private void sendMessage() {
         String message = chatfield.getText();
         clearChatInput();
 
-        if(message.replaceAll(" ", "").isEmpty()) return;
+        if (message.replaceAll(" ", "").isEmpty()) return;
 
         history.insert(1, message);
         NetEvents.handleSendMessage(message);
     }
 
-    public void toggle(){
+    public void toggle() {
 
-        if(!chatOpen){
+        if (!chatOpen) {
             scene.setKeyboardFocus(chatfield);
             chatfield.fireClick();
             chatOpen = !chatOpen;
-        }else{
+        } else {
             scene.setKeyboardFocus(null);
             chatOpen = !chatOpen;
             scrollPos = 0;
@@ -185,7 +185,7 @@ public class ChatFragment extends Table implements Fragment{
         }
     }
 
-    public void hide(){
+    public void hide() {
         scene.setKeyboardFocus(null);
         chatOpen = false;
         clearChatInput();
@@ -202,33 +202,33 @@ public class ChatFragment extends Table implements Fragment{
         chatfield.setText("");
     }
 
-    public boolean chatOpen(){
+    public boolean chatOpen() {
         return chatOpen;
     }
 
-    public int getMessagesSize(){
+    public int getMessagesSize() {
         return messages.size;
     }
 
-    public void addMessage(String message, String sender){
+    public void addMessage(String message, String sender) {
         messages.insert(0, new ChatMessage(message, sender));
 
         fadetime += 1f;
         fadetime = Math.min(fadetime, messagesShown) + 1f;
     }
 
-    private static class ChatMessage{
+    private static class ChatMessage {
         public final String sender;
         public final String message;
         public final String formattedMessage;
 
-        public ChatMessage(String message, String sender){
+        public ChatMessage(String message, String sender) {
             this.message = message;
             this.sender = sender;
-            if(sender == null){ //no sender, this is a server message?
+            if (sender == null) { //no sender, this is a server message?
                 formattedMessage = message;
-            }else{
-                formattedMessage = "[CORAL][["+sender+"[CORAL]]:[WHITE] "+message;
+            } else {
+                formattedMessage = "[CORAL][[" + sender + "[CORAL]]:[WHITE] " + message;
             }
         }
     }

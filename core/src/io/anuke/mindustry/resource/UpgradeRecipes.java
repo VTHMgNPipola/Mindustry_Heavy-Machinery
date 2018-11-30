@@ -15,19 +15,19 @@ public class UpgradeRecipes {
 
     private static final ItemStack[] empty = {};
 
-    public static ItemStack[] get(Upgrade upgrade){
+    public static ItemStack[] get(Upgrade upgrade) {
         return recipes.get(upgrade, empty);
     }
 
-    public static Entries<Upgrade, ItemStack[]> getAllRecipes(){
+    public static Entries<Upgrade, ItemStack[]> getAllRecipes() {
         return recipes.entries();
     }
 
-    private static ItemStack[] list(ItemStack... stacks){
+    private static ItemStack[] list(ItemStack... stacks) {
         return stacks;
     }
 
-    private static ItemStack stack(Item item, int amount){
+    private static ItemStack stack(Item item, int amount) {
         return new ItemStack(item, amount);
     }
 }

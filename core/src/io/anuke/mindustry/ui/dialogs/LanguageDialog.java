@@ -13,15 +13,15 @@ import java.util.Locale;
 import static io.anuke.mindustry.Vars.locales;
 import static io.anuke.mindustry.Vars.ui;
 
-public class LanguageDialog extends FloatingDialog{
+public class LanguageDialog extends FloatingDialog {
 
-    public LanguageDialog(){
+    public LanguageDialog() {
         super("$text.settings.language");
         addCloseButton();
         setup();
     }
 
-    private void setup(){
+    private void setup() {
         Table langs = new Table();
         langs.marginRight(24f).marginLeft(24f);
         ScrollPane pane = new ScrollPane(langs, "clear");
@@ -29,11 +29,11 @@ public class LanguageDialog extends FloatingDialog{
 
         ButtonGroup<TextButton> group = new ButtonGroup<>();
 
-        for(Locale loc : locales){
+        for (Locale loc : locales) {
             TextButton button = new TextButton(Platform.instance.getLocaleName(loc), "toggle");
             button.setChecked(ui.getLocale().equals(loc));
             button.clicked(() -> {
-                if(ui.getLocale().equals(loc)) return;
+                if (ui.getLocale().equals(loc)) return;
                 Settings.putString("locale", loc.toString());
                 Settings.save();
                 Log.info("Setting locale: {0}", loc.toString());

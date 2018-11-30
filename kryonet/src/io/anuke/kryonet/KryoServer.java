@@ -10,10 +10,15 @@ import com.esotericsoftware.kryonet.Listener.LagListener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.kryonet.util.InputStreamSender;
 import io.anuke.mindustry.Vars;
-import io.anuke.mindustry.net.*;
+import io.anuke.mindustry.net.Net;
 import io.anuke.mindustry.net.Net.SendMode;
 import io.anuke.mindustry.net.Net.ServerProvider;
-import io.anuke.mindustry.net.Packets.*;
+import io.anuke.mindustry.net.NetConnection;
+import io.anuke.mindustry.net.NetworkIO;
+import io.anuke.mindustry.net.Packets.Connect;
+import io.anuke.mindustry.net.Packets.Disconnect;
+import io.anuke.mindustry.net.Packets.NetErrorPacket;
+import io.anuke.mindustry.net.Streamable;
 import io.anuke.mindustry.net.Streamable.StreamBegin;
 import io.anuke.mindustry.net.Streamable.StreamChunk;
 import io.anuke.ucore.UCore;
@@ -47,8 +52,8 @@ public class KryoServer implements ServerProvider {
 
     int lastconnection = 0;
 
-    public KryoServer(){
-        server = new Server(4096*2, 2048, connection -> new ByteSerializer());
+    public KryoServer() {
+        server = new Server(4096 * 2, 2048, connection -> new ByteSerializer());
         server.setDiscoveryHandler((datagramChannel, fromAddress) -> {
             ByteBuffer buffer = NetworkIO.writeServerData();
             buffer.position(0);
@@ -56,13 +61,13 @@ public class KryoServer implements ServerProvider {
             return true;
         });
 
-        Listener listener = new Listener(){
+        Listener listener = new Listener() {
 
             @Override
-            public void connected (Connection connection) {
+            public void connected(Connection connection) {
                 String ip = connection.getRemoteAddressTCP().getAddress().getHostAddress();
 
-                KryoConnection kn = new KryoConnection(lastconnection ++, ip, connection);
+                KryoConnection kn = new KryoConnection(lastconnection++, ip, connection);
 
                 Connect c = new Connect();
                 c.id = kn.id;
@@ -71,14 +76,14 @@ public class KryoServer implements ServerProvider {
                 Log.info("&bRecieved connection: {0} / {1}. Kryonet ID: {2}", c.id, c.addressTCP, connection.getID());
 
                 connections.add(kn);
-                Gdx.app.postRunnable(() ->  Net.handleServerReceived(kn.id, c));
+                Gdx.app.postRunnable(() -> Net.handleServerReceived(kn.id, c));
             }
 
             @Override
-            public void disconnected (Connection connection) {
+            public void disconnected(Connection connection) {
                 KryoConnection k = getByKryoID(connection.getID());
                 Log.info("&bLost kryonet connection {0}", connection.getID());
-                if(k == null) return;
+                if (k == null) return;
 
                 Disconnect c = new Disconnect();
                 c.id = k.id;
@@ -92,23 +97,23 @@ public class KryoServer implements ServerProvider {
             }
 
             @Override
-            public void received (Connection connection, Object object) {
+            public void received(Connection connection, Object object) {
                 KryoConnection k = getByKryoID(connection.getID());
-                if(object instanceof FrameworkMessage || k == null) return;
+                if (object instanceof FrameworkMessage || k == null) return;
 
                 Gdx.app.postRunnable(() -> {
-                    try{
+                    try {
                         Net.handleServerReceived(k.id, object);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
             }
         };
 
-        if(KryoRegistrator.fakeLag){
+        if (KryoRegistrator.fakeLag) {
             server.addListener(new LagListener(KryoRegistrator.fakeLagMin, KryoRegistrator.fakeLagMax, listener));
-        }else{
+        } else {
             server.addListener(listener);
         }
     }
@@ -116,17 +121,17 @@ public class KryoServer implements ServerProvider {
     @Override
     public Array<KryoConnection> getConnections() {
         array.clear();
-        for(KryoConnection c : connections){
+        for (KryoConnection c : connections) {
             array.add(c);
         }
         return array;
     }
 
     @Override
-    public KryoConnection getByID(int id){
-        for(int i = 0; i < connections.size(); i ++){
+    public KryoConnection getByID(int id) {
+        for (int i = 0; i < connections.size(); i++) {
             KryoConnection con = connections.get(i);
-            if(con.id == id){
+            if (con.id == id) {
                 return con;
             }
         }
@@ -144,10 +149,10 @@ public class KryoServer implements ServerProvider {
         webServer.start();
 
         serverThread = new Thread(() -> {
-            try{
+            try {
                 server.run();
-            }catch (Throwable e){
-                if(!(e instanceof ClosedSelectorException)) handleException(e);
+            } catch (Throwable e) {
+                if (!(e instanceof ClosedSelectorException)) handleException(e);
             }
         }, "Kryonet Server");
         serverThread.setDaemon(true);
@@ -171,15 +176,15 @@ public class KryoServer implements ServerProvider {
 
         try {
             if (webServer != null) webServer.stop(1);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             try {
                 synchronized (webServer) {
                     ((Thread) UCore.getPrivate(WebSocketServer.class, webServer, "selectorthread")).join(1);
                 }
-            }catch (InterruptedException j){
+            } catch (InterruptedException j) {
                 handleException(j);
             }
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             handleException(e);
         }
     }
@@ -187,7 +192,7 @@ public class KryoServer implements ServerProvider {
     @Override
     public void sendStream(int id, Streamable stream) {
         KryoConnection connection = getByID(id);
-        if(connection == null) return;
+        if (connection == null) return;
         try {
 
             if (connection.connection != null) {
@@ -229,14 +234,14 @@ public class KryoServer implements ServerProvider {
                     connection.send(chunk, SendMode.tcp);
                 }
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
     public void send(Object object, SendMode mode) {
-        for(int i = 0; i < connections.size(); i ++){
+        for (int i = 0; i < connections.size(); i++) {
             connections.get(i).send(object, mode);
         }
     }
@@ -244,8 +249,8 @@ public class KryoServer implements ServerProvider {
     @Override
     public void sendTo(int id, Object object, SendMode mode) {
         NetConnection conn = getByID(id);
-        if(conn == null){
-            if(!missing.contains(id))
+        if (conn == null) {
+            if (!missing.contains(id))
                 Log.err("Failed to find connection with ID {0}.", id);
             missing.add(id);
             return;
@@ -255,26 +260,28 @@ public class KryoServer implements ServerProvider {
 
     @Override
     public void sendExcept(int id, Object object, SendMode mode) {
-        for(int i = 0; i < connections.size(); i ++){
+        for (int i = 0; i < connections.size(); i++) {
             KryoConnection conn = connections.get(i);
-            if(conn.id != id) conn.send(object, mode);
+            if (conn.id != id) conn.send(object, mode);
         }
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         close();
         Log.info("Disposed server.");
     }
 
-    private void handleException(Throwable e){
-        Timers.run(0f, () -> { throw new RuntimeException(e);});
+    private void handleException(Throwable e) {
+        Timers.run(0f, () -> {
+            throw new RuntimeException(e);
+        });
     }
 
-    KryoConnection getByKryoID(int id){
-        for(int i = 0; i < connections.size(); i ++){
+    KryoConnection getByKryoID(int id) {
+        for (int i = 0; i < connections.size(); i++) {
             KryoConnection con = connections.get(i);
-            if(con.connection != null && con.connection.getID() == id){
+            if (con.connection != null && con.connection.getID() == id) {
                 return con;
             }
         }
@@ -282,10 +289,10 @@ public class KryoServer implements ServerProvider {
         return null;
     }
 
-    KryoConnection getBySocket(WebSocket socket){
-        for(int i = 0; i < connections.size(); i ++){
+    KryoConnection getBySocket(WebSocket socket) {
+        for (int i = 0; i < connections.size(); i++) {
             KryoConnection con = connections.get(i);
-            if(con.socket == socket){
+            if (con.socket == socket) {
                 return con;
             }
         }
@@ -293,13 +300,13 @@ public class KryoServer implements ServerProvider {
         return null;
     }
 
-    void async(Runnable run){
+    void async(Runnable run) {
         Thread thread = new Thread(run);
         thread.setDaemon(true);
         thread.start();
     }
 
-    class KryoConnection extends NetConnection{
+    class KryoConnection extends NetConnection {
         public final WebSocket socket;
         public final Connection connection;
 
@@ -316,8 +323,8 @@ public class KryoServer implements ServerProvider {
         }
 
         @Override
-        public void send(Object object, SendMode mode){
-            if(socket != null){
+        public void send(Object object, SendMode mode) {
+            if (socket != null) {
                 try {
                     synchronized (buffer) {
                         buffer.position(0);
@@ -329,46 +336,46 @@ public class KryoServer implements ServerProvider {
                         String string = new String(Base64Coder.encode(out));
                         socket.send(string);
                     }
-                }catch (WebsocketNotConnectedException e){
+                } catch (WebsocketNotConnectedException e) {
                     //don't log anything, it's not important
                     connections.remove(this);
-                }catch (Exception e){
+                } catch (Exception e) {
                     connections.remove(this);
                     e.printStackTrace();
                 }
-            }else if (connection != null) {
+            } else if (connection != null) {
                 try {
                     if (mode == SendMode.tcp) {
                         connection.sendTCP(object);
                     } else {
                         connection.sendUDP(object);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.err(e);
                     Log.info("Disconnecting invalid client!");
-                    try{
+                    try {
                         NetErrorPacket packet = new NetErrorPacket();
                         packet.message = Strings.parseException(e, true);
                         Timers.runTask(5f, connection::close);
-                    }catch (Exception e2){
+                    } catch (Exception e2) {
                         Log.err(e2);
                         connection.close();
                     }
                     connection.close();
 
                     KryoConnection k = getByKryoID(connection.getID());
-                    if(k != null) connections.remove(k);
+                    if (k != null) connections.remove(k);
                     Log.info("Connection removed {0}", k);
                 }
             }
         }
 
         @Override
-        public void close(){
-            if(socket != null){
-                if(socket.isOpen()) socket.close();
-            }else if (connection != null) {
-                if(connection.isConnected()) connection.close();
+        public void close() {
+            if (socket != null) {
+                if (socket.isOpen()) socket.close();
+            } else if (connection != null) {
+                if (connection.isConnected()) connection.close();
             }
         }
 
@@ -381,14 +388,15 @@ public class KryoServer implements ServerProvider {
         }
 
         @Override
-        public void onOpen(WebSocket conn, ClientHandshake handshake) {}
+        public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        }
 
         @Override
         public void onClose(WebSocket conn, int code, String reason, boolean remote) {
             if (conn == null) return;
 
             KryoConnection k = getBySocket(conn);
-            if(k == null) return;
+            if (k == null) return;
 
             Disconnect disconnect = new Disconnect();
             disconnect.id = k.id;
@@ -399,16 +407,16 @@ public class KryoServer implements ServerProvider {
         @Override
         public void onMessage(WebSocket conn, String message) {
             try {
-                if(message.equals("ping")){
+                if (message.equals("ping")) {
                     ByteBuffer ping = NetworkIO.writeServerData();
                     conn.send(new String(Base64Coder.encode(ping.array())));
-                }else {
+                } else {
                     KryoConnection k = getBySocket(conn);
 
-                    if (k == null){
+                    if (k == null) {
                         Connect connect = new Connect();
                         connect.addressTCP = conn.getRemoteSocketAddress().getAddress().getHostAddress();
-                        k = new KryoConnection(lastconnection ++, connect.addressTCP, conn);
+                        k = new KryoConnection(lastconnection++, connect.addressTCP, conn);
 
                         Log.info("&bRecieved web connection: {0} {1}", k.id, connect.addressTCP);
                         connections.add(k);
@@ -426,12 +434,12 @@ public class KryoServer implements ServerProvider {
                     Gdx.app.postRunnable(() -> {
                         try {
                             Net.handleServerReceived(id, o);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     });
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.err(e);
             }
         }
@@ -440,21 +448,22 @@ public class KryoServer implements ServerProvider {
         public void onError(WebSocket conn, Exception ex) {
             Log.info("WS error: ");
             Log.err(ex);
-            if(ex instanceof BindException){
+            if (ex instanceof BindException) {
                 Net.closeServer();
-                if(!headless) {
+                if (!headless) {
                     Net.showError("$text.server.addressinuse");
-                }else{
+                } else {
                     Log.err("Web address in use!");
                 }
-            }else if(ex.getMessage().equals("Permission denied")){
+            } else if (ex.getMessage().equals("Permission denied")) {
                 Net.closeServer();
                 Net.showError("Permission denied.");
             }
         }
 
         @Override
-        public void onStart() {}
+        public void onStart() {
+        }
     }
 
 }

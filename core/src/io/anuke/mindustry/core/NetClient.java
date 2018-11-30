@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.TimeUtils;
-import io.anuke.mindustry.Vars;
 import io.anuke.mindustry.core.GameState.State;
 import io.anuke.mindustry.entities.Bullet;
 import io.anuke.mindustry.entities.BulletType;
@@ -14,7 +13,36 @@ import io.anuke.mindustry.entities.enemies.Enemy;
 import io.anuke.mindustry.net.Net;
 import io.anuke.mindustry.net.Net.SendMode;
 import io.anuke.mindustry.net.NetworkIO;
-import io.anuke.mindustry.net.Packets.*;
+import io.anuke.mindustry.net.Packets.BlockDestroyPacket;
+import io.anuke.mindustry.net.Packets.BlockLogRequestPacket;
+import io.anuke.mindustry.net.Packets.BlockUpdatePacket;
+import io.anuke.mindustry.net.Packets.BreakPacket;
+import io.anuke.mindustry.net.Packets.BulletPacket;
+import io.anuke.mindustry.net.Packets.Connect;
+import io.anuke.mindustry.net.Packets.ConnectConfirmPacket;
+import io.anuke.mindustry.net.Packets.ConnectPacket;
+import io.anuke.mindustry.net.Packets.CustomMapPacket;
+import io.anuke.mindustry.net.Packets.Disconnect;
+import io.anuke.mindustry.net.Packets.DisconnectPacket;
+import io.anuke.mindustry.net.Packets.EnemyDeathPacket;
+import io.anuke.mindustry.net.Packets.EntityRequestPacket;
+import io.anuke.mindustry.net.Packets.EntitySpawnPacket;
+import io.anuke.mindustry.net.Packets.FriendlyFireChangePacket;
+import io.anuke.mindustry.net.Packets.GameOverPacket;
+import io.anuke.mindustry.net.Packets.ItemOffloadPacket;
+import io.anuke.mindustry.net.Packets.ItemSetPacket;
+import io.anuke.mindustry.net.Packets.ItemTransferPacket;
+import io.anuke.mindustry.net.Packets.KickPacket;
+import io.anuke.mindustry.net.Packets.MapAckPacket;
+import io.anuke.mindustry.net.Packets.NetErrorPacket;
+import io.anuke.mindustry.net.Packets.PlacePacket;
+import io.anuke.mindustry.net.Packets.PlayerAdminPacket;
+import io.anuke.mindustry.net.Packets.PositionPacket;
+import io.anuke.mindustry.net.Packets.StateSyncPacket;
+import io.anuke.mindustry.net.Packets.SyncPacket;
+import io.anuke.mindustry.net.Packets.TracePacket;
+import io.anuke.mindustry.net.Packets.UpgradePacket;
+import io.anuke.mindustry.net.Packets.WorldData;
 import io.anuke.mindustry.resource.Item;
 import io.anuke.mindustry.resource.Upgrade;
 import io.anuke.mindustry.resource.UpgradeRecipes;
@@ -39,7 +67,7 @@ import java.nio.ByteBuffer;
 import static io.anuke.mindustry.Vars.*;
 
 public class NetClient extends Module {
-    private final static float dataTimeout = 60*18; //18 seconds timeout
+    private final static float dataTimeout = 60 * 18; //18 seconds timeout
     private final static float playerSyncTime = 2;
     private final static int maxRequests = 50;
 
@@ -51,7 +79,7 @@ public class NetClient extends Module {
     private int requests = 0;
     private float timeoutTime = 0f; //data timeout counter
 
-    public NetClient(){
+    public NetClient() {
 
         Net.handleClient(Connect.class, packet -> {
             player.isAdmin = false;
@@ -75,7 +103,7 @@ public class NetClient extends Module {
             c.color = Color.rgba8888(player.color);
             c.uuid = Platform.instance.getUUID();
 
-            if(c.uuid == null){
+            if (c.uuid == null) {
                 ui.showError("$text.invalidid");
                 ui.loadfrag.hide();
                 disconnectQuietly();
@@ -135,8 +163,8 @@ public class NetClient extends Module {
 
                 SyncEntity entity = (SyncEntity) group.getByID(id);
 
-                if(entity instanceof Player) players ++;
-                if(entity instanceof Enemy) enemies ++;
+                if (entity instanceof Player) players++;
+                if (entity instanceof Enemy) enemies++;
 
                 if (entity == null || id == player.id) {
                     if (id != player.id && requests < maxRequests) {
@@ -144,7 +172,7 @@ public class NetClient extends Module {
                         req.id = id;
                         req.group = groupid;
                         Net.send(req, SendMode.udp);
-                        requests ++;
+                        requests++;
                     }
                     data.position(data.position() + SyncEntity.getWriteSize((Class<? extends SyncEntity>) group.getType()));
                 } else {
@@ -152,7 +180,7 @@ public class NetClient extends Module {
                 }
             }
 
-            if(debugNet){
+            if (debugNet) {
                 clientDebug.setSyncDebug(players, enemies);
             }
         });
@@ -167,17 +195,17 @@ public class NetClient extends Module {
 
             ui.hudfrag.updateItems();
         });
-    
+
         Net.handleClient(BlockLogRequestPacket.class, packet -> {
-			currentEditLogs = packet.editlogs;
-		});
+            currentEditLogs = packet.editlogs;
+        });
 
         Net.handleClient(PlacePacket.class, (packet) -> {
             Placement.placeBlock(packet.x, packet.y, Block.getByID(packet.block), packet.rotation, true, Timers.get("placeblocksound", 10));
 
-            if(packet.playerid == player.id){
+            if (packet.playerid == player.id) {
                 Tile tile = world.tile(packet.x, packet.y);
-                if(tile != null) Block.getByID(packet.block).placed(tile);
+                if (tile != null) Block.getByID(packet.block).placed(tile);
             }
         });
 
@@ -201,11 +229,11 @@ public class NetClient extends Module {
 
         Net.handleClient(EnemyDeathPacket.class, packet -> {
             Enemy enemy = enemyGroup.getByID(packet.id);
-            if (enemy != null){
+            if (enemy != null) {
                 enemy.type.onDeath(enemy, true);
-            }else if(recent.get(packet.id) != null){
+            } else if (recent.get(packet.id) != null) {
                 recent.get(packet.id).remove();
-            }else{
+            } else {
                 Log.err("Got remove for null entity! {0}", packet.id);
             }
             recieved.add(packet.id);
@@ -246,13 +274,13 @@ public class NetClient extends Module {
             kicked = true;
             Net.disconnect();
             state.set(State.menu);
-            if(!packet.reason.quiet) ui.showError("$text.server.kicked." + packet.reason.name());
+            if (!packet.reason.quiet) ui.showError("$text.server.kicked." + packet.reason.name());
             ui.loadfrag.hide();
         });
 
         Net.handleClient(GameOverPacket.class, packet -> {
-            if(world.getCore().block() != ProductionBlocks.core &&
-                    world.getCore().entity != null){
+            if (world.getCore().block() != ProductionBlocks.core &&
+                    world.getCore().entity != null) {
                 world.getCore().entity.onDeath(true);
             }
             kicked = true;
@@ -266,7 +294,7 @@ public class NetClient extends Module {
                 Tile tile = world.tile(packet.position);
                 if (tile == null || tile.entity == null) return;
                 Tile next = tile.getNearby(packet.rotation);
-                tile.entity.items[packet.itemid] --;
+                tile.entity.items[packet.itemid]--;
                 next.block().handleItem(Item.getByID(packet.itemid), next, tile);
             };
 
@@ -321,16 +349,16 @@ public class NetClient extends Module {
     }
 
     @Override
-    public void update(){
-        if(!Net.client()) return;
+    public void update() {
+        if (!Net.client()) return;
 
-        if(!state.is(State.menu)){
-            if(!connecting) sync();
-        }else if(!connecting){
+        if (!state.is(State.menu)) {
+            if (!connecting) sync();
+        } else if (!connecting) {
             Net.disconnect();
-        }else{ //...must be connecting
+        } else { //...must be connecting
             timeoutTime += Timers.delta();
-            if(timeoutTime > dataTimeout){
+            if (timeoutTime > dataTimeout) {
                 Log.err("Failed to load data!");
                 ui.loadfrag.hide();
                 kicked = true;
@@ -341,11 +369,11 @@ public class NetClient extends Module {
         }
     }
 
-    public boolean isConnecting(){
+    public boolean isConnecting() {
         return connecting;
     }
 
-    private void finishConnecting(){
+    private void finishConnecting() {
         state.set(State.playing);
         connecting = false;
         ui.loadfrag.hide();
@@ -355,23 +383,23 @@ public class NetClient extends Module {
         Timers.runTask(40f, Platform.instance::updateRPC);
     }
 
-    public void beginConnecting(){
+    public void beginConnecting() {
         connecting = true;
     }
 
-    public void disconnectQuietly(){
+    public void disconnectQuietly() {
         kicked = true;
         Net.disconnect();
     }
 
-    public void clearRecieved(){
+    public void clearRecieved() {
         recieved.clear();
     }
 
-    void sync(){
+    void sync() {
         requests = 0;
 
-        if(timer.get(0, playerSyncTime)){
+        if (timer.get(0, playerSyncTime)) {
 
             byte[] bytes = new byte[player.getWriteSize() + 8];
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
@@ -383,7 +411,7 @@ public class NetClient extends Module {
             Net.send(packet, SendMode.udp);
         }
 
-        if(timer.get(1, 60)){
+        if (timer.get(1, 60)) {
             Net.updatePing();
         }
     }

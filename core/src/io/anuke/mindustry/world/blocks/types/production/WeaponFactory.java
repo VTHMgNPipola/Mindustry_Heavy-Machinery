@@ -19,16 +19,16 @@ import io.anuke.ucore.scene.ui.layout.Table;
 
 import static io.anuke.mindustry.Vars.*;
 
-public class WeaponFactory extends Block{
+public class WeaponFactory extends Block {
 
-    public WeaponFactory(String name){
+    public WeaponFactory(String name) {
         super(name);
         solid = true;
         destructible = true;
     }
 
     @Override
-    public boolean isConfigurable(Tile tile){
+    public boolean isConfigurable(Tile tile) {
         return !Vars.mobile;
     }
 
@@ -38,15 +38,15 @@ public class WeaponFactory extends Block{
 
         Table content = new Table();
 
-        for(Upgrade upgrade : Upgrade.getAllUpgrades()){
-            if(!(upgrade instanceof Weapon)) continue;
-            Weapon weapon = (Weapon)upgrade;
+        for (Upgrade upgrade : Upgrade.getAllUpgrades()) {
+            if (!(upgrade instanceof Weapon)) continue;
+            Weapon weapon = (Weapon) upgrade;
 
             ItemStack[] requirements = UpgradeRecipes.get(weapon);
 
             Table tiptable = new Table();
 
-            Listenable run = ()->{
+            Listenable run = () -> {
                 tiptable.clearChildren();
 
                 String description = weapon.description;
@@ -59,14 +59,14 @@ public class WeaponFactory extends Block{
                 tiptable.row();
                 tiptable.add(reqtable).left();
 
-                if(!control.upgrades().hasWeapon(weapon)){
-                    for(ItemStack s : requirements){
+                if (!control.upgrades().hasWeapon(weapon)) {
+                    for (ItemStack s : requirements) {
 
                         int amount = Math.min(state.inventory.getAmount(s.item), s.amount);
-                        reqtable.addImage(s.item.region).padRight(3).size(8*2);
+                        reqtable.addImage(s.item.region).padRight(3).size(8 * 2);
                         reqtable.add(
                                 (amount >= s.amount ? "" : "[RED]")
-                                        + amount + " / " +s.amount, 0.5f).left();
+                                        + amount + " / " + s.amount, 0.5f).left();
                         reqtable.row();
                     }
                 }
@@ -76,7 +76,7 @@ public class WeaponFactory extends Block{
                 tiptable.row();
                 tiptable.add("[gray]" + description).left();
                 tiptable.row();
-                if(control.upgrades().hasWeapon(weapon)){
+                if (control.upgrades().hasWeapon(weapon)) {
                     tiptable.add("$text.purchased").padTop(4).left();
                 }
                 tiptable.margin(8f);
@@ -88,11 +88,11 @@ public class WeaponFactory extends Block{
 
             tip.setInstant(true);
 
-            ImageButton button = content.addImageButton("white", 8*4, () -> {
+            ImageButton button = content.addImageButton("white", 8 * 4, () -> {
 
-                if(Net.client()){
+                if (Net.client()) {
                     NetEvents.handleUpgrade(weapon);
-                }else{
+                } else {
                     state.inventory.removeItems(requirements);
                     control.upgrades().addWeapon(weapon);
                     ui.hudfrag.updateWeapons();
@@ -105,7 +105,7 @@ public class WeaponFactory extends Block{
             button.getStyle().imageUp = new TextureRegionDrawable(Draw.region(weapon.name));
             button.addListener(tip);
 
-            if(++i % 3 == 0){
+            if (++i % 3 == 0) {
                 content.row();
             }
         }

@@ -15,17 +15,17 @@ import static io.anuke.mindustry.Vars.headless;
 public class BundleLoader {
     private static final boolean externalBundle = false;
 
-    public static void load(){
+    public static void load() {
         Settings.defaults("locale", "default");
         Settings.load("io.anuke.moment");
         loadBundle();
     }
 
-    private static Locale getLocale(){
+    private static Locale getLocale() {
         String loc = Settings.getString("locale");
-        if(loc.equals("default")){
+        if (loc.equals("default")) {
             return Locale.getDefault();
-        }else{
+        } else {
             Locale lastLocale;
             if (loc.contains("_")) {
                 String[] split = loc.split("_");
@@ -38,27 +38,27 @@ public class BundleLoader {
         }
     }
 
-    private static void loadBundle(){
+    private static void loadBundle() {
         I18NBundle.setExceptionOnMissingKey(false);
 
-        if(externalBundle){
+        if (externalBundle) {
             try {
                 FileHandle handle = Gdx.files.local("bundle");
 
                 Locale locale = Locale.ENGLISH;
                 Core.bundle = I18NBundle.createBundle(handle, locale);
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.err(e);
                 Platform.instance.showError("Failed to find bundle!\nMake sure you have bundle.properties in the same directory\nas the jar file.\n\nIf the problem persists, try running it through the command prompt:\n" +
                         "Hold left-shift, then right click and select 'open command prompt here'.\nThen, type in 'java -jar mindustry.jar' without quotes.");
                 Gdx.app.exit();
             }
-        }else{
+        } else {
             FileHandle handle = Gdx.files.internal("bundles/bundle");
 
             Locale locale = getLocale();
             Locale.setDefault(locale);
-            if(!headless) Log.info("Got locale: {0}", locale);
+            if (!headless) Log.info("Got locale: {0}", locale);
             Core.bundle = I18NBundle.createBundle(handle, locale);
         }
     }

@@ -8,7 +8,7 @@ public class ProcGen {
     public RidgedPerlin rid = new RidgedPerlin(1, 1, 1);
     public Simplex sim = new Simplex();
 
-    public Map generate(GenProperties props){
+    public Map generate(GenProperties props) {
         return null;
     }
 }

@@ -14,32 +14,42 @@ import java.nio.ByteBuffer;
 
 import static io.anuke.mindustry.Vars.threads;
 
-public abstract class SyncEntity extends DestructibleEntity{
+public abstract class SyncEntity extends DestructibleEntity {
     private static ObjectIntMap<Class<? extends SyncEntity>> writeSizes = new ObjectIntMap<>();
 
-    protected transient Interpolator interpolator = new Interpolator();
-
-    //smoothed position/angle
-    private Vector3 spos = new Vector3();
-
-    public float angle;
-
-    static{
+    static {
         setWriteSize(Enemy.class, 4 + 4 + 2 + 2);
         setWriteSize(Player.class, 4 + 4 + 4 + 2 + 1);
     }
 
-    public static boolean isSmoothing(){
+    public float angle;
+    protected transient Interpolator interpolator = new Interpolator();
+    //smoothed position/angle
+    private Vector3 spos = new Vector3();
+
+    public static boolean isSmoothing() {
         return threads.isEnabled() && threads.getFPS() <= Gdx.graphics.getFramesPerSecond() / 2f;
     }
 
+    public static int getWriteSize(Class<? extends SyncEntity> type) {
+        int i = writeSizes.get(type, -1);
+        if (i == -1) throw new RuntimeException("Write size for class \"" + type + "\" is not defined!");
+        return i;
+    }
+
+    protected static void setWriteSize(Class<? extends SyncEntity> type, int size) {
+        writeSizes.put(type, size);
+    }
+
     public abstract void writeSpawn(ByteBuffer data);
+
     public abstract void readSpawn(ByteBuffer data);
 
     public abstract void write(ByteBuffer data);
+
     public abstract void read(ByteBuffer data, long time);
 
-    public void interpolate(){
+    public void interpolate() {
         interpolator.update();
 
         x = interpolator.pos.x;
@@ -48,12 +58,12 @@ public abstract class SyncEntity extends DestructibleEntity{
     }
 
     @Override
-    public final void draw(){
+    public final void draw() {
         final float x = this.x, y = this.y, angle = this.angle;
 
         //interpolates data at low tick speeds.
-        if(isSmoothing()){
-            if(Vector2.dst(spos.x, spos.y, x, y) > 128){
+        if (isSmoothing()) {
+            if (Vector2.dst(spos.x, spos.y, x, y) > 128) {
                 spos.set(x, y, angle);
             }
 
@@ -69,33 +79,24 @@ public abstract class SyncEntity extends DestructibleEntity{
         this.angle = angle;
     }
 
-    public Vector3 getDrawPosition(){
+    public Vector3 getDrawPosition() {
         return isSmoothing() ? spos : spos.set(x, y, angle);
     }
 
-    public void drawSmooth(){}
+    public void drawSmooth() {
+    }
 
-    public int getWriteSize(){
+    public int getWriteSize() {
         return getWriteSize(getClass());
     }
 
-    public static int getWriteSize(Class<? extends SyncEntity> type){
-        int i = writeSizes.get(type, -1);
-        if(i == -1) throw new RuntimeException("Write size for class \"" + type + "\" is not defined!");
-        return i;
-    }
-
-    protected static void setWriteSize(Class<? extends SyncEntity> type, int size){
-        writeSizes.put(type, size);
-    }
-
-    public <T extends SyncEntity> T setNet(float x, float y){
+    public <T extends SyncEntity> T setNet(float x, float y) {
         set(x, y);
         interpolator.target.set(x, y);
         interpolator.last.set(x, y);
         interpolator.spacing = 1f;
         interpolator.time = 0f;
-        return (T)this;
+        return (T) this;
     }
 
     public static class Interpolator {
@@ -110,7 +111,7 @@ public abstract class SyncEntity extends DestructibleEntity{
         public Vector2 pos = new Vector2();
         public float angle;
 
-        public void read(float cx, float cy, float x, float y, float angle, long sent){
+        public void read(float cx, float cy, float x, float y, float angle, long sent) {
             targetrot = angle;
             time = 0f;
             last.set(cx, cy);
@@ -118,7 +119,7 @@ public abstract class SyncEntity extends DestructibleEntity{
             spacing = Math.min(Math.max(((TimeUtils.timeSinceMillis(sent) / 1000f) * 60f), 4f), 10);
         }
 
-        public void update(){
+        public void update() {
 
             time += 1f / spacing * Math.min(Timers.delta(), 1f);
 
@@ -128,7 +129,7 @@ public abstract class SyncEntity extends DestructibleEntity{
 
             angle = Mathf.slerpDelta(angle, targetrot, 0.6f);
 
-            if(target.dst(pos) > 128){
+            if (target.dst(pos) > 128) {
                 pos.set(target);
                 last.set(target);
                 time = 0f;

@@ -14,18 +14,18 @@ import io.anuke.ucore.util.OS;
 
 import static io.anuke.mindustry.Vars.ios;
 
-public class ChangelogDialog extends FloatingDialog{
+public class ChangelogDialog extends FloatingDialog {
     private final float vw = 600;
     private Array<VersionInfo> versions;
 
-    public ChangelogDialog(){
+    public ChangelogDialog() {
         super("$text.changelog.title");
 
         addCloseButton();
 
         content().add("$text.changelog.loading");
 
-        if(!ios && !OS.isMac) {
+        if (!ios && !OS.isMac) {
             Changelogs.getChangelog(result -> {
                 versions = result;
                 Gdx.app.postRunnable(this::setup);
@@ -36,26 +36,26 @@ public class ChangelogDialog extends FloatingDialog{
         }
     }
 
-    void setup(){
+    void setup() {
         Table table = new Table();
         ScrollPane pane = new ScrollPane(table, "clear");
 
         content().clear();
         content().add(pane).grow();
 
-        if(versions == null){
+        if (versions == null) {
             table.add("$text.changelog.error");
-            if(Vars.android){
+            if (Vars.android) {
                 table.row();
                 table.add("$text.changelog.error.android").padTop(8);
             }
 
-            if(ios){
+            if (ios) {
                 table.row();
                 table.add("$text.changelog.error.ios").padTop(8);
             }
-        }else{
-            for(VersionInfo info : versions){
+        } else {
+            for (VersionInfo info : versions) {
                 String desc = info.description;
 
                 desc = desc.replace("Android", "Mobile");
@@ -64,10 +64,10 @@ public class ChangelogDialog extends FloatingDialog{
                 in.top().left().margin(10);
 
                 in.add("[accent]" + info.name);
-                if(info.build == Version.build){
+                if (info.build == Version.build) {
                     in.row();
                     in.add("$text.changelog.current");
-                }else if(info == versions.first()){
+                } else if (info == versions.first()) {
                     in.row();
                     in.add("$text.changelog.latest");
                 }
@@ -78,7 +78,7 @@ public class ChangelogDialog extends FloatingDialog{
             }
 
             int lastid = Settings.getInt("lastBuild");
-            if(lastid != 0 && versions.peek().build > lastid){
+            if (lastid != 0 && versions.peek().build > lastid) {
                 Settings.putInt("lastBuild", versions.peek().build);
                 Settings.save();
                 show();

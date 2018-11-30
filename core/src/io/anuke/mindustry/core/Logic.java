@@ -24,33 +24,34 @@ import io.anuke.ucore.util.Mathf;
 
 import static io.anuke.mindustry.Vars.*;
 
-/**Logic module.
+/**
+ * Logic module.
  * Handles all logic for entities and waves.
  * Handles game state events.
  * Does not store any game state itself.
- *
+ * <p>
  * This class should <i>not</i> call any outside methods to change state of modules, but instead fire events.
  */
 public class Logic extends Module {
     private final Array<EnemySpawn> spawns = WaveCreator.getSpawns();
 
     @Override
-    public void init(){
+    public void init() {
         Entities.initPhysics();
         Entities.collisions().setCollider(tilesize, world::solid);
     }
 
-    public void play(){
+    public void play() {
         state.wavetime = wavespace * state.difficulty.timeScaling * 2;
 
-        if(state.mode.infiniteResources){
+        if (state.mode.infiniteResources) {
             state.inventory.fill();
         }
 
         Events.fire(PlayEvent.class);
     }
 
-    public void reset(){
+    public void reset() {
         state.wave = 1;
         state.extrawavetime = maxwavespace * state.difficulty.maxTimeScaling;
         state.wavetime = wavespace * state.difficulty.timeScaling;
@@ -65,25 +66,25 @@ public class Logic extends Module {
         Events.fire(ResetEvent.class);
     }
 
-    public void runWave(){
+    public void runWave() {
 
-        if(state.lastUpdated < state.wave + 1){
+        if (state.lastUpdated < state.wave + 1) {
             world.pathfinder().resetPaths();
             state.lastUpdated = state.wave + 1;
         }
 
-        for(EnemySpawn spawn : spawns){
+        for (EnemySpawn spawn : spawns) {
             Array<SpawnPoint> spawns = world.getSpawns();
 
-            for(int lane = 0; lane < spawns.size; lane ++){
+            for (int lane = 0; lane < spawns.size; lane++) {
                 int fl = lane;
                 Tile tile = spawns.get(lane).start;
                 int spawnamount = spawn.evaluate(state.wave, lane);
 
-                for(int i = 0; i < spawnamount; i ++){
+                for (int i = 0; i < spawnamount; i++) {
                     float range = 12f;
 
-                    Timers.runTask(i*5f, () -> {
+                    Timers.runTask(i * 5f, () -> {
 
                         Enemy enemy = new Enemy(spawn.type);
                         enemy.set(tile.worldx() + Mathf.range(range), tile.worldy() + Mathf.range(range));
@@ -93,13 +94,13 @@ public class Logic extends Module {
 
                         Effects.effect(Fx.spawn, enemy);
 
-                        state.enemies ++;
+                        state.enemies++;
                     });
                 }
             }
         }
 
-        state.wave ++;
+        state.wave++;
         state.wavetime = wavespace * state.difficulty.timeScaling;
         state.extrawavetime = maxwavespace * state.difficulty.maxTimeScaling;
 
@@ -107,42 +108,42 @@ public class Logic extends Module {
     }
 
     @Override
-    public void update(){
+    public void update() {
 
-        if(!state.is(State.menu)){
+        if (!state.is(State.menu)) {
 
-            if(control != null) control.triggerInputUpdate();
+            if (control != null) control.triggerInputUpdate();
 
-            if(!state.is(State.paused) || Net.active()){
+            if (!state.is(State.paused) || Net.active()) {
                 Timers.update();
             }
 
-            if(!Net.client())
+            if (!Net.client())
                 world.pathfinder().update();
 
-            if(world.getCore() != null && world.getCore().block() != ProductionBlocks.core && !state.gameOver){
+            if (world.getCore() != null && world.getCore().block() != ProductionBlocks.core && !state.gameOver) {
                 state.gameOver = true;
-                if(Net.server()) NetEvents.handleGameOver();
+                if (Net.server()) NetEvents.handleGameOver();
                 Events.fire(GameOverEvent.class);
             }
 
-            if(!state.is(State.paused) || Net.active()){
+            if (!state.is(State.paused) || Net.active()) {
 
-                if(!state.mode.disableWaveTimer){
+                if (!state.mode.disableWaveTimer) {
 
-                    if(state.enemies <= 0){
-                        if(!world.getMap().name.equals("tutorial")) state.wavetime -= Timers.delta();
+                    if (state.enemies <= 0) {
+                        if (!world.getMap().name.equals("tutorial")) state.wavetime -= Timers.delta();
 
-                        if(state.lastUpdated < state.wave + 1 && state.wavetime < aheadPathfinding){ //start updating beforehand
+                        if (state.lastUpdated < state.wave + 1 && state.wavetime < aheadPathfinding) { //start updating beforehand
                             world.pathfinder().resetPaths();
                             state.lastUpdated = state.wave + 1;
                         }
-                    }else if(!world.getMap().name.equals("tutorial")){
+                    } else if (!world.getMap().name.equals("tutorial")) {
                         state.extrawavetime -= Timers.delta();
                     }
                 }
 
-                if(!Net.client() && (state.wavetime <= 0 || state.extrawavetime <= 0)){
+                if (!Net.client() && (state.wavetime <= 0 || state.extrawavetime <= 0)) {
                     runWave();
                 }
 

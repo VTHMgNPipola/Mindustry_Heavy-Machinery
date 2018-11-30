@@ -17,7 +17,7 @@ public class SaveMeta {
     public int wave;
     public Difficulty difficulty;
 
-    public SaveMeta(int version, long date, int mode, int map, int wave, Difficulty difficulty){
+    public SaveMeta(int version, long date, int mode, int map, int wave, Difficulty difficulty) {
         this.version = version;
         this.date = Platform.instance.format(new Date(date));
         this.mode = GameMode.values()[mode];

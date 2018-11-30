@@ -3,7 +3,12 @@ package io.anuke.mindustry.io;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import io.anuke.mindustry.world.Block;
-import io.anuke.mindustry.world.blocks.*;
+import io.anuke.mindustry.world.blocks.Blocks;
+import io.anuke.mindustry.world.blocks.DefenseBlocks;
+import io.anuke.mindustry.world.blocks.DistributionBlocks;
+import io.anuke.mindustry.world.blocks.ProductionBlocks;
+import io.anuke.mindustry.world.blocks.SpecialBlocks;
+import io.anuke.mindustry.world.blocks.WeaponBlocks;
 import io.anuke.ucore.util.Log;
 
 public class BlockLoader {
@@ -36,19 +41,19 @@ public class BlockLoader {
             "icerock", 25,
             "blackrock", 26,
             "dirtblock", 27,
-            "stonewall", 28,
-            "ironwall", 29,
-            "steelwall", 30,
-            "titaniumwall", 31,
+            "stoneWall", 28,
+            "ironWall", 29,
+            "steelWall", 30,
+            "titaniumWall", 31,
             "duriumwall", 32,
             "compositewall", 33,
-            "steelwall-large", 34,
-            "titaniumwall-large", 35,
+            "steelWall-large", 34,
+            "titaniumWall-large", 35,
             "duriumwall-large", 36,
             "titaniumshieldwall", 37,
-            "repairturret", 38,
-            "megarepairturret", 39,
-            "shieldgenerator", 40,
+            "repairTurret", 38,
+            "megaRepairTurret", 39,
+            "shieldGenerator", 40,
             "door", 41,
             "door-large", 42,
             "conduit", 43,
@@ -106,38 +111,38 @@ public class BlockLoader {
     );
     static final IntMap<Block> blockmap = new IntMap<>();
 
-    public static void load(){
+    public static void load() {
 
         Block[] blockClasses = {
-            Blocks.air,
-            DefenseBlocks.compositewall,
-            DistributionBlocks.conduit,
-            ProductionBlocks.coaldrill,
-            WeaponBlocks.chainturret,
-            SpecialBlocks.enemySpawn
-            //add any new block sections here
+                Blocks.air,
+                DefenseBlocks.compositewall,
+                DistributionBlocks.conduit,
+                ProductionBlocks.coaldrill,
+                WeaponBlocks.chainturret,
+                SpecialBlocks.enemySpawn
+                //add any new block sections here
         };
 
-        for(String string : defaultMap.keys()){
+        for (String string : defaultMap.keys()) {
             Block block = Block.getByName(string);
             blockmap.put(defaultMap.get(string, -1), block);
         }
 
-        for(Block block : Block.getAllBlocks()){
+        for (Block block : Block.getAllBlocks()) {
             block.init();
         }
 
         Log.info("Total blocks loaded: {0}", Block.getAllBlocks().size);
     }
 
-    public static Block getByOldID(int id){
+    public static Block getByOldID(int id) {
         return blockmap.get(id);
     }
 
-    private static ObjectIntMap<String> map(Object... objects){
+    private static ObjectIntMap<String> map(Object... objects) {
         ObjectIntMap<String> map = new ObjectIntMap<>();
-        for(int i = 0; i < objects.length/2; i ++){
-            map.put((String)objects[i*2], (int)objects[i*2+1]);
+        for (int i = 0; i < objects.length / 2; i++) {
+            map.put((String) objects[i * 2], (int) objects[i * 2 + 1]);
         }
         return map;
     }

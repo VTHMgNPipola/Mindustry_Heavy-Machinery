@@ -6,13 +6,13 @@ import io.anuke.ucore.scene.ui.Dialog;
 import static io.anuke.mindustry.Vars.*;
 
 public class RestartDialog extends Dialog {
-    
-    public RestartDialog(){
+
+    public RestartDialog() {
         super("$text.gameover", "dialog");
 
         shown(() -> {
             content().clearChildren();
-            if(control.isHighScore()){
+            if (control.isHighScore()) {
                 content().add("$text.highscore").pad(6);
                 content().row();
             }
@@ -21,7 +21,7 @@ public class RestartDialog extends Dialog {
             pack();
         });
 
-        getButtonTable().addButton("$text.menu", ()-> {
+        getButtonTable().addButton("$text.menu", () -> {
             hide();
             state.set(State.menu);
             logic.reset();

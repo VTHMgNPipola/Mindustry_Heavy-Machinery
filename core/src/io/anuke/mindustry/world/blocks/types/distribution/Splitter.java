@@ -5,31 +5,31 @@ import io.anuke.mindustry.world.Block;
 import io.anuke.mindustry.world.Tile;
 import io.anuke.ucore.util.Mathf;
 
-public class Splitter extends Block{
+public class Splitter extends Block {
 
-    public Splitter(String name){
+    public Splitter(String name) {
         super(name);
         solid = true;
         instantTransfer = true;
     }
 
     @Override
-    public boolean acceptItem(Item item, Tile tile, Tile source){
+    public boolean acceptItem(Item item, Tile tile, Tile source) {
         Tile to = getTileTarget(item, tile, source, false);
 
         return to != null && to.block().acceptItem(item, to, tile);
     }
 
     @Override
-    public void handleItem(Item item, Tile tile, Tile source){
+    public void handleItem(Item item, Tile tile, Tile source) {
         Tile to = getTileTarget(item, tile, source, true);
 
         to.block().handleItem(item, to, tile);
     }
 
-    Tile getTileTarget(Item item, Tile dest, Tile source, boolean flip){
+    Tile getTileTarget(Item item, Tile dest, Tile source, boolean flip) {
         int dir = source.relativeTo(dest.x, dest.y);
-        if(dir == -1) return null;
+        if (dir == -1) return null;
         Tile to;
 
         Tile a = dest.getNearby(Mathf.mod(dir - 1, 4));
@@ -39,19 +39,19 @@ public class Splitter extends Block{
         boolean bc = !(b.block().instantTransfer && source.block().instantTransfer) &&
                 b.block().acceptItem(item, b, dest);
 
-        if(ac && !bc){
+        if (ac && !bc) {
             to = a;
-        }else if(bc && !ac){
+        } else if (bc && !ac) {
             to = b;
-        }else{
-            if(dest.getDump() == 0){
+        } else {
+            if (dest.getDump() == 0) {
                 to = a;
-                if(flip)
-                    dest.setDump((byte)1);
-            }else{
+                if (flip)
+                    dest.setDump((byte) 1);
+            } else {
                 to = b;
-                if(flip)
-                    dest.setDump((byte)0);
+                if (flip)
+                    dest.setDump((byte) 0);
             }
         }
 

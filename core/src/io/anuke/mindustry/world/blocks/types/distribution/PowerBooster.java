@@ -14,97 +14,98 @@ import io.anuke.ucore.util.Mathf;
 import static io.anuke.mindustry.Vars.tilesize;
 import static io.anuke.mindustry.Vars.world;
 
-public class PowerBooster extends Generator{
-	protected final int timerGenerate = timers++;
-	
-	public int powerRange = 4;
+public class PowerBooster extends Generator {
+    protected final int timerGenerate = timers++;
 
-	public PowerBooster(String name) {
-		super(name);
-		explosive = false;
-		hasLasers = false;
-		powerSpeed = 0.4f;
-	}
+    public int powerRange = 4;
 
-	@Override
-	public void drawSelect(Tile tile){
-		super.drawSelect(tile);
+    public PowerBooster(String name) {
+        super(name);
+        explosive = false;
+        hasLasers = false;
+        powerSpeed = 0.4f;
+    }
 
-		Draw.color(Color.YELLOW);
-		Lines.dashCircle(tile.worldx(), tile.worldy(), powerRange * tilesize);
-		Draw.reset();
-	}
+    @Override
+    public void drawSelect(Tile tile) {
+        super.drawSelect(tile);
 
-	@Override
-	public void drawPlace(int x, int y, int rotation, boolean valid){
-		Draw.color(Color.PURPLE);
-		Lines.stroke(1f);
-		Lines.dashCircle(x * tilesize, y * tilesize, powerRange * tilesize);
-		Draw.reset();
-	}
+        Draw.color(Color.YELLOW);
+        Lines.dashCircle(tile.worldx(), tile.worldy(), powerRange * tilesize);
+        Draw.reset();
+    }
 
-	@Override
-	public void getStats(Array<String> list){
-		super.getStats(list);
-		list.add("[powerinfo]Power Range: " + powerRange + " tiles");
-	}
+    @Override
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
+        Draw.color(Color.PURPLE);
+        Lines.stroke(1f);
+        Lines.dashCircle(x * tilesize, y * tilesize, powerRange * tilesize);
+        Draw.reset();
+    }
 
-	@Override
-	public void update(Tile tile){
-		distributePower(tile);
-	}
+    @Override
+    public void getStats(Array<String> list) {
+        super.getStats(list);
+        list.add("[powerinfo]Power Range: " + powerRange + " tiles");
+    }
 
-	@Override
-	public void drawLayer(Tile tile){}
+    @Override
+    public void update(Tile tile) {
+        distributePower(tile);
+    }
 
-	@Override
-	public boolean acceptsPower(Tile tile){
-		PowerEntity entity = tile.entity();
+    @Override
+    public void drawLayer(Tile tile) {
+    }
 
-		return entity.power + 0.001f <= powerCapacity;
-	}
+    @Override
+    public boolean acceptsPower(Tile tile) {
+        PowerEntity entity = tile.entity();
 
-	//TODO better distribution
-	protected void distributePower(Tile tile){
-		PowerEntity p = tile.entity();
-		
-		if(!p.timer.get(timerGenerate, powerTime)){
-			return;
-		}
+        return entity.power + 0.001f <= powerCapacity;
+    }
 
-		int acceptors = 0;
-		float flow = 0f;
+    //TODO better distribution
+    protected void distributePower(Tile tile) {
+        PowerEntity p = tile.entity();
 
-		for(int i = 0; i < 2; i++){
-			for(int x = -powerRange; x <= powerRange; x++){
-				for(int y = -powerRange; y <= powerRange; y++){
+        if (!p.timer.get(timerGenerate, powerTime)) {
+            return;
+        }
 
-					if(x == 0 && y == 0){
-						continue;
-					}
+        int acceptors = 0;
+        float flow = 0f;
 
-					if(Vector2.dst(x, y, 0, 0) < powerRange){
-						Tile dest = world.tile(tile.x + x, tile.y + y);
-						if(dest != null && dest.block() instanceof PowerAcceptor && ((PowerAcceptor) dest.block()).acceptsPower(dest)){
-							if(i == 1){
-								PowerAcceptor block = (PowerAcceptor) dest.block();
+        for (int i = 0; i < 2; i++) {
+            for (int x = -powerRange; x <= powerRange; x++) {
+                for (int y = -powerRange; y <= powerRange; y++) {
 
-								float transmission = Math.min(flow, p.power);
+                    if (x == 0 && y == 0) {
+                        continue;
+                    }
 
-								float amount = block.addPower(dest, transmission);
-								p.power -= amount;
-							}else{
-								acceptors++;
-							}
-						}
-					}
-				}
-			}
+                    if (Vector2.dst(x, y, 0, 0) < powerRange) {
+                        Tile dest = world.tile(tile.x + x, tile.y + y);
+                        if (dest != null && dest.block() instanceof PowerAcceptor && ((PowerAcceptor) dest.block()).acceptsPower(dest)) {
+                            if (i == 1) {
+                                PowerAcceptor block = (PowerAcceptor) dest.block();
 
-			//TODO better distribution scheme
-			if(i == 0 && acceptors > 0){
-				flow = Mathf.clamp(p.power / acceptors, 0f, powerSpeed / acceptors * Timers.delta());
-			}
-		}
-	}
+                                float transmission = Math.min(flow, p.power);
+
+                                float amount = block.addPower(dest, transmission);
+                                p.power -= amount;
+                            } else {
+                                acceptors++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //TODO better distribution scheme
+            if (i == 0 && acceptors > 0) {
+                flow = Mathf.clamp(p.power / acceptors, 0f, powerSpeed / acceptors * Timers.delta());
+            }
+        }
+    }
 }

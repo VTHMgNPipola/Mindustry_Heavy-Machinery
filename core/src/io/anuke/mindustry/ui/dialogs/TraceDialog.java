@@ -7,13 +7,13 @@ import io.anuke.ucore.util.Bundles;
 
 public class TraceDialog extends FloatingDialog {
 
-    public TraceDialog(){
+    public TraceDialog() {
         super("$text.trace");
 
         addCloseButton();
     }
 
-    public void show(Player player, TraceInfo info){
+    public void show(Player player, TraceInfo info) {
         content().clear();
 
         Table table = new Table("button");

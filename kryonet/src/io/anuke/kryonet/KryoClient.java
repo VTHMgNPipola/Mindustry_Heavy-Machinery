@@ -4,7 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.esotericsoftware.kryonet.*;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.ClientDiscoveryHandler;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
+import com.esotericsoftware.kryonet.KryoNetException;
+import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Listener.LagListener;
 import com.esotericsoftware.minlog.Log;
 import io.anuke.mindustry.net.Host;
@@ -28,12 +33,12 @@ import java.util.List;
 import static io.anuke.mindustry.Vars.netClient;
 import static io.anuke.mindustry.Vars.port;
 
-public class KryoClient implements ClientProvider{
+public class KryoClient implements ClientProvider {
     Client client;
     ObjectMap<InetAddress, Host> addresses = new ObjectMap<>();
     ClientDiscoveryHandler handler;
 
-    public KryoClient(){
+    public KryoClient() {
         handler = new ClientDiscoveryHandler() {
             @Override
             public DatagramPacket onRequestNewDatagramPacket() {
@@ -56,37 +61,39 @@ public class KryoClient implements ClientProvider{
         client = new Client(8192, 2048, connection -> new ByteSerializer());
         client.setDiscoveryHandler(handler);
 
-        Listener listener = new Listener(){
+        Listener listener = new Listener() {
             @Override
-            public void connected (Connection connection) {
+            public void connected(Connection connection) {
                 Connect c = new Connect();
                 c.id = connection.getID();
-                if(connection.getRemoteAddressTCP() != null) c.addressTCP = connection.getRemoteAddressTCP().toString();
+                if (connection.getRemoteAddressTCP() != null)
+                    c.addressTCP = connection.getRemoteAddressTCP().toString();
 
                 Gdx.app.postRunnable(() -> Net.handleClientReceived(c));
             }
 
             @Override
-            public void disconnected (Connection connection) {
+            public void disconnected(Connection connection) {
                 Disconnect c = new Disconnect();
 
                 Gdx.app.postRunnable(() -> Net.handleClientReceived(c));
-                if(connection.getLastProtocolError() != null) Log.error("\n\n\n\nProtocol error: " + connection.getLastProtocolError() + "\n\n\n\n");
+                if (connection.getLastProtocolError() != null)
+                    Log.error("\n\n\n\nProtocol error: " + connection.getLastProtocolError() + "\n\n\n\n");
             }
 
             @Override
-            public void received (Connection connection, Object object) {
-                if(object instanceof FrameworkMessage) return;
+            public void received(Connection connection, Object object) {
+                if (object instanceof FrameworkMessage) return;
 
                 Gdx.app.postRunnable(() -> {
-                    try{
+                    try {
                         Net.handleClientReceived(object);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
-                        if(e instanceof KryoNetException && e.getMessage() != null && e.getMessage().toLowerCase().contains("incorrect")) {
+                        if (e instanceof KryoNetException && e.getMessage() != null && e.getMessage().toLowerCase().contains("incorrect")) {
                             Net.showError("$text.server.mismatch");
                             netClient.disconnectQuietly();
-                        }else{
+                        } else {
                             throw new RuntimeException(e);
                         }
                     }
@@ -95,9 +102,9 @@ public class KryoClient implements ClientProvider{
             }
         };
 
-        if(KryoRegistrator.fakeLag){
+        if (KryoRegistrator.fakeLag) {
             client.addListener(new LagListener(KryoRegistrator.fakeLagMin, KryoRegistrator.fakeLagMax, listener));
-        }else{
+        } else {
             client.addListener(listener);
         }
     }
@@ -108,10 +115,10 @@ public class KryoClient implements ClientProvider{
         client.stop();
 
         Thread updateThread = new Thread(() -> {
-            try{
+            try {
                 client.run();
-            }catch (Exception e){
-                if(!(e instanceof ClosedSelectorException)) handleException(e);
+            } catch (Exception e) {
+                if (!(e instanceof ClosedSelectorException)) handleException(e);
             }
         }, "Kryonet Client");
         updateThread.setDaemon(true);
@@ -127,9 +134,9 @@ public class KryoClient implements ClientProvider{
 
     @Override
     public void send(Object object, SendMode mode) {
-        if(mode == SendMode.tcp){
+        if (mode == SendMode.tcp) {
             client.sendTCP(object);
-        }else{
+        } else {
             client.sendUDP(object);
         }
     }
@@ -145,7 +152,7 @@ public class KryoClient implements ClientProvider{
     }
 
     @Override
-    public void pingHost(String address, int port, Consumer<Host> valid, Consumer<Exception> invalid){
+    public void pingHost(String address, int port, Consumer<Host> valid, Consumer<Exception> invalid) {
         runAsync(() -> {
             try {
                 DatagramSocket socket = new DatagramSocket();
@@ -170,17 +177,17 @@ public class KryoClient implements ClientProvider{
     }
 
     @Override
-    public void discover(Consumer<Array<Host>> callback){
+    public void discover(Consumer<Array<Host>> callback) {
         runAsync(() -> {
             addresses.clear();
             List<InetAddress> list = client.discoverHosts(port, 3000);
             ObjectSet<String> hostnames = new ObjectSet<>();
             Array<Host> result = new Array<>();
 
-            for(InetAddress a : list){
-                if(!hostnames.contains(a.getHostName())) {
+            for (InetAddress a : list) {
+                if (!hostnames.contains(a.getHostName())) {
                     Host address = addresses.get(a);
-                    if(address != null) result.add(address);
+                    if (address != null) result.add(address);
 
                 }
                 hostnames.add(a.getHostName());
@@ -191,25 +198,25 @@ public class KryoClient implements ClientProvider{
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         try {
             client.dispose();
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void runAsync(Runnable run){
+    private void runAsync(Runnable run) {
         Thread thread = new Thread(run, "Client Async Run");
         thread.setDaemon(true);
         thread.start();
     }
 
-    private void handleException(Exception e){
+    private void handleException(Exception e) {
         e.printStackTrace();
-        if(e instanceof KryoNetException){
+        if (e instanceof KryoNetException) {
             Gdx.app.postRunnable(() -> Net.showError("$text.server.mismatch"));
-        }else{
+        } else {
             Net.showError(Strings.parseException(e, true));
             disconnect();
         }

@@ -21,7 +21,7 @@ public class TraceInfo {
 
     public String uuid;
 
-    public TraceInfo(String ip){
+    public TraceInfo(String ip) {
         this.ip = ip;
     }
 }

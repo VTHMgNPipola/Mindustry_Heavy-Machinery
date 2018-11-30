@@ -6,13 +6,13 @@ import io.anuke.mindustry.graphics.Fx;
 import io.anuke.mindustry.resource.Item;
 import io.anuke.mindustry.world.Block;
 import io.anuke.mindustry.world.Tile;
-import io.anuke.ucore.graphics.Draw;
 import io.anuke.ucore.core.Effects;
+import io.anuke.ucore.graphics.Draw;
 import io.anuke.ucore.util.Tmp;
 
 public class Omnidrill extends Drill {
 
-    public Omnidrill(String name){
+    public Omnidrill(String name) {
         super(name);
         drillEffect = Fx.sparkbig;
         resource = null;
@@ -20,10 +20,10 @@ public class Omnidrill extends Drill {
     }
 
     @Override
-    public void draw(Tile tile){
+    public void draw(Tile tile) {
         super.draw(tile);
 
-        if(tile.floor().drops == null) return;
+        if (tile.floor().drops == null) return;
         Item item = tile.floor().drops.item;
 
         TextureRegion region = item.region;
@@ -38,21 +38,21 @@ public class Omnidrill extends Drill {
     }
 
     @Override
-    public void update(Tile tile){
+    public void update(Tile tile) {
         TileEntity entity = tile.entity;
 
-        if(tile.floor().drops != null && entity.timer.get(timerDrill, 60 * time)){
+        if (tile.floor().drops != null && entity.timer.get(timerDrill, 60 * time)) {
             offloadNear(tile, tile.floor().drops.item);
             Effects.effect(drillEffect, tile.worldx(), tile.worldy());
         }
 
-        if(entity.timer.get(timerDump, 30)){
+        if (entity.timer.get(timerDump, 30)) {
             tryDump(tile);
         }
     }
 
     @Override
-    public boolean isLayer(Tile tile){
+    public boolean isLayer(Tile tile) {
         return tile.floor().drops == null;
     }
 }

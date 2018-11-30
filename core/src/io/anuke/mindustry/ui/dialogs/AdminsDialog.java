@@ -12,7 +12,7 @@ import static io.anuke.mindustry.Vars.*;
 
 public class AdminsDialog extends FloatingDialog {
 
-    public AdminsDialog(){
+    public AdminsDialog() {
         super("$text.server.admins");
 
         addCloseButton();
@@ -21,10 +21,10 @@ public class AdminsDialog extends FloatingDialog {
         shown(this::setup);
     }
 
-    private void setup(){
+    private void setup() {
         content().clear();
 
-        if(gwt) return;
+        if (gwt) return;
 
         float w = 400f, h = 80f;
 
@@ -33,22 +33,22 @@ public class AdminsDialog extends FloatingDialog {
         ScrollPane pane = new ScrollPane(table, "clear");
         pane.setFadeScrollBars(false);
 
-        if(netServer.admins.getAdmins().size == 0){
+        if (netServer.admins.getAdmins().size == 0) {
             table.add("$text.server.admins.none");
         }
 
-        for(PlayerInfo info : netServer.admins.getAdmins()){
+        for (PlayerInfo info : netServer.admins.getAdmins()) {
             Table res = new Table("button");
             res.margin(14f);
 
             res.labelWrap("[LIGHT_GRAY]" + info.lastName).width(w - h - 24f);
             res.add().growX();
-            res.addImageButton("icon-cancel", 14*3, () -> {
+            res.addImageButton("icon-cancel", 14 * 3, () -> {
                 ui.showConfirm("$text.confirm", "$text.confirmunadmin", () -> {
                     netServer.admins.unAdminPlayer(info.id);
-                    for(Player player : playerGroup.all()){
+                    for (Player player : playerGroup.all()) {
                         NetConnection c = Net.getConnection(player.clientid);
-                        if(c != null){
+                        if (c != null) {
                             NetEvents.handleAdminSet(player, false);
                             break;
                         }

@@ -4,7 +4,7 @@ import io.anuke.mindustry.entities.enemies.EnemyType;
 
 public class StandardType extends EnemyType {
 
-    public StandardType(){
+    public StandardType() {
         super("standardenemy");
     }
 }

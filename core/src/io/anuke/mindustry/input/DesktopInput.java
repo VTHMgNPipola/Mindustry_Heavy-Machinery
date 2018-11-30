@@ -16,175 +16,194 @@ import io.anuke.ucore.util.Mathf;
 
 import static io.anuke.mindustry.Vars.*;
 
-public class DesktopInput extends InputHandler{
-	float mousex, mousey;
-	float endx, endy;
-	private boolean enableHold = false;
-	private boolean beganBreak;
-	private boolean rotated = false, rotatedAlt, zoomed;
-	
-	@Override public float getCursorEndX(){ return endx; }
-	@Override public float getCursorEndY(){ return endy; }
-	@Override public float getCursorX(){ return Graphics.screen(mousex, mousey).x; }
-	@Override public float getCursorY(){ return Gdx.graphics.getHeight() - 1 - Graphics.screen(mousex, mousey).y; }
-	@Override public boolean drawPlace(){ return !beganBreak; }
+public class DesktopInput extends InputHandler {
+    float mousex, mousey;
+    float endx, endy;
+    private boolean enableHold = false;
+    private boolean beganBreak;
+    private boolean rotated = false, rotatedAlt, zoomed;
 
-	@Override
-	public void update(){
-		if(player.isDead()) return;
+    @Override
+    public float getCursorEndX() {
+        return endx;
+    }
 
-		if(Inputs.keyRelease("select")){
-			placeMode.released(getBlockX(), getBlockY(), getBlockEndX(), getBlockEndY());
-		}
+    @Override
+    public float getCursorEndY() {
+        return endy;
+    }
 
-		if(Inputs.keyRelease("break") && !beganBreak){
-			breakMode.released(getBlockX(), getBlockY(), getBlockEndX(), getBlockEndY());
-		}
+    @Override
+    public float getCursorX() {
+        return Graphics.screen(mousex, mousey).x;
+    }
 
-		if((Inputs.keyTap("select") && recipe != null) || Inputs.keyTap("break")){
-			Vector2 vec = Graphics.world(Gdx.input.getX(), Gdx.input.getY());
-			mousex = vec.x;
-			mousey = vec.y;
-		}
+    @Override
+    public float getCursorY() {
+        return Gdx.graphics.getHeight() - 1 - Graphics.screen(mousex, mousey).y;
+    }
 
-		if(!Inputs.keyDown("select") && !Inputs.keyDown("break")){
-			mousex = Graphics.mouseWorld().x;
-			mousey = Graphics.mouseWorld().y;
-		}
-		
-		endx = Gdx.input.getX();
-		endy = Gdx.input.getY();
+    @Override
+    public boolean drawPlace() {
+        return !beganBreak;
+    }
 
-		boolean controller = KeyBinds.getSection("default").device.type == DeviceType.controller;
-		
-		if(Inputs.getAxisActive("zoom") && (Inputs.keyDown("zoom_hold") || controller)
-				&& !state.is(State.menu) && !ui.hasDialog()){
-			if((!zoomed || !controller)) {
-				renderer.scaleCamera((int) Inputs.getAxis("zoom"));
-			}
-			zoomed = true;
-		}else{
-			zoomed = false;
-		}
+    @Override
+    public void update() {
+        if (player.isDead()) return;
 
-		if(!rotated) {
-			rotation += Inputs.getAxis("rotate_alt");
-			rotated = true;
-		}
-		if(!Inputs.getAxisActive("rotate_alt")) rotated = false;
+        if (Inputs.keyRelease("select")) {
+            placeMode.released(getBlockX(), getBlockY(), getBlockEndX(), getBlockEndY());
+        }
 
-		if(!rotatedAlt) {
-			rotation += Inputs.getAxis("rotate");
-			rotatedAlt = true;
-		}
-		if(!Inputs.getAxisActive("rotate")) rotatedAlt = false;
+        if (Inputs.keyRelease("break") && !beganBreak) {
+            breakMode.released(getBlockX(), getBlockY(), getBlockEndX(), getBlockEndY());
+        }
 
-		rotation = Mathf.mod(rotation, 4);
-		
-		if(Inputs.keyDown("break")){
-			breakMode = PlaceMode.areaDelete;
-		}else{
-			breakMode = PlaceMode.hold;
-		}
-		
-		for(int i = 1; i <= 6 && i <= control.upgrades().getWeapons().size; i ++){
-			if(Inputs.keyTap("weapon_" + i)){
-				player.weaponLeft = player.weaponRight = control.upgrades().getWeapons().get(i - 1);
-                if(Net.active()) NetEvents.handleWeaponSwitch();
-				ui.hudfrag.updateWeapons();
-			}
-		}
-		
-		Tile cursor = world.tile(tilex(), tiley());
-		Tile target = cursor == null ? null : cursor.isLinked() ? cursor.getLinked() : cursor;
-		boolean showCursor = false;
+        if ((Inputs.keyTap("select") && recipe != null) || Inputs.keyTap("break")) {
+            Vector2 vec = Graphics.world(Gdx.input.getX(), Gdx.input.getY());
+            mousex = vec.x;
+            mousey = vec.y;
+        }
 
-		if(recipe == null && target != null && !ui.hasMouse() && Inputs.keyDown("block_info")
-				&& target.block().fullDescription != null){
-			showCursor = true;
-			if(Inputs.keyTap("select")){
-			    ui.hudfrag.blockfrag.showBlockInfo(target.block());
+        if (!Inputs.keyDown("select") && !Inputs.keyDown("break")) {
+            mousex = Graphics.mouseWorld().x;
+            mousey = Graphics.mouseWorld().y;
+        }
+
+        endx = Gdx.input.getX();
+        endy = Gdx.input.getY();
+
+        boolean controller = KeyBinds.getSection("default").device.type == DeviceType.controller;
+
+        if (Inputs.getAxisActive("zoom") && (Inputs.keyDown("zoom_hold") || controller)
+                && !state.is(State.menu) && !ui.hasDialog()) {
+            if ((!zoomed || !controller)) {
+                renderer.scaleCamera((int) Inputs.getAxis("zoom"));
+            }
+            zoomed = true;
+        } else {
+            zoomed = false;
+        }
+
+        if (!rotated) {
+            rotation += Inputs.getAxis("rotate_alt");
+            rotated = true;
+        }
+        if (!Inputs.getAxisActive("rotate_alt")) rotated = false;
+
+        if (!rotatedAlt) {
+            rotation += Inputs.getAxis("rotate");
+            rotatedAlt = true;
+        }
+        if (!Inputs.getAxisActive("rotate")) rotatedAlt = false;
+
+        rotation = Mathf.mod(rotation, 4);
+
+        if (Inputs.keyDown("break")) {
+            breakMode = PlaceMode.areaDelete;
+        } else {
+            breakMode = PlaceMode.hold;
+        }
+
+        for (int i = 1; i <= 6 && i <= control.upgrades().getWeapons().size; i++) {
+            if (Inputs.keyTap("weapon_" + i)) {
+                player.weaponLeft = player.weaponRight = control.upgrades().getWeapons().get(i - 1);
+                if (Net.active()) NetEvents.handleWeaponSwitch();
+                ui.hudfrag.updateWeapons();
+            }
+        }
+
+        Tile cursor = world.tile(tilex(), tiley());
+        Tile target = cursor == null ? null : cursor.isLinked() ? cursor.getLinked() : cursor;
+        boolean showCursor = false;
+
+        if (recipe == null && target != null && !ui.hasMouse() && Inputs.keyDown("block_info")
+                && target.block().fullDescription != null) {
+            showCursor = true;
+            if (Inputs.keyTap("select")) {
+                ui.hudfrag.blockfrag.showBlockInfo(target.block());
                 Cursors.restoreCursor();
             }
-		}
-		
-		if(recipe == null && !ui.hasMouse() && Inputs.keyDown("block_logs")) {
-			showCursor = true;
-			if(Inputs.keyTap("select")){
-				NetEvents.handleBlockLogRequest(getBlockX(), getBlockY());
-				Timers.runTask(20f, () -> {
-					ui.hudfrag.blockfrag.showBlockLogs(getBlockX(), getBlockY());
-					Cursors.restoreCursor();
-				});
-			}
-		}
-
-        if(target != null && target.block().isConfigurable(target)){
-		    showCursor = true;
         }
-		
-		if(target != null && Inputs.keyTap("select") && !ui.hasMouse()){
-			if(target.block().isConfigurable(target)){
-				ui.configfrag.showConfig(target);
-			}else if(!ui.configfrag.hasConfigMouse()){
-				ui.configfrag.hideConfig();
-			}
 
-			target.block().tapped(target);
-			if(Net.active()) NetEvents.handleBlockTap(target);
-		}
-		
-		if(Inputs.keyTap("break")){
-			ui.configfrag.hideConfig();
-		}
-		
-		if(Inputs.keyRelease("break")){
-			beganBreak = false;
-		}
+        if (recipe == null && !ui.hasMouse() && Inputs.keyDown("block_logs")) {
+            showCursor = true;
+            if (Inputs.keyTap("select")) {
+                NetEvents.handleBlockLogRequest(getBlockX(), getBlockY());
+                Timers.runTask(20f, () -> {
+                    ui.hudfrag.blockfrag.showBlockLogs(getBlockX(), getBlockY());
+                    Cursors.restoreCursor();
+                });
+            }
+        }
 
-		if(recipe != null && Inputs.keyTap("break")){
-			beganBreak = true;
-			recipe = null;
-		}
+        if (target != null && target.block().isConfigurable(target)) {
+            showCursor = true;
+        }
 
-		//block breaking
-		if(enableHold && Inputs.keyDown("break") && cursor != null && validBreak(tilex(), tiley())){
-			breaktime += Timers.delta();
-			if(breaktime >= cursor.getBreakTime()){
-				breakBlock(cursor.x, cursor.y, true);
-				breaktime = 0f;
-			}
-		}else{
-			breaktime = 0f;
-		}
+        if (target != null && Inputs.keyTap("select") && !ui.hasMouse()) {
+            if (target.block().isConfigurable(target)) {
+                ui.configfrag.showConfig(target);
+            } else if (!ui.configfrag.hasConfigMouse()) {
+                ui.configfrag.hideConfig();
+            }
 
-		if(recipe != null){
-			showCursor = validPlace(tilex(), tiley(), control.input().recipe.result) && control.input().cursorNear();
-		}
+            target.block().tapped(target);
+            if (Net.active()) NetEvents.handleBlockTap(target);
+        }
 
-		if(!ui.hasMouse()) {
-			if (showCursor)
-				Cursors.setHand();
-			else
-				Cursors.restoreCursor();
-		}
+        if (Inputs.keyTap("break")) {
+            ui.configfrag.hideConfig();
+        }
 
-	}
+        if (Inputs.keyRelease("break")) {
+            beganBreak = false;
+        }
 
-	public int tilex(){
-		return (recipe != null && recipe.result.isMultiblock() &&
-				recipe.result.width % 2 == 0) ?
-				Mathf.scl(Graphics.mouseWorld().x, tilesize) : Mathf.scl2(Graphics.mouseWorld().x, tilesize);
-	}
+        if (recipe != null && Inputs.keyTap("break")) {
+            beganBreak = true;
+            recipe = null;
+        }
 
-	public int tiley(){
-		return (recipe != null && recipe.result.isMultiblock() &&
-				recipe.result.height % 2 == 0) ?
-				Mathf.scl(Graphics.mouseWorld().y, tilesize) : Mathf.scl2(Graphics.mouseWorld().y, tilesize);
-	}
+        //block breaking
+        if (enableHold && Inputs.keyDown("break") && cursor != null && validBreak(tilex(), tiley())) {
+            breaktime += Timers.delta();
+            if (breaktime >= cursor.getBreakTime()) {
+                breakBlock(cursor.x, cursor.y, true);
+                breaktime = 0f;
+            }
+        } else {
+            breaktime = 0f;
+        }
 
-	@Override
-	public boolean keyDown(int keycode) {
-		return super.keyDown(keycode);
-	}
+        if (recipe != null) {
+            showCursor = validPlace(tilex(), tiley(), control.input().recipe.result) && control.input().cursorNear();
+        }
+
+        if (!ui.hasMouse()) {
+            if (showCursor)
+                Cursors.setHand();
+            else
+                Cursors.restoreCursor();
+        }
+
+    }
+
+    public int tilex() {
+        return (recipe != null && recipe.result.isMultiblock() &&
+                recipe.result.width % 2 == 0) ?
+                Mathf.scl(Graphics.mouseWorld().x, tilesize) : Mathf.scl2(Graphics.mouseWorld().x, tilesize);
+    }
+
+    public int tiley() {
+        return (recipe != null && recipe.result.isMultiblock() &&
+                recipe.result.height % 2 == 0) ?
+                Mathf.scl(Graphics.mouseWorld().y, tilesize) : Mathf.scl2(Graphics.mouseWorld().y, tilesize);
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return super.keyDown(keycode);
+    }
 }

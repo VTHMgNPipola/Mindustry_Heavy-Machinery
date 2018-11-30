@@ -13,7 +13,7 @@ public class BlockBar {
         this.top = top;
     }
 
-    public interface ValueSupplier{
+    public interface ValueSupplier {
         float get(Tile tile);
     }
 }

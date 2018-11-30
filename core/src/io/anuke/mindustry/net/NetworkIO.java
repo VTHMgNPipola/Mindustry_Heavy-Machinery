@@ -9,22 +9,30 @@ import io.anuke.mindustry.game.GameMode;
 import io.anuke.mindustry.io.Version;
 import io.anuke.mindustry.resource.Upgrade;
 import io.anuke.mindustry.resource.Weapon;
-import io.anuke.mindustry.world.*;
+import io.anuke.mindustry.world.Block;
+import io.anuke.mindustry.world.ColorMapper;
+import io.anuke.mindustry.world.Map;
+import io.anuke.mindustry.world.Tile;
+import io.anuke.mindustry.world.WorldGenerator;
 import io.anuke.mindustry.world.blocks.Blocks;
 import io.anuke.mindustry.world.blocks.types.BlockPart;
 import io.anuke.mindustry.world.blocks.types.Rock;
 import io.anuke.ucore.core.Timers;
 import io.anuke.ucore.entities.Entities;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 import static io.anuke.mindustry.Vars.*;
 
 public class NetworkIO {
 
-    public static void writeMap(Map map, OutputStream os){
-        try(DataOutputStream stream = new DataOutputStream(os)){
+    public static void writeMap(Map map, OutputStream os) {
+        try (DataOutputStream stream = new DataOutputStream(os)) {
             stream.writeUTF(map.name);
             stream.writeBoolean(map.oreGen);
 
@@ -35,40 +43,40 @@ public class NetworkIO {
             int cap = map.getWidth() * map.getHeight();
             int pos = 0;
 
-            while(pos < cap){
+            while (pos < cap) {
                 int color = map.pixmap.getPixel(pos % width, pos / width);
                 byte id = ColorMapper.getColorID(color);
 
                 int length = 1;
-                while(true){
-                    if(pos >= cap || length > 254){
+                while (true) {
+                    if (pos >= cap || length > 254) {
                         break;
                     }
 
-                    pos ++;
+                    pos++;
 
                     int next = map.pixmap.getPixel(pos % width, pos / width);
-                    if(next != color){
-                        pos --;
+                    if (next != color) {
+                        pos--;
                         break;
-                    }else{
-                        length ++;
+                    } else {
+                        length++;
                     }
                 }
 
-                if(id == -1) id = 2;
-                stream.writeByte((byte)(length > 127 ? length - 256 : length));
+                if (id == -1) id = 2;
+                stream.writeByte((byte) (length > 127 ? length - 256 : length));
                 stream.writeByte(id);
 
-                pos ++;
+                pos++;
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Map loadMap(InputStream is){
-        try(DataInputStream stream = new DataInputStream(is)){
+    public static Map loadMap(InputStream is) {
+        try (DataInputStream stream = new DataInputStream(is)) {
             String name = stream.readUTF();
             boolean ores = stream.readBoolean();
 
@@ -77,15 +85,15 @@ public class NetworkIO {
             Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
 
             int pos = 0;
-            while(stream.available() > 0){
+            while (stream.available() > 0) {
                 int length = stream.readByte();
                 byte id = stream.readByte();
-                if(length < 0) length += 256;
+                if (length < 0) length += 256;
                 int color = ColorMapper.getColorByID(id);
 
-                for(int p = 0; p < length; p ++){
-                    pixmap.drawPixel(pos % width, pos / width,color);
-                    pos ++;
+                for (int p = 0; p < length; p++) {
+                    pixmap.drawPixel(pos % width, pos / width, color);
+                    pos++;
                 }
             }
 
@@ -98,14 +106,14 @@ public class NetworkIO {
             map.id = -1;
 
             return map;
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void writeWorld(Player player, ByteArray upgrades, OutputStream os){
+    public static void writeWorld(Player player, ByteArray upgrades, OutputStream os) {
 
-        try(DataOutputStream stream = new DataOutputStream(os)){
+        try (DataOutputStream stream = new DataOutputStream(os)) {
 
             stream.writeFloat(Timers.time()); //timer time
             stream.writeLong(TimeUtils.millis()); //timestamp
@@ -124,13 +132,13 @@ public class NetworkIO {
 
             //--INVENTORY--
 
-            for(int i = 0; i < state.inventory.getItems().length; i ++){ //items
+            for (int i = 0; i < state.inventory.getItems().length; i++) { //items
                 stream.writeInt(state.inventory.getItems()[i]);
             }
 
             stream.writeByte(upgrades.size); //upgrade data
 
-            for(int i = 0; i < upgrades.size; i ++){
+            for (int i = 0; i < upgrades.size; i++) {
                 stream.writeByte(upgrades.get(i));
             }
 
@@ -142,15 +150,15 @@ public class NetworkIO {
             int totalblocks = 0;
             int totalrocks = 0;
 
-            for(int x = 0; x < world.width(); x ++){
-                for(int y = 0; y < world.height(); y ++){
+            for (int x = 0; x < world.width(); x++) {
+                for (int y = 0; y < world.height(); y++) {
                     Tile tile = world.tile(x, y);
 
-                    if(tile.breakable()){
-                        if(tile.block() instanceof Rock){
-                            totalrocks ++;
-                        }else{
-                            totalblocks ++;
+                    if (tile.breakable()) {
+                        if (tile.block() instanceof Rock) {
+                            totalrocks++;
+                        } else {
+                            totalblocks++;
                         }
                     }
                 }
@@ -160,7 +168,7 @@ public class NetworkIO {
             stream.writeInt(totalrocks);
 
             //write all rocks
-            for(int x = 0; x < world.width(); x ++) {
+            for (int x = 0; x < world.width(); x++) {
                 for (int y = 0; y < world.height(); y++) {
                     Tile tile = world.tile(x, y);
 
@@ -173,26 +181,26 @@ public class NetworkIO {
             //tile amount
             stream.writeInt(totalblocks);
 
-            for(int x = 0; x < world.width(); x ++){
-                for(int y = 0; y < world.height(); y ++){
+            for (int x = 0; x < world.width(); x++) {
+                for (int y = 0; y < world.height(); y++) {
                     Tile tile = world.tile(x, y);
 
-                    if(tile.breakable() && !(tile.block() instanceof Rock)){
+                    if (tile.breakable() && !(tile.block() instanceof Rock)) {
 
-                        stream.writeInt(x + y*world.width()); //tile pos
+                        stream.writeInt(x + y * world.width()); //tile pos
                         //TODO will break if block number gets over BYTE_MAX
                         stream.writeByte(tile.block().id); //block ID
 
-                        if(tile.block() instanceof BlockPart){
+                        if (tile.block() instanceof BlockPart) {
                             stream.writeByte(tile.link);
                         }
 
-                        if(tile.entity != null){
+                        if (tile.entity != null) {
                             stream.writeShort(tile.getPackedData());
-                            stream.writeShort((short)tile.entity.health); //health
+                            stream.writeShort((short) tile.entity.health); //health
 
                             //items
-                            for(int i = 0; i < tile.entity.items.length; i ++){
+                            for (int i = 0; i < tile.entity.items.length; i++) {
                                 stream.writeInt(tile.entity.items[i]);
                             }
 
@@ -201,15 +209,15 @@ public class NetworkIO {
                             //amount of active timers
                             byte times = 0;
 
-                            for(; times < tile.entity.timer.getTimes().length; times ++){
-                                if(tile.entity.timer.getTimes()[times] <= 1){
+                            for (; times < tile.entity.timer.getTimes().length; times++) {
+                                if (tile.entity.timer.getTimes()[times] <= 1) {
                                     break;
                                 }
                             }
 
                             stream.writeByte(times);
 
-                            for(int i = 0; i < times; i ++){
+                            for (int i = 0; i < times; i++) {
                                 stream.writeFloat(tile.entity.timer.getTimes()[i]);
                             }
 
@@ -219,15 +227,17 @@ public class NetworkIO {
                 }
             }
 
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**Return whether a custom map is expected, and thus whether the client should wait for additional data.*/
-    public static void loadWorld(InputStream is){
+    /**
+     * Return whether a custom map is expected, and thus whether the client should wait for additional data.
+     */
+    public static void loadWorld(InputStream is) {
 
-        try(DataInputStream stream = new DataInputStream(is)){
+        try (DataInputStream stream = new DataInputStream(is)) {
             float timerTime = stream.readFloat();
             long timestamp = stream.readLong();
 
@@ -253,7 +263,7 @@ public class NetworkIO {
             boolean admin = stream.readBoolean();
 
             //inventory
-            for(int i = 0; i < state.inventory.getItems().length; i ++){
+            for (int i = 0; i < state.inventory.getItems().length; i++) {
                 state.inventory.getItems()[i] = stream.readInt();
             }
 
@@ -264,7 +274,7 @@ public class NetworkIO {
 
             byte weapons = stream.readByte();
 
-            for(int i = 0; i < weapons; i ++){
+            for (int i = 0; i < weapons; i++) {
                 control.upgrades().getWeapons().add((Weapon) Upgrade.getByID(stream.readByte()));
             }
 
@@ -285,12 +295,12 @@ public class NetworkIO {
 
             player.set(world.getSpawnX(), world.getSpawnY());
 
-            for(int x = 0; x < world.width(); x ++){
-                for(int y = 0; y < world.height(); y ++){
+            for (int x = 0; x < world.width(); x++) {
+                for (int y = 0; y < world.height(); y++) {
                     Tile tile = world.tile(x, y);
 
                     //remove breakables like rocks
-                    if(tile.breakable()){
+                    if (tile.breakable()) {
                         world.tile(x, y).setBlock(Blocks.air);
                     }
                 }
@@ -298,39 +308,39 @@ public class NetworkIO {
 
             int rocks = stream.readInt();
 
-            for(int i = 0; i < rocks; i ++){
+            for (int i = 0; i < rocks; i++) {
                 int pos = stream.readInt();
                 Tile tile = world.tile(pos % world.width(), pos / world.width());
                 Block result = WorldGenerator.rocks.get(tile.floor());
-                if(result != null) tile.setBlock(result);
+                if (result != null) tile.setBlock(result);
             }
 
             int tiles = stream.readInt();
 
-            for(int i = 0; i < tiles; i ++){
+            for (int i = 0; i < tiles; i++) {
                 int pos = stream.readInt();
                 byte blockid = stream.readByte();
 
                 Tile tile = world.tile(pos % world.width(), pos / world.width());
                 tile.setBlock(Block.getByID(blockid));
 
-                if(tile.block() == Blocks.blockpart){
+                if (tile.block() == Blocks.blockpart) {
                     tile.link = stream.readByte();
                 }
 
-                if(tile.entity != null){
+                if (tile.entity != null) {
                     short data = stream.readShort();
                     short health = stream.readShort();
 
                     tile.entity.health = health;
                     tile.setPackedData(data);
 
-                    for(int j = 0; j < tile.entity.items.length; j ++){
+                    for (int j = 0; j < tile.entity.items.length; j++) {
                         tile.entity.items[j] = stream.readInt();
                     }
 
                     byte timers = stream.readByte();
-                    for(int time = 0; time < timers; time ++){
+                    for (int time = 0; time < timers; time++) {
                         tile.entity.timer.getTimes()[time] = stream.readFloat();
                     }
 
@@ -338,12 +348,12 @@ public class NetworkIO {
                 }
             }
 
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static ByteBuffer writeServerData(){
+    public static ByteBuffer writeServerData() {
         int maxlen = 32;
 
         String host = (headless ? "Server" : player.name);
@@ -354,10 +364,10 @@ public class NetworkIO {
 
         ByteBuffer buffer = ByteBuffer.allocate(128);
 
-        buffer.put((byte)host.getBytes().length);
+        buffer.put((byte) host.getBytes().length);
         buffer.put(host.getBytes());
 
-        buffer.put((byte)map.getBytes().length);
+        buffer.put((byte) map.getBytes().length);
         buffer.put(map.getBytes());
 
         buffer.putInt(playerGroup.size());
@@ -366,7 +376,7 @@ public class NetworkIO {
         return buffer;
     }
 
-    public static Host readServerData(String hostAddress, ByteBuffer buffer){
+    public static Host readServerData(String hostAddress, ByteBuffer buffer) {
         byte hlength = buffer.get();
         byte[] hb = new byte[hlength];
         buffer.get(hb);

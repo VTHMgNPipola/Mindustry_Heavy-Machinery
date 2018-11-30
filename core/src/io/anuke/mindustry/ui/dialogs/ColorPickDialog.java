@@ -10,19 +10,19 @@ import io.anuke.ucore.scene.ui.layout.Table;
 import static io.anuke.mindustry.Vars.player;
 import static io.anuke.mindustry.Vars.playerColors;
 
-public class ColorPickDialog extends Dialog{
+public class ColorPickDialog extends Dialog {
     private Consumer<Color> cons;
 
-    public ColorPickDialog(){
+    public ColorPickDialog() {
         super("", "dialog");
         build();
     }
 
-    private void build(){
+    private void build() {
         Table table = new Table();
         content().add(table);
 
-        for(int i = 0; i < playerColors.length; i ++){
+        for (int i = 0; i < playerColors.length; i++) {
             Color color = playerColors[i];
 
             ImageButton button = table.addImageButton("white", "toggle", 34, () -> {
@@ -32,19 +32,19 @@ public class ColorPickDialog extends Dialog{
             button.setChecked(player.getColor().equals(color));
             button.getStyle().imageUpColor = color;
 
-            if(i%4 == 3){
+            if (i % 4 == 3) {
                 table.row();
             }
         }
 
-        keyDown(key->{
-            if(key == Keys.ESCAPE || key == Keys.BACK)
+        keyDown(key -> {
+            if (key == Keys.ESCAPE || key == Keys.BACK)
                 hide();
         });
 
     }
 
-    public void show(Consumer<Color> cons){
+    public void show(Consumer<Color> cons) {
         this.cons = cons;
         show();
     }

@@ -3,7 +3,12 @@ package io.anuke.mindustry.core;
 import io.anuke.mindustry.entities.Player;
 import io.anuke.mindustry.net.Net;
 import io.anuke.mindustry.net.Net.SendMode;
-import io.anuke.mindustry.net.Packets.*;
+import io.anuke.mindustry.net.Packets.BlockConfigPacket;
+import io.anuke.mindustry.net.Packets.BlockTapPacket;
+import io.anuke.mindustry.net.Packets.ChatPacket;
+import io.anuke.mindustry.net.Packets.PlayerDeathPacket;
+import io.anuke.mindustry.net.Packets.ShootPacket;
+import io.anuke.mindustry.net.Packets.WeaponSwitchPacket;
 import io.anuke.mindustry.resource.Upgrade;
 import io.anuke.mindustry.resource.Weapon;
 import io.anuke.mindustry.world.Tile;
@@ -13,7 +18,7 @@ import static io.anuke.mindustry.Vars.*;
 
 public class NetCommon extends Module {
 
-    public NetCommon(){
+    public NetCommon() {
 
         Net.handle(ShootPacket.class, (packet) -> {
             Player player = playerGroup.getByID(packet.playerid);
@@ -47,23 +52,23 @@ public class NetCommon extends Module {
 
         Net.handle(PlayerDeathPacket.class, (packet) -> {
             Player player = playerGroup.getByID(packet.id);
-            if(player == null) return;
+            if (player == null) return;
 
             player.doRespawn();
         });
     }
 
-    public void sendMessage(String message){
+    public void sendMessage(String message) {
         ChatPacket packet = new ChatPacket();
         packet.name = null;
         packet.text = message;
         Net.send(packet, SendMode.tcp);
-        if(!headless) ui.chatfrag.addMessage(message, null);
+        if (!headless) ui.chatfrag.addMessage(message, null);
     }
 
-    public String colorizeName(int id, String name){
+    public String colorizeName(int id, String name) {
         Player player = playerGroup.getByID(id);
-        if(name == null || player == null) return null;
+        if (name == null || player == null) return null;
         return "[#" + player.color.toString().toUpperCase() + "]" + name;
     }
 }

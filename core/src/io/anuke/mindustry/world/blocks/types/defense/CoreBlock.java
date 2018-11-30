@@ -21,17 +21,17 @@ public class CoreBlock extends Block {
     }
 
     @Override
-    public int handleDamage(Tile tile, int amount){
+    public int handleDamage(Tile tile, int amount) {
         return debug ? 0 : amount;
     }
 
     @Override
-    public void handleItem(Item item, Tile tile, Tile source){
-        if(Net.server() || !Net.active()) state.inventory.addItem(item, 1);
+    public void handleItem(Item item, Tile tile, Tile source) {
+        if (Net.server() || !Net.active()) state.inventory.addItem(item, 1);
     }
 
     @Override
-    public boolean acceptItem(Item item, Tile tile, Tile source){
+    public boolean acceptItem(Item item, Tile tile, Tile source) {
         return true;
     }
 }

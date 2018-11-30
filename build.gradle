@@ -35,7 +35,7 @@ allprojects {
         }
 
         getBuildVersion = {
-            if(!project.hasProperty("buildversion")) return "custom build"
+            if (!project.hasProperty("buildversion")) return "custom build"
             return project.getProperties()["buildversion"]
         }
 
@@ -47,11 +47,12 @@ allprojects {
             def pfile = new File('core/assets/version.properties')
             def props = new Properties()
 
-            try{
+            try {
                 pfile.createNewFile()
-            }catch (Exception e){}
+            } catch (Exception e) {
+            }
 
-            if(pfile.exists()) {
+            if (pfile.exists()) {
 
                 props.load(new FileInputStream(pfile))
 
@@ -89,84 +90,25 @@ project(":desktop") {
     }
 }
 
-project(":html") {
-    apply plugin: "gwt"
-    apply plugin: "war"
-
-
-    dependencies {
-        compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"
-
-        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"
-        compile "com.sksamuel.gwt:gwt-websockets:1.0.4"
-        compile "com.sksamuel.gwt:gwt-websockets:1.0.4:sources"
-    }
-}
-
-project(":android") {
-    apply plugin: "android"
-
-    configurations { natives }
-
-    dependencies {
-        implementation project(":core")
-        implementation project(":kryonet")
-        implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
-        implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-        implementation "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
-    }
-}
-
-project(":ios") {
-    apply plugin: "java"
-    apply plugin: "robovm"
-
-
-    dependencies {
-        compile project(":core")
-        implementation project(":kryonet")
-
-        compile "com.mobidevelop.robovm:robovm-rt:$roboVMVersion"
-        compile "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion"
-        compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
-    }
-
-    robovm {
-
-    }
-}
-
 project(":core") {
     apply plugin: "java"
 
     dependencies {
         boolean comp = System.properties["release"] == null || System.properties["release"] == "false"
 
-        if(!comp){
+        if (!comp) {
             println("NOTICE: Compiling release build.")
-        }else{
+        } else {
             println("Compiling DEBUG build.")
         }
 
-        if(new File('../uCore').exists() && comp){
+        if (new File('../uCore').exists() && comp) {
             compile project(":uCore")
-        }else{
+        } else {
             compile "com.github.anuken:ucore:$uCoreVersion"
         }
 
-        if(new File('../GDXGifRecorder').exists() && comp) {
+        if (new File('../GDXGifRecorder').exists() && comp) {
             compile project(":GDXGifRecorder")
         }
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"

@@ -17,7 +17,7 @@ import static io.anuke.mindustry.Vars.ui;
 public class AboutDialog extends FloatingDialog {
     private static ObjectSet<String> bannedItems = ObjectSet.with("google-play", "itch.io", "dev-builds", "trello");
 
-    public AboutDialog(){
+    public AboutDialog() {
         super("$text.about.button");
 
         addCloseButton();
@@ -28,8 +28,8 @@ public class AboutDialog extends FloatingDialog {
         Table in = new Table();
         ScrollPane pane = new ScrollPane(in, "clear");
 
-        for(LinkEntry link : Links.getLinks()){
-            if((ios || OS.isMac) && bannedItems.contains(link.name)){ //because Apple doesn't like me mentioning things
+        for (LinkEntry link : Links.getLinks()) {
+            if ((ios || OS.isMac) && bannedItems.contains(link.name)) { //because Apple doesn't like me mentioning things
                 continue;
             }
 
@@ -43,21 +43,21 @@ public class AboutDialog extends FloatingDialog {
 
             table.table(i -> {
                 i.background("button");
-                i.addImage("icon-" + link.name).size(14*3f);
-            }).size(h-5, h);
+                i.addImage("icon-" + link.name).size(14 * 3f);
+            }).size(h - 5, h);
 
             table.table(inset -> {
-                inset.add("[accent]"+link.name.replace("-", " ")).growX().left();
+                inset.add("[accent]" + link.name.replace("-", " ")).growX().left();
                 inset.row();
                 inset.labelWrap(link.description).width(w - 100f).color(Color.LIGHT_GRAY).growX();
             }).padLeft(8);
 
-            table.addImageButton("icon-link", 14*3, () -> {
-                if(!Gdx.net.openURI(link.link)){
+            table.addImageButton("icon-link", 14 * 3, () -> {
+                if (!Gdx.net.openURI(link.link)) {
                     ui.showError("$text.linkfail");
                     Gdx.app.getClipboard().setContents(link.link);
                 }
-            }).size(h-5, h);
+            }).size(h - 5, h);
 
             in.add(table).size(w, h).padTop(5).row();
         }
@@ -68,13 +68,13 @@ public class AboutDialog extends FloatingDialog {
 
         buttons().addButton("$text.credits", this::showCredits).size(200f, 64f);
 
-        if(!ios && !OS.isMac){
+        if (!ios && !OS.isMac) {
             buttons().addButton("$text.changelog.title", ui.changelog::show).size(200f, 64f);
         }
 
     }
 
-    public void showCredits(){
+    public void showCredits() {
         FloatingDialog dialog = new FloatingDialog("$text.credits");
         dialog.addCloseButton();
         dialog.content().add("$text.about");

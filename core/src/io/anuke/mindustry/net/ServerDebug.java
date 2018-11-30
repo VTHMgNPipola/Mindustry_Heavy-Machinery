@@ -13,7 +13,7 @@ import static io.anuke.mindustry.Vars.playerGroup;
 public class ServerDebug {
     private IntMap<OrderedMap<Class<?>, Long>> last = new IntMap<>();
 
-    public void handle(int connection, Object packet){
+    public void handle(int connection, Object packet) {
         try {
             if (!last.containsKey(connection))
                 last.put(connection, new OrderedMap<>());
@@ -21,14 +21,14 @@ public class ServerDebug {
                 last.remove(connection);
             else
                 last.get(connection).put(packet.getClass(), TimeUtils.millis());
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.err("<An internal debug error has occurred.>");
         }
     }
 
-    public String getOut(){
+    public String getOut() {
         StringBuilder build = new StringBuilder();
-        for(Player player : playerGroup.all()){
+        for (Player player : playerGroup.all()) {
             OrderedMap<Class<?>, Long> map = last.get(player.clientid, new OrderedMap<>());
             build.append("connection ");
             build.append(player.clientid);
@@ -38,7 +38,7 @@ public class ServerDebug {
             build.append(player.isAndroid);
             build.append("'\n");
 
-            for(Class<?> type : map.orderedKeys()){
+            for (Class<?> type : map.orderedKeys()) {
                 build.append("   ");
                 build.append(elapsed(type, map));
                 build.append("\n");

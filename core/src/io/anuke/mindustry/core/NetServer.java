@@ -1,16 +1,58 @@
 package io.anuke.mindustry.core;
 
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Base64Coder;
+import com.badlogic.gdx.utils.ByteArray;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.TimeUtils;
 import io.anuke.mindustry.core.GameState.State;
 import io.anuke.mindustry.entities.Player;
 import io.anuke.mindustry.entities.SyncEntity;
 import io.anuke.mindustry.game.EventType.GameOverEvent;
 import io.anuke.mindustry.io.Version;
-import io.anuke.mindustry.net.*;
+import io.anuke.mindustry.net.Administration;
 import io.anuke.mindustry.net.Administration.PlayerInfo;
+import io.anuke.mindustry.net.EditLog;
+import io.anuke.mindustry.net.Net;
 import io.anuke.mindustry.net.Net.SendMode;
-import io.anuke.mindustry.net.Packets.*;
-import io.anuke.mindustry.resource.*;
+import io.anuke.mindustry.net.NetConnection;
+import io.anuke.mindustry.net.NetworkIO;
+import io.anuke.mindustry.net.Packets.AdminAction;
+import io.anuke.mindustry.net.Packets.AdministerRequestPacket;
+import io.anuke.mindustry.net.Packets.BlockConfigPacket;
+import io.anuke.mindustry.net.Packets.BlockLogRequestPacket;
+import io.anuke.mindustry.net.Packets.BlockTapPacket;
+import io.anuke.mindustry.net.Packets.BreakPacket;
+import io.anuke.mindustry.net.Packets.ChatPacket;
+import io.anuke.mindustry.net.Packets.Connect;
+import io.anuke.mindustry.net.Packets.ConnectConfirmPacket;
+import io.anuke.mindustry.net.Packets.ConnectPacket;
+import io.anuke.mindustry.net.Packets.CustomMapPacket;
+import io.anuke.mindustry.net.Packets.Disconnect;
+import io.anuke.mindustry.net.Packets.DisconnectPacket;
+import io.anuke.mindustry.net.Packets.EntityRequestPacket;
+import io.anuke.mindustry.net.Packets.EntitySpawnPacket;
+import io.anuke.mindustry.net.Packets.KickPacket;
+import io.anuke.mindustry.net.Packets.KickReason;
+import io.anuke.mindustry.net.Packets.MapAckPacket;
+import io.anuke.mindustry.net.Packets.PlacePacket;
+import io.anuke.mindustry.net.Packets.PlayerDeathPacket;
+import io.anuke.mindustry.net.Packets.PositionPacket;
+import io.anuke.mindustry.net.Packets.RollbackRequestPacket;
+import io.anuke.mindustry.net.Packets.ShootPacket;
+import io.anuke.mindustry.net.Packets.StateSyncPacket;
+import io.anuke.mindustry.net.Packets.SyncPacket;
+import io.anuke.mindustry.net.Packets.TracePacket;
+import io.anuke.mindustry.net.Packets.UpgradePacket;
+import io.anuke.mindustry.net.Packets.WeaponSwitchPacket;
+import io.anuke.mindustry.net.Packets.WorldData;
+import io.anuke.mindustry.net.TraceInfo;
+import io.anuke.mindustry.resource.Recipe;
+import io.anuke.mindustry.resource.Recipes;
+import io.anuke.mindustry.resource.Upgrade;
+import io.anuke.mindustry.resource.UpgradeRecipes;
+import io.anuke.mindustry.resource.Weapon;
 import io.anuke.mindustry.world.Block;
 import io.anuke.mindustry.world.Placement;
 import io.anuke.mindustry.world.Tile;
@@ -25,9 +67,10 @@ import io.anuke.ucore.util.Timer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+
 import static io.anuke.mindustry.Vars.*;
 
-public class NetServer extends Module{
+public class NetServer extends Module {
     private final static float serverSyncTime = 4, itemSyncTime = 10, kickDuration = 30 * 1000;
 
     private final static int timerEntitySync = 0;
@@ -35,21 +78,23 @@ public class NetServer extends Module{
 
     public final Administration admins = new Administration();
 
-    /**Maps connection IDs to players.*/
+    /**
+     * Maps connection IDs to players.
+     */
     private IntMap<Player> connections = new IntMap<>();
     private ObjectMap<String, ByteArray> weapons = new ObjectMap<>();
     private boolean closing = false;
     private Timer timer = new Timer(5);
 
-    public NetServer(){
+    public NetServer() {
 
         Events.on(GameOverEvent.class, () -> {
-			weapons.clear();
-			admins.getEditLogs().clear();
-		});
+            weapons.clear();
+            admins.getEditLogs().clear();
+        });
 
         Net.handleServer(Connect.class, (id, connect) -> {
-            if(admins.isIPBanned(connect.addressTCP)){
+            if (admins.isIPBanned(connect.addressTCP)) {
                 kick(id, KickReason.banned);
             }
         });
@@ -57,7 +102,7 @@ public class NetServer extends Module{
         Net.handleServer(ConnectPacket.class, (id, packet) -> {
             String uuid = new String(Base64Coder.encode(packet.uuid));
 
-            if(Net.getConnection(id) == null ||
+            if (Net.getConnection(id) == null ||
                     admins.isIPBanned(Net.getConnection(id).address)) return;
 
             TraceInfo trace = admins.getTrace(Net.getConnection(id).address);
@@ -65,12 +110,12 @@ public class NetServer extends Module{
             trace.uuid = uuid;
             trace.android = packet.android;
 
-            if(admins.isIDBanned(uuid)){
+            if (admins.isIDBanned(uuid)) {
                 kick(id, KickReason.banned);
                 return;
             }
 
-            if(TimeUtils.millis() - info.lastKicked < kickDuration){
+            if (TimeUtils.millis() - info.lastKicked < kickDuration) {
                 kick(id, KickReason.recentKick);
                 return;
             }
@@ -81,12 +126,12 @@ public class NetServer extends Module{
 
             admins.updatePlayerJoined(uuid, ip, packet.name);
 
-            if(packet.version != Version.build && Version.build != -1 && packet.version != -1){
+            if (packet.version != Version.build && Version.build != -1 && packet.version != -1) {
                 kick(id, packet.version > Version.build ? KickReason.serverOutdated : KickReason.clientOutdated);
                 return;
             }
 
-            if(packet.version == -1){
+            if (packet.version == -1) {
                 trace.modclient = true;
             }
 
@@ -103,7 +148,7 @@ public class NetServer extends Module{
 
             trace.playerid = player.id;
 
-            if(world.getMap().custom){
+            if (world.getMap().custom) {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 NetworkIO.writeMap(world.getMap(), stream);
                 CustomMapPacket data = new CustomMapPacket();
@@ -111,7 +156,7 @@ public class NetServer extends Module{
                 Net.sendStream(id, data);
 
                 Log.info("Sending custom map: Packed {0} uncompressed bytes of MAP data.", stream.size());
-            }else{
+            } else {
                 //hack-- simulate the map ack packet recieved to send the world data to the client.
                 Net.handleServerReceived(id, new MapAckPacket());
             }
@@ -172,17 +217,17 @@ public class NetServer extends Module{
 
         Net.handleServer(ShootPacket.class, (id, packet) -> {
             TraceInfo info = admins.getTrace(Net.getConnection(id).address);
-            Weapon weapon = (Weapon)Upgrade.getByID(packet.weaponid);
+            Weapon weapon = (Weapon) Upgrade.getByID(packet.weaponid);
 
             float wtrc = 80;
 
-            if(!Timers.get("fastshoot-" + id + "-" + weapon.id, wtrc)){
+            if (!Timers.get("fastshoot-" + id + "-" + weapon.id, wtrc)) {
                 info.fastShots.getAndIncrement(weapon.id, 0, 1);
 
-                if(info.fastShots.get(weapon.id, 0) > (int)(wtrc / (weapon.getReload() / 2f)) + 30){
+                if (info.fastShots.get(weapon.id, 0) > (int) (wtrc / (weapon.getReload() / 2f)) + 30) {
                     kick(id, KickReason.fastShoot);
                 }
-            }else{
+            } else {
                 info.fastShots.put(weapon.id, 0);
             }
 
@@ -195,15 +240,15 @@ public class NetServer extends Module{
 
             Block block = Block.getByID(packet.block);
 
-            if(!Placement.validPlace(packet.x, packet.y, block)) return;
+            if (!Placement.validPlace(packet.x, packet.y, block)) return;
 
             Recipe recipe = Recipes.getByResult(block);
 
-            if(recipe == null) return;
+            if (recipe == null) return;
 
             Tile tile = world.tile(packet.x, packet.y);
-            if(tile.synthetic() && admins.isValidateReplace() && !admins.validateBreak(admins.getTrace(Net.getConnection(id).address).uuid, Net.getConnection(id).address)){
-                if(Timers.get("break-message-" + id, 120)){
+            if (tile.synthetic() && admins.isValidateReplace() && !admins.validateBreak(admins.getTrace(Net.getConnection(id).address).uuid, Net.getConnection(id).address)) {
+                if (Timers.get("break-message-" + id, 120)) {
                     sendMessageTo(id, "[scarlet]Anti-grief: you are replacing blocks too quickly. wait until replacing again.");
                 }
                 return;
@@ -215,8 +260,8 @@ public class NetServer extends Module{
 
             admins.logEdit(packet.x, packet.y, connections.get(id), block, packet.rotation, EditLog.EditAction.PLACE);
             admins.getTrace(Net.getConnection(id).address).lastBlockPlaced = block;
-            admins.getTrace(Net.getConnection(id).address).totalBlocksPlaced ++;
-            admins.getInfo(admins.getTrace(Net.getConnection(id).address).uuid).totalBlockPlaced ++;
+            admins.getTrace(Net.getConnection(id).address).totalBlocksPlaced++;
+            admins.getInfo(admins.getTrace(Net.getConnection(id).address).uuid).totalBlockPlaced++;
 
             Net.send(packet, SendMode.tcp);
         });
@@ -224,12 +269,12 @@ public class NetServer extends Module{
         Net.handleServer(BreakPacket.class, (id, packet) -> {
             packet.playerid = connections.get(id).id;
 
-            if(!Placement.validBreak(packet.x, packet.y)) return;
+            if (!Placement.validBreak(packet.x, packet.y)) return;
 
             Tile tile = world.tile(packet.x, packet.y);
 
-            if(tile.synthetic() && !admins.validateBreak(admins.getTrace(Net.getConnection(id).address).uuid, Net.getConnection(id).address)){
-                if(Timers.get("break-message-" + id, 120)){
+            if (tile.synthetic() && !admins.validateBreak(admins.getTrace(Net.getConnection(id).address).uuid, Net.getConnection(id).address)) {
+                if (Timers.get("break-message-" + id, 120)) {
                     sendMessageTo(id, "[scarlet]Anti-grief: you are breaking blocks too quickly. wait until breaking again.");
                 }
                 return;
@@ -237,11 +282,11 @@ public class NetServer extends Module{
 
             Block block = Placement.breakBlock(packet.x, packet.y, true, false);
 
-            if(block != null) {
+            if (block != null) {
                 admins.logEdit(packet.x, packet.y, connections.get(id), block, tile.getRotation(), EditLog.EditAction.BREAK);
                 admins.getTrace(Net.getConnection(id).address).lastBlockBroken = block;
                 admins.getTrace(Net.getConnection(id).address).totalBlocksBroken++;
-                admins.getInfo(admins.getTrace(Net.getConnection(id).address).uuid).totalBlocksBroken ++;
+                admins.getInfo(admins.getTrace(Net.getConnection(id).address).uuid).totalBlocksBroken++;
                 if (block.update || block.destructible)
                     admins.getTrace(Net.getConnection(id).address).structureBlocksBroken++;
             }
@@ -250,7 +295,7 @@ public class NetServer extends Module{
         });
 
         Net.handleServer(ChatPacket.class, (id, packet) -> {
-            if(!Timers.get("chatFlood" + id, 20)){
+            if (!Timers.get("chatFlood" + id, 20)) {
                 ChatPacket warn = new ChatPacket();
                 warn.text = "[scarlet]You are sending messages too quickly.";
                 Net.sendTo(id, warn, SendMode.tcp);
@@ -268,15 +313,15 @@ public class NetServer extends Module{
             Weapon weapon = (Weapon) Upgrade.getByID(packet.id);
             String uuid = admins.getTrace(Net.getConnection(id).address).uuid;
 
-            if(!state.inventory.hasItems(UpgradeRecipes.get(weapon))){
+            if (!state.inventory.hasItems(UpgradeRecipes.get(weapon))) {
                 return;
             }
 
             if (!weapons.containsKey(uuid)) weapons.put(uuid, new ByteArray());
 
-            if (!weapons.get(uuid).contains(weapon.id)){
+            if (!weapons.get(uuid).contains(weapon.id)) {
                 weapons.get(uuid).add(weapon.id);
-            }else{
+            } else {
                 return;
             }
 
@@ -304,9 +349,9 @@ public class NetServer extends Module{
             int id = packet.id;
             int dest = cid;
             EntityGroup group = Entities.getGroup(packet.group);
-            if(group.getByID(id) != null){
+            if (group.getByID(id) != null) {
                 EntitySpawnPacket p = new EntitySpawnPacket();
-                p.entity = (SyncEntity)group.getByID(id);
+                p.entity = (SyncEntity) group.getByID(id);
                 p.group = group;
                 Net.sendTo(dest, p, SendMode.tcp);
             }
@@ -316,11 +361,11 @@ public class NetServer extends Module{
             packet.id = connections.get(id).id;
             Net.sendExcept(id, packet, SendMode.tcp);
         });
-        
+
         Net.handleServer(AdministerRequestPacket.class, (id, packet) -> {
             Player player = connections.get(id);
 
-            if(!player.isAdmin){
+            if (!player.isAdmin) {
                 Log.err("ACCESS DENIED: Player {0} / {1} attempted to perform admin action without proper security access.",
                         player.name, Net.getConnection(player.clientid).address);
                 return;
@@ -328,49 +373,49 @@ public class NetServer extends Module{
 
             Player other = playerGroup.getByID(packet.id);
 
-            if(other == null || other.isAdmin){
+            if (other == null || other.isAdmin) {
                 Log.err("{0} attempted to perform admin action on nonexistant or admin player.", player.name);
                 return;
             }
 
             String ip = Net.getConnection(other.clientid).address;
 
-            if(packet.action == AdminAction.ban){
+            if (packet.action == AdminAction.ban) {
                 admins.banPlayerIP(ip);
                 kick(other.clientid, KickReason.banned);
                 Log.info("&lc{0} has banned {1}.", player.name, other.name);
-            }else if(packet.action == AdminAction.kick){
+            } else if (packet.action == AdminAction.kick) {
                 kick(other.clientid, KickReason.kick);
                 Log.info("&lc{0} has kicked {1}.", player.name, other.name);
-            }else if(packet.action == AdminAction.trace){
+            } else if (packet.action == AdminAction.trace) {
                 TracePacket trace = new TracePacket();
                 trace.info = admins.getTrace(ip);
                 Net.sendTo(id, trace, SendMode.tcp);
                 Log.info("&lc{0} has requested trace info of {1}.", player.name, other.name);
             }
         });
-    
+
         Net.handleServer(BlockLogRequestPacket.class, (id, packet) -> {
             packet.editlogs = admins.getEditLogs().get(packet.x + packet.y * world.width(), new Array<>());
             Net.sendTo(id, packet, SendMode.udp);
         });
-    
+
         Net.handleServer(RollbackRequestPacket.class, (id, packet) -> {
             Player player = connections.get(id);
-    
-            if(!player.isAdmin){
+
+            if (!player.isAdmin) {
                 Log.err("ACCESS DENIED: Player {0} / {1} attempted to perform a rollback without proper security access.",
                         player.name, Net.getConnection(player.clientid).address);
                 return;
             }
-            
+
             admins.rollbackWorld(packet.rollbackTimes);
             Log.info("&lc{0} has rolled back the world {1} times.", player.name, packet.rollbackTimes);
         });
     }
 
-    public void update(){
-        if(!headless && !closing && Net.server() && state.is(State.menu)){
+    public void update() {
+        if (!headless && !closing && Net.server() && state.is(State.menu)) {
             closing = true;
             reset();
             ui.loadfrag.show("$text.server.closing");
@@ -381,28 +426,28 @@ public class NetServer extends Module{
             });
         }
 
-        if(!state.is(State.menu) && Net.server()){
+        if (!state.is(State.menu) && Net.server()) {
             sync();
         }
     }
 
-    public void reset(){
+    public void reset() {
         weapons.clear();
         admins.clearTraces();
     }
 
-    public void kick(int connection, KickReason reason){
+    public void kick(int connection, KickReason reason) {
         NetConnection con = Net.getConnection(connection);
-        if(con == null){
+        if (con == null) {
             Log.err("Cannot kick unknown player!");
             return;
-        }else{
+        } else {
             Log.info("Kicking connection #{0} / IP: {1}. Reason: {2}", connection, con.address, reason);
         }
 
-        if((reason == KickReason.kick || reason == KickReason.banned) && admins.getTrace(con.address).uuid != null){
+        if ((reason == KickReason.kick || reason == KickReason.banned) && admins.getTrace(con.address).uuid != null) {
             PlayerInfo info = admins.getInfo(admins.getTrace(con.address).uuid);
-            info.timesKicked ++;
+            info.timesKicked++;
             info.lastKicked = TimeUtils.millis();
         }
 
@@ -415,21 +460,21 @@ public class NetServer extends Module{
         admins.save();
     }
 
-    void sendMessageTo(int id, String message){
+    void sendMessageTo(int id, String message) {
         ChatPacket packet = new ChatPacket();
         packet.text = message;
         Net.sendTo(id, packet, SendMode.tcp);
     }
 
-    void sync(){
+    void sync() {
 
-        if(timer.get(timerEntitySync, serverSyncTime)){
+        if (timer.get(timerEntitySync, serverSyncTime)) {
             //scan through all groups with syncable entities
-            for(EntityGroup<?> group : Entities.getAllGroups()) {
-                if(group.size() == 0 || !(group.all().iterator().next() instanceof SyncEntity)) continue;
+            for (EntityGroup<?> group : Entities.getAllGroups()) {
+                if (group.size() == 0 || !(group.all().iterator().next() instanceof SyncEntity)) continue;
 
                 //get write size for one entity (adding 4, as you need to write the ID as well)
-                int writesize = SyncEntity.getWriteSize((Class<? extends SyncEntity>)group.getType()) + 4;
+                int writesize = SyncEntity.getWriteSize((Class<? extends SyncEntity>) group.getType()) + 4;
                 //amount of entities
                 int amount = group.size();
                 //maximum amount of entities per packet
@@ -443,16 +488,16 @@ public class NetServer extends Module{
                 //for all the entities...
                 for (int i = 0; i < amount; i++) {
                     //if the buffer is null, create a new one
-                    if(current == null){
+                    if (current == null) {
                         //calculate amount of entities to go into this packet
-                        int csize = Math.min(amount-i, maxsize);
+                        int csize = Math.min(amount - i, maxsize);
                         //create a byte array to write to
-                        byte[] bytes = new byte[csize*writesize + 1 + 8];
+                        byte[] bytes = new byte[csize * writesize + 1 + 8];
                         //wrap it for easy writing
                         current = ByteBuffer.wrap(bytes);
                         current.putLong(TimeUtils.millis());
                         //write the group ID so the client knows which group this is
-                        current.put((byte)group.getID());
+                        current.put((byte) group.getID());
                     }
 
                     SyncEntity entity = (SyncEntity) group.all().get(i);
@@ -464,10 +509,10 @@ public class NetServer extends Module{
                     //write extra data to the buffer
                     entity.write(current);
 
-                    written ++;
+                    written++;
 
                     //if the packet is too big now...
-                    if(written >= maxsize){
+                    if (written >= maxsize) {
                         //send the packet.
                         SyncPacket packet = new SyncPacket();
                         packet.data = current.array();
@@ -480,7 +525,7 @@ public class NetServer extends Module{
                 }
 
                 //make sure to send incomplete packets too
-                if(current != null){
+                if (current != null) {
                     SyncPacket packet = new SyncPacket();
                     packet.data = current.array();
                     Net.send(packet, SendMode.udp);
@@ -488,7 +533,7 @@ public class NetServer extends Module{
             }
         }
 
-        if(timer.get(timerStateSync, itemSyncTime)){
+        if (timer.get(timerStateSync, itemSyncTime)) {
             StateSyncPacket packet = new StateSyncPacket();
             packet.items = state.inventory.getItems();
             packet.countdown = state.wavetime;
@@ -496,7 +541,7 @@ public class NetServer extends Module{
             packet.wave = state.wave;
             packet.time = Timers.time();
             packet.timestamp = TimeUtils.millis();
-           
+
             Net.send(packet, SendMode.udp);
         }
     }

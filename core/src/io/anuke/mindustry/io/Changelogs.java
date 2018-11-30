@@ -10,12 +10,12 @@ import static io.anuke.mindustry.Vars.releasesURL;
 
 public class Changelogs {
 
-    public static void getChangelog(Consumer<Array<VersionInfo>> success, Consumer<Throwable> fail){
+    public static void getChangelog(Consumer<Array<VersionInfo>> success, Consumer<Throwable> fail) {
         Net.http(releasesURL, "GET", result -> {
             Json j = new Json();
             Array<JsonValue> list = j.fromJson(null, result);
             Array<VersionInfo> out = new Array<>();
-            for(JsonValue value : list){
+            for (JsonValue value : list) {
                 String name = value.getString("name");
                 String description = value.getString("body").replace("\r", "");
                 int id = value.getInt("id");
@@ -26,7 +26,7 @@ public class Changelogs {
         }, fail);
     }
 
-    public static class VersionInfo{
+    public static class VersionInfo {
         public final String name, description;
         public final int id, build;
 

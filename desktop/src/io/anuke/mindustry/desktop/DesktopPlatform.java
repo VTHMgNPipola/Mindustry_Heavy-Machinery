@@ -16,7 +16,7 @@ import io.anuke.ucore.core.Settings;
 import io.anuke.ucore.function.Consumer;
 import io.anuke.ucore.util.Strings;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.net.NetworkInterface;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -34,10 +34,10 @@ public class DesktopPlatform extends Platform {
     final static DateFormat format = SimpleDateFormat.getDateTimeInstance();
     String[] args;
 
-    public DesktopPlatform(String[] args){
+    public DesktopPlatform(String[] args) {
         this.args = args;
 
-        if(useDiscord) {
+        if (useDiscord) {
             DiscordEventHandlers handlers = new DiscordEventHandlers();
             DiscordRPC.INSTANCE.Discord_Initialize(applicationId, handlers, true, "");
         }
@@ -49,45 +49,45 @@ public class DesktopPlatform extends Platform {
     }
 
     @Override
-    public String format(Date date){
+    public String format(Date date) {
         return format.format(date);
     }
 
     @Override
-    public String format(int number){
+    public String format(int number) {
         return NumberFormat.getIntegerInstance().format(number);
     }
 
     @Override
-    public void showError(String text){
+    public void showError(String text) {
         JOptionPane.showMessageDialog(null, text);
     }
 
     @Override
-    public String getLocaleName(Locale locale){
+    public String getLocaleName(Locale locale) {
         return locale.getDisplayName(locale);
     }
 
     @Override
     public void updateRPC() {
-        if(!useDiscord) return;
+        if (!useDiscord) return;
 
         DiscordRichPresence presence = new DiscordRichPresence();
 
-        if(!state.is(State.menu)){
+        if (!state.is(State.menu)) {
             presence.state = Strings.capitalize(state.mode.name()) + ", Solo";
             presence.details = Strings.capitalize(world.getMap().name) + " | Wave " + state.wave;
             presence.largeImageText = "Wave " + state.wave;
 
-            if(Net.active()){
+            if (Net.active()) {
                 presence.partyMax = 16;
                 presence.partySize = playerGroup.size();
                 presence.state = Strings.capitalize(state.mode.name());
             }
-        }else{
-            if(ui.editor != null && ui.editor.isShown()){
+        } else {
+            if (ui.editor != null && ui.editor.isShown()) {
                 presence.state = "In Editor";
-            }else {
+            } else {
                 presence.state = "In Menu";
             }
         }
@@ -99,7 +99,7 @@ public class DesktopPlatform extends Platform {
 
     @Override
     public void onGameExit() {
-        if(useDiscord) DiscordRPC.INSTANCE.Discord_Shutdown();
+        if (useDiscord) DiscordRPC.INSTANCE.Discord_Shutdown();
     }
 
     @Override
@@ -117,20 +117,21 @@ public class DesktopPlatform extends Platform {
         try {
             Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
             NetworkInterface out;
-            for(out = e.nextElement(); out.getHardwareAddress() == null && e.hasMoreElements() && validAddress(out.getHardwareAddress()); out = e.nextElement());
+            for (out = e.nextElement(); out.getHardwareAddress() == null && e.hasMoreElements() && validAddress(out.getHardwareAddress()); out = e.nextElement())
+                ;
 
             byte[] bytes = out.getHardwareAddress();
             byte[] result = new byte[8];
             System.arraycopy(bytes, 0, result, 0, bytes.length);
 
-            if(new String(Base64Coder.encode(result)).equals("AAAAAAAAAOA=")) throw new RuntimeException("Bad UUID.");
+            if (new String(Base64Coder.encode(result)).equals("AAAAAAAAAOA=")) throw new RuntimeException("Bad UUID.");
 
             return result;
-        }catch (Exception e){
+        } catch (Exception e) {
             Settings.defaults("uuid", "");
 
             String uuid = Settings.getString("uuid");
-            if(uuid.isEmpty()){
+            if (uuid.isEmpty()) {
                 byte[] result = new byte[8];
                 new Random().nextBytes(result);
                 uuid = new String(Base64Coder.encode(result));
@@ -142,7 +143,7 @@ public class DesktopPlatform extends Platform {
         }
     }
 
-    private boolean validAddress(byte[] bytes){
+    private boolean validAddress(byte[] bytes) {
         byte[] result = new byte[8];
         System.arraycopy(bytes, 0, result, 0, bytes.length);
         return !new String(Base64Coder.encode(result)).equals("AAAAAAAAAOA=");

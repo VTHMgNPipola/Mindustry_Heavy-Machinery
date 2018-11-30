@@ -16,48 +16,47 @@ import static io.anuke.mindustry.Vars.logic;
 public class ThreadHandler {
     private final Array<Runnable> toRun = new Array<>();
     private final ThreadProvider impl;
+    private final Object updateLock = new Object();
     private float delta = 1f;
     private long frame = 0;
     private float framesSinceUpdate;
     private boolean enabled;
-
-    private final Object updateLock = new Object();
     private boolean rendered = true;
 
-    public ThreadHandler(ThreadProvider impl){
+    public ThreadHandler(ThreadProvider impl) {
         this.impl = impl;
 
         Timers.setDeltaProvider(() -> {
-            float result = impl.isOnThread() ? delta : Gdx.graphics.getDeltaTime()*60f;
+            float result = impl.isOnThread() ? delta : Gdx.graphics.getDeltaTime() * 60f;
             return Math.min(Float.isNaN(result) ? 1f : result, 12f);
         });
     }
 
-    public void run(Runnable r){
-        if(enabled) {
+    public void run(Runnable r) {
+        if (enabled) {
             synchronized (toRun) {
                 toRun.add(r);
             }
-        }else{
+        } else {
             r.run();
         }
     }
 
-    public int getFPS(){
-        return (int)(60/delta);
+    public int getFPS() {
+        return (int) (60 / delta);
     }
 
-    public long getFrameID(){
+    public long getFrameID() {
         return frame;
     }
 
-    public float getFramesSinceUpdate(){
+    public float getFramesSinceUpdate() {
         return framesSinceUpdate;
     }
 
-    public void handleRender(){
+    public void handleRender() {
 
-        if(!enabled) return;
+        if (!enabled) return;
 
         framesSinceUpdate += Timers.delta();
 
@@ -67,20 +66,24 @@ public class ThreadHandler {
         }
     }
 
-    public void setEnabled(boolean enabled){
-        if(enabled){
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        if (enabled) {
             logic.doUpdate = false;
-            for(EntityGroup<?> group : Entities.getAllGroups()){
+            for (EntityGroup<?> group : Entities.getAllGroups()) {
                 impl.switchContainer(group);
             }
             Timers.runTask(2f, () -> {
                 impl.start(this::runLogic);
                 this.enabled = true;
             });
-        }else{
+        } else {
             this.enabled = false;
             impl.stop();
-            for(EntityGroup<?> group : Entities.getAllGroups()){
+            for (EntityGroup<?> group : Entities.getAllGroups()) {
                 group.setContainer(new ArrayContainer<>());
             }
             Timers.runTask(2f, () -> {
@@ -89,17 +92,13 @@ public class ThreadHandler {
         }
     }
 
-    public boolean isEnabled(){
-        return enabled;
-    }
-
-    private void runLogic(){
+    private void runLogic() {
         try {
             while (true) {
                 long time = TimeUtils.millis();
 
                 synchronized (toRun) {
-                    for(Runnable r : toRun){
+                    for (Runnable r : toRun) {
                         r.run();
                     }
                     toRun.clear();
@@ -116,14 +115,14 @@ public class ThreadHandler {
                     impl.sleep(target - elapsed);
                 }
 
-                synchronized(updateLock) {
-                    while(!rendered) {
+                synchronized (updateLock) {
+                    while (!rendered) {
                         impl.wait(updateLock);
                     }
                     rendered = false;
                 }
 
-                frame ++;
+                frame++;
                 framesSinceUpdate = 0;
             }
         } catch (InterruptedException ex) {
@@ -135,11 +134,17 @@ public class ThreadHandler {
 
     public interface ThreadProvider {
         boolean isOnThread();
+
         void sleep(long ms) throws InterruptedException;
+
         void start(Runnable run);
+
         void stop();
+
         void wait(Object object) throws InterruptedException;
+
         void notify(Object object);
+
         <T extends Entity> void switchContainer(EntityGroup<T> group);
     }
 }

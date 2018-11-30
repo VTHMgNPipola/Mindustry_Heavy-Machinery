@@ -24,10 +24,10 @@ public class Saves {
 
     private AsyncExecutor exec = new AsyncExecutor(1);
 
-    public void load(){
+    public void load() {
         saves.clear();
-        for(int i = 0; i < saveSlots; i ++){
-            if(SaveIO.isSaveValid(i)){
+        for (int i = 0; i < saveSlots; i++) {
+            if (SaveIO.isSaveValid(i)) {
                 SaveSlot slot = new SaveSlot(i);
                 saves.add(slot);
                 slot.meta = SaveIO.getData(i);
@@ -40,14 +40,14 @@ public class Saves {
         return current;
     }
 
-    public void update(){
-        if(state.is(State.menu)){
+    public void update() {
+        if (state.is(State.menu)) {
             current = null;
         }
 
-        if(!state.is(State.menu) && !state.gameOver && current != null && current.isAutosave()){
+        if (!state.is(State.menu) && !state.gameOver && current != null && current.isAutosave()) {
             time += Timers.delta();
-            if(time > Settings.getInt("saveinterval")*60) {
+            if (time > Settings.getInt("saveinterval") * 60) {
                 saving = true;
 
                 exec.submit(() -> {
@@ -59,26 +59,26 @@ public class Saves {
 
                 time = 0;
             }
-        }else{
+        } else {
             time = 0;
         }
     }
 
-    public void resetSave(){
+    public void resetSave() {
         current = null;
     }
 
-    public boolean isSaving(){
+    public boolean isSaving() {
         return saving;
     }
 
-    public boolean canAddSave(){
+    public boolean canAddSave() {
         return nextSlot < saveSlots;
     }
 
-    public void addSave(String name){
+    public void addSave(String name) {
         SaveSlot slot = new SaveSlot(nextSlot);
-        nextSlot ++;
+        nextSlot++;
         slot.setName(name);
         saves.add(slot);
         SaveIO.saveToSlot(slot.index);
@@ -86,10 +86,10 @@ public class Saves {
         current = slot;
     }
 
-    public SaveSlot importSave(FileHandle file) throws IOException{
+    public SaveSlot importSave(FileHandle file) throws IOException {
         SaveSlot slot = new SaveSlot(nextSlot);
         slot.importFile(file);
-        nextSlot ++;
+        nextSlot++;
         slot.setName(file.nameWithoutExtension());
         saves.add(slot);
         slot.meta = SaveIO.getData(slot.index);
@@ -97,91 +97,91 @@ public class Saves {
         return slot;
     }
 
-    public Array<SaveSlot> getSaveSlots(){
+    public Array<SaveSlot> getSaveSlots() {
         return saves;
     }
 
-    public class SaveSlot{
+    public class SaveSlot {
         public final int index;
         SaveMeta meta;
 
-        public SaveSlot(int index){
+        public SaveSlot(int index) {
             this.index = index;
         }
 
-        public void load(){
+        public void load() {
             current = this;
             SaveIO.loadFromSlot(index);
             meta = SaveIO.getData(index);
         }
 
-        public void save(){
+        public void save() {
             current = this;
             SaveIO.saveToSlot(index);
             meta = SaveIO.getData(index);
         }
 
-        public String getDate(){
+        public String getDate() {
             return meta.date;
         }
 
-        public Map getMap(){
+        public Map getMap() {
             return meta.map;
         }
 
-        public String getName(){
-            return Settings.getString("save-"+index+"-name");
+        public String getName() {
+            return Settings.getString("save-" + index + "-name");
         }
 
-        public void setName(String name){
-            Settings.putString("save-"+index+"-name", name);
+        public void setName(String name) {
+            Settings.putString("save-" + index + "-name", name);
             Settings.save();
         }
 
-        public int getWave(){
+        public int getWave() {
             return meta.wave;
         }
 
-        public Difficulty getDifficulty(){
+        public Difficulty getDifficulty() {
             return meta.difficulty;
         }
 
-        public GameMode getMode(){
+        public GameMode getMode() {
             return meta.mode;
         }
 
-        public boolean isAutosave(){
-            return Settings.getBool("save-"+index+"-autosave");
+        public boolean isAutosave() {
+            return Settings.getBool("save-" + index + "-autosave");
         }
 
-        public void setAutosave(boolean save){
-            Settings.putBool("save-"+index + "-autosave", save);
+        public void setAutosave(boolean save) {
+            Settings.putBool("save-" + index + "-autosave", save);
             Settings.save();
         }
 
-        public void importFile(FileHandle file) throws IOException{
-            try{
+        public void importFile(FileHandle file) throws IOException {
+            try {
                 file.copyTo(SaveIO.fileFor(index));
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new IOException(e);
             }
         }
 
-        public void exportFile(FileHandle file) throws IOException{
-            try{
-                if(!file.extension().equals("mins")){
+        public void exportFile(FileHandle file) throws IOException {
+            try {
+                if (!file.extension().equals("mins")) {
                     file = file.parent().child(file.nameWithoutExtension() + ".mins");
                 }
                 SaveIO.fileFor(index).copyTo(file);
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new IOException(e);
             }
         }
 
-        public void delete(){
+        public void delete() {
             SaveIO.fileFor(index).delete();
             saves.removeValue(this, true);
-            if(this == current){
+            if (this == current) {
                 current = null;
             }
         }

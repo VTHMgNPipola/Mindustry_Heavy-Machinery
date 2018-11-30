@@ -1,27 +1,31 @@
 package io.anuke.mindustry.ai;
 
-import com.badlogic.gdx.ai.pfa.*;
+import com.badlogic.gdx.ai.pfa.Connection;
+import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.badlogic.gdx.ai.pfa.Heuristic;
+import com.badlogic.gdx.ai.pfa.PathFinder;
+import com.badlogic.gdx.ai.pfa.PathFinderQueue;
+import com.badlogic.gdx.ai.pfa.PathFinderRequest;
 import com.badlogic.gdx.utils.BinaryHeap;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.TimeUtils;
 
-/**An IndexedAStarPathfinder that uses an OptimizedGraph, and therefore has less allocations.*/
+/**
+ * An IndexedAStarPathfinder that uses an OptimizedGraph, and therefore has less allocations.
+ */
 public class OptimizedPathFinder<N> implements PathFinder<N> {
+    private static final byte UNVISITED = 0;
+    private static final byte OPEN = 1;
+    private static final byte CLOSED = 2;
     OptimizedGraph<N> graph;
     IntMap<NodeRecord<N>> records = new IntMap<>();
     BinaryHeap<NodeRecord<N>> openList;
     NodeRecord<N> current;
-
     /**
      * The unique ID for each search run. Used to mark nodes.
      */
     private int searchId;
 
-    private static final byte UNVISITED = 0;
-    private static final byte OPEN = 1;
-    private static final byte CLOSED = 2;
-
-    @SuppressWarnings("unchecked")
     public OptimizedPathFinder(OptimizedGraph<N> graph) {
         this.graph = graph;
         this.openList = new BinaryHeap<>();
@@ -143,7 +147,7 @@ public class OptimizedPathFinder<N> implements PathFinder<N> {
             // Get the cost estimate for the node
             N node = conn[i];
 
-            if(node == null) continue;
+            if (node == null) continue;
 
             float addCost = heuristic.estimate(current.node, node);
 
@@ -207,13 +211,13 @@ public class OptimizedPathFinder<N> implements PathFinder<N> {
     }
 
     protected NodeRecord<N> getNodeRecord(N node) {
-        if(!records.containsKey(graph.getIndex(node))){
+        if (!records.containsKey(graph.getIndex(node))) {
             NodeRecord<N> record = new NodeRecord<>();
             record.node = node;
             record.searchId = searchId;
             records.put(graph.getIndex(node), record);
             return record;
-        }else{
+        } else {
             return records.get(graph.getIndex(node));
         }
     }

@@ -11,45 +11,45 @@ public class MapImage {
     public final Pixmap pixmap;
     public final int width, height;
 
-    public MapImage(Pixmap pixmap){
+    public MapImage(Pixmap pixmap) {
         this.pixmap = pixmap;
         this.width = pixmap.getWidth();
         this.height = pixmap.getHeight();
     }
 
-    public MapImage(int width, int height){
+    public MapImage(int width, int height) {
         this(new Pixmap(width, height, Format.RGBA8888));
     }
 
-    public Block wall(int x, int y){
+    public Block wall(int x, int y) {
         BlockPair pair = ColorMapper.get(pixmap.getPixel(x, y));
         return pair.wall;
     }
 
-    public Block floor(int x, int y){
+    public Block floor(int x, int y) {
         BlockPair pair = ColorMapper.get(pixmap.getPixel(x, y));
         return pair.floor;
     }
 
-    public void set(int x, int y, Block block){
+    public void set(int x, int y, Block block) {
         pixmap.drawPixel(x, y, ColorMapper.getColor(block));
     }
 
-    public Block get(int x, int y){
+    public Block get(int x, int y) {
         BlockPair pair = ColorMapper.get(pixmap.getPixel(x, y));
         return pair.dominant();
     }
 
-    public boolean solid(int x, int y){
+    public boolean solid(int x, int y) {
         BlockPair pair = ColorMapper.get(pixmap.getPixel(x, y));
         return pair.dominant().solid;
     }
 
-    public boolean has(int x, int y){
+    public boolean has(int x, int y) {
         return Mathf.inBounds(x, y, width, height);
     }
 
-    public int pack(int x, int y){
-        return x + y*width;
+    public int pack(int x, int y) {
+        return x + y * width;
     }
 }

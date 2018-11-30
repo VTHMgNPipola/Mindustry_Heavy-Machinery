@@ -8,13 +8,13 @@ public class Recipe {
     public Section section;
     public boolean desktopOnly = false;
 
-    public Recipe(Section section, Block result, ItemStack... requirements){
+    public Recipe(Section section, Block result, ItemStack... requirements) {
         this.result = result;
         this.requirements = requirements;
         this.section = section;
     }
 
-    public Recipe setDesktop(){
+    public Recipe setDesktop() {
         desktopOnly = true;
         return this;
     }

@@ -8,7 +8,7 @@ import static io.anuke.mindustry.Vars.*;
 
 public class BansDialog extends FloatingDialog {
 
-    public BansDialog(){
+    public BansDialog() {
         super("$text.server.bans");
 
         addCloseButton();
@@ -18,10 +18,10 @@ public class BansDialog extends FloatingDialog {
         shown(this::setup);
     }
 
-    private void setup(){
+    private void setup() {
         content().clear();
 
-        if(gwt) return;
+        if (gwt) return;
 
         float w = 400f, h = 80f;
 
@@ -30,17 +30,17 @@ public class BansDialog extends FloatingDialog {
         ScrollPane pane = new ScrollPane(table, "clear");
         pane.setFadeScrollBars(false);
 
-        if(netServer.admins.getBanned().size == 0){
+        if (netServer.admins.getBanned().size == 0) {
             table.add("$text.server.bans.none");
         }
 
-        for(PlayerInfo info : netServer.admins.getBanned()){
+        for (PlayerInfo info : netServer.admins.getBanned()) {
             Table res = new Table("button");
             res.margin(14f);
 
             res.labelWrap("IP: [LIGHT_GRAY]" + info.lastIP + "\n[]Name: [LIGHT_GRAY]" + info.lastName).width(w - h - 24f);
             res.add().growX();
-            res.addImageButton("icon-cancel", 14*3, () -> {
+            res.addImageButton("icon-cancel", 14 * 3, () -> {
                 ui.showConfirm("$text.confirm", "$text.confirmunban", () -> {
                     netServer.admins.unbanPlayerID(info.id);
                     setup();

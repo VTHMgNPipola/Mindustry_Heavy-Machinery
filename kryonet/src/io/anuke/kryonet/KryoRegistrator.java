@@ -10,18 +10,18 @@ import java.io.StringWriter;
 import static io.anuke.mindustry.Vars.headless;
 
 public class KryoRegistrator {
-    public static boolean fakeLag = false;
     public static final int fakeLagMax = 1000;
     public static final int fakeLagMin = 0;
+    public static boolean fakeLag = false;
 
-    static{
+    static {
         Log.set(Log.LEVEL_WARN);
 
-        Log.setLogger(new Logger(){
-            public void log (int level, String category, String message, Throwable ex) {
+        Log.setLogger(new Logger() {
+            public void log(int level, String category, String message, Throwable ex) {
                 StringBuilder builder = new StringBuilder(256);
 
-                if(headless)
+                if (headless)
                     builder.append(ColorCodes.BLUE);
 
                 builder.append("Net Error: ");
@@ -35,7 +35,7 @@ public class KryoRegistrator {
                     builder.append(writer.toString().trim());
                 }
 
-                if(headless)
+                if (headless)
                     builder.append(ColorCodes.RESET);
 
                 io.anuke.ucore.util.Log.info("&b" + builder.toString());

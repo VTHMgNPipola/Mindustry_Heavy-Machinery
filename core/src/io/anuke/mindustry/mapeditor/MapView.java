@@ -32,297 +32,297 @@ import io.anuke.ucore.util.Tmp;
 
 import static io.anuke.mindustry.Vars.ui;
 
-public class MapView extends Element implements GestureListener{
-	private MapEditor editor;
-	private EditorTool tool = EditorTool.pencil;
-	private OperationStack stack = new OperationStack();
-	private DrawOperation op;
-	private Pixmap current;
-	private Bresenham2 br = new Bresenham2();
-	private boolean updated = false;
-	private float offsetx, offsety;
-	private float zoom = 1f;
-	private boolean grid = false;
-	private GridImage image = new GridImage(0, 0);
-	private Vector2 vec = new Vector2();
-	private Rectangle rect = new Rectangle();
+public class MapView extends Element implements GestureListener {
+    private MapEditor editor;
+    private EditorTool tool = EditorTool.pencil;
+    private OperationStack stack = new OperationStack();
+    private DrawOperation op;
+    private Pixmap current;
+    private Bresenham2 br = new Bresenham2();
+    private boolean updated = false;
+    private float offsetx, offsety;
+    private float zoom = 1f;
+    private boolean grid = false;
+    private GridImage image = new GridImage(0, 0);
+    private Vector2 vec = new Vector2();
+    private Rectangle rect = new Rectangle();
 
-	private boolean drawing;
-	private int lastx, lasty;
-	private int startx, starty;
+    private boolean drawing;
+    private int lastx, lasty;
+    private int startx, starty;
 
-	public void setTool(EditorTool tool){
-		this.tool = tool;
-	}
+    public MapView(MapEditor editor) {
+        this.editor = editor;
 
-	public EditorTool getTool() {
-		return tool;
-	}
+        Inputs.addProcessor(0, new GestureDetector(20, 0.5f, 2, 0.15f, this));
+        setTouchable(Touchable.enabled);
 
-	public void clearStack(){
-		stack.clear();
-		current = null;
-	}
+        addListener(new InputListener() {
 
-	public OperationStack getStack() {
-		return stack;
-	}
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (pointer != 0) {
+                    return false;
+                }
 
-	public void setGrid(boolean grid) {
-		this.grid = grid;
-	}
+                if (current == null) {
+                    current = Pixmaps.copy(editor.pixmap());
+                }
+                updated = false;
 
-	public boolean isGrid() {
-		return grid;
-	}
+                GridPoint2 p = project(x, y);
+                lastx = p.x;
+                lasty = p.y;
+                startx = p.x;
+                starty = p.y;
+                tool.touched(editor, p.x, p.y);
 
-	public void push(Pixmap previous, Pixmap add){
-		DrawOperation op = new DrawOperation(editor.pixmap());
-		op.add(previous, add);
-		stack.add(op);
-		this.current = add;
-	}
+                if (tool.edit) {
+                    updated = true;
+                    ui.editor.resetSaved();
+                }
 
-	public void undo(){
-		if(stack.canUndo()){
-			stack.undo();
-			editor.updateTexture();
-		}
-	}
+                op = new DrawOperation(editor.pixmap());
 
-	public void redo(){
-		if(stack.canRedo()){
-			stack.redo();
-			editor.updateTexture();
-		}
-	}
+                drawing = true;
+                return true;
+            }
 
-	public MapView(MapEditor editor){
-		this.editor = editor;
-		
-		Inputs.addProcessor(0, new GestureDetector(20, 0.5f, 2, 0.15f, this));
-		setTouchable(Touchable.enabled);
-		
-		addListener(new InputListener(){
-			
-			@Override
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if(pointer != 0){
-					return false;
-				}
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                drawing = false;
 
-				if(current == null){
-					current = Pixmaps.copy(editor.pixmap());
-				}
-				updated = false;
+                GridPoint2 p = project(x, y);
 
-				GridPoint2 p = project(x, y);
-				lastx = p.x;
-				lasty = p.y;
-				startx = p.x;
-				starty = p.y;
-				tool.touched(editor, p.x, p.y);
-				
-				if(tool.edit){
-					updated = true;
-					ui.editor.resetSaved();
-				}
+                if (tool == EditorTool.line) {
+                    ui.editor.resetSaved();
+                    Array<GridPoint2> points = br.line(startx, starty, p.x, p.y);
+                    for (GridPoint2 point : points) {
+                        editor.draw(point.x, point.y);
+                    }
+                    updated = true;
+                }
 
-				op = new DrawOperation(editor.pixmap());
+                if (updated) {
+                    if (op == null) op = new DrawOperation(editor.pixmap());
+                    Pixmap next = Pixmaps.copy(editor.pixmap());
+                    op.add(current, next);
+                    current = null;
+                    stack.add(op);
+                    op = null;
+                }
+            }
 
-				drawing = true;
-				return true;
-			}
-			
-			@Override
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				drawing = false;
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                GridPoint2 p = project(x, y);
 
-				GridPoint2 p = project(x, y);
+                if (drawing && tool == EditorTool.pencil) {
+                    ui.editor.resetSaved();
+                    Array<GridPoint2> points = br.line(lastx, lasty, p.x, p.y);
+                    for (GridPoint2 point : points) {
+                        editor.draw(point.x, point.y);
+                    }
+                    updated = true;
+                }
+                lastx = p.x;
+                lasty = p.y;
+            }
+        });
+    }
 
-				if(tool == EditorTool.line){
-					ui.editor.resetSaved();
-					Array<GridPoint2> points = br.line(startx, starty, p.x, p.y);
-					for(GridPoint2 point : points){
-						editor.draw(point.x, point.y);
-					}
-					updated = true;
-				}
+    public EditorTool getTool() {
+        return tool;
+    }
 
-				if(updated){
-					if(op == null) op = new DrawOperation(editor.pixmap());
-					Pixmap next = Pixmaps.copy(editor.pixmap());
-					op.add(current, next);
-					current = null;
-					stack.add(op);
-					op = null;
-				}
-			}
-			
-			@Override
-			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				GridPoint2 p = project(x, y);
-				
-				if(drawing && tool == EditorTool.pencil){
-					ui.editor.resetSaved();
-					Array<GridPoint2> points = br.line(lastx, lasty, p.x, p.y);
-					for(GridPoint2 point : points){
-						editor.draw(point.x, point.y);
-					}
-					updated = true;
-				}
-				lastx = p.x;
-				lasty = p.y;
-			}
-		});
-	}
-	
-	@Override
-	public void act(float delta){
-		super.act(delta);
+    public void setTool(EditorTool tool) {
+        this.tool = tool;
+    }
 
-		if(Core.scene.getKeyboardFocus() == null || !(Core.scene.getKeyboardFocus() instanceof TextField) &&
-				!Inputs.keyDown(Input.CONTROL_LEFT)) {
-			float ax = Inputs.getAxis("move_x");
-			float ay = Inputs.getAxis("move_y");
-			offsetx -= ax * 15f / zoom;
-			offsety -= ay * 15f / zoom;
-		}
+    public void clearStack() {
+        stack.clear();
+        current = null;
+    }
 
-		if(ui.editor.hasPane()) return;
-		
-		zoom += Inputs.scroll()/10f * zoom;
-		clampZoom();
-	}
-	
-	private void clampZoom(){
-		zoom = Mathf.clamp(zoom, 0.2f, 12f);
-	}
-	
-	private GridPoint2 project(float x, float y){
-		float ratio = 1f / ((float)editor.pixmap().getWidth() / editor.pixmap().getHeight());
-		float size = Math.min(width, height);
-		float sclwidth = size * zoom;
-		float sclheight = size * zoom * ratio;
-		x = (x - getWidth()/2 + sclwidth/2 - offsetx*zoom) / sclwidth * editor.texture().getWidth();
-		y = (y - getHeight()/2 + sclheight/2 - offsety*zoom) / sclheight * editor.texture().getHeight();
-		return Tmp.g1.set((int)x, editor.texture().getHeight() - 1 - (int)y);
-	}
+    public OperationStack getStack() {
+        return stack;
+    }
 
-	private Vector2 unproject(int x, int y){
-		float ratio = 1f / ((float)editor.pixmap().getWidth() / editor.pixmap().getHeight());
-		float size = Math.min(width, height);
-		float sclwidth = size * zoom;
-		float sclheight = size * zoom * ratio;
-		float px = ((float)x / editor.texture().getWidth()) * sclwidth + offsetx*zoom - sclwidth/2 + getWidth()/2;
-		float py = (float)((float)(editor.texture().getHeight() - 1 -  y) / editor.texture().getHeight()) * sclheight
-				+ offsety*zoom - sclheight/2 + getHeight()/2;
-		return vec.set(px, py);
-	}
+    public boolean isGrid() {
+        return grid;
+    }
 
-	@Override
-	public void draw(Batch batch, float alpha){
-		float ratio = 1f / ((float)editor.pixmap().getWidth() / editor.pixmap().getHeight());
-		float size = Math.min(width, height);
-		float sclwidth = size * zoom;
-		float sclheight = size * zoom * ratio;
-		float centerx = x + width/2 + offsetx * zoom;
-		float centery = y + height/2 + offsety * zoom;
+    public void setGrid(boolean grid) {
+        this.grid = grid;
+    }
 
-		image.setImageSize(editor.pixmap().getWidth(), editor.pixmap().getHeight());
-		
-		batch.flush();
-		boolean pop = ScissorStack.pushScissors(rect.set(x + width/2 - size/2, y + height/2 - size/2, size, size));
-		
-		batch.draw(editor.texture(), centerx - sclwidth/2, centery - sclheight/2, sclwidth, sclheight);
+    public void push(Pixmap previous, Pixmap add) {
+        DrawOperation op = new DrawOperation(editor.pixmap());
+        op.add(previous, add);
+        stack.add(op);
+        this.current = add;
+    }
 
-		if(grid){
-			Draw.color(Color.GRAY);
-			image.setBounds(centerx - sclwidth/2, centery - sclheight/2, sclwidth, sclheight);
-			image.draw(batch, alpha);
-			Draw.color();
-		}
+    public void undo() {
+        if (stack.canUndo()) {
+            stack.undo();
+            editor.updateTexture();
+        }
+    }
 
-		if(tool == EditorTool.line && drawing){
-			Vector2 v1 = unproject(startx, starty).add(x, y);
-			float sx = v1.x, sy = v1.y;
-			Vector2 v2 = unproject(lastx, lasty).add(x, y);
+    public void redo() {
+        if (stack.canRedo()) {
+            stack.redo();
+            editor.updateTexture();
+        }
+    }
 
-			Draw.color(Tmp.c1.set(ColorMapper.getColor(editor.getDrawBlock())));
-			Lines.stroke(Unit.dp.scl(3f * zoom));
-			Lines.line(sx, sy, v2.x, v2.y);
+    @Override
+    public void act(float delta) {
+        super.act(delta);
 
-			Lines.poly(sx, sy, 40, editor.getBrushSize() * zoom * 3);
+        if (Core.scene.getKeyboardFocus() == null || !(Core.scene.getKeyboardFocus() instanceof TextField) &&
+                !Inputs.keyDown(Input.CONTROL_LEFT)) {
+            float ax = Inputs.getAxis("move_x");
+            float ay = Inputs.getAxis("move_y");
+            offsetx -= ax * 15f / zoom;
+            offsety -= ay * 15f / zoom;
+        }
+
+        if (ui.editor.hasPane()) return;
+
+        zoom += Inputs.scroll() / 10f * zoom;
+        clampZoom();
+    }
+
+    private void clampZoom() {
+        zoom = Mathf.clamp(zoom, 0.2f, 12f);
+    }
+
+    private GridPoint2 project(float x, float y) {
+        float ratio = 1f / ((float) editor.pixmap().getWidth() / editor.pixmap().getHeight());
+        float size = Math.min(width, height);
+        float sclwidth = size * zoom;
+        float sclheight = size * zoom * ratio;
+        x = (x - getWidth() / 2 + sclwidth / 2 - offsetx * zoom) / sclwidth * editor.texture().getWidth();
+        y = (y - getHeight() / 2 + sclheight / 2 - offsety * zoom) / sclheight * editor.texture().getHeight();
+        return Tmp.g1.set((int) x, editor.texture().getHeight() - 1 - (int) y);
+    }
+
+    private Vector2 unproject(int x, int y) {
+        float ratio = 1f / ((float) editor.pixmap().getWidth() / editor.pixmap().getHeight());
+        float size = Math.min(width, height);
+        float sclwidth = size * zoom;
+        float sclheight = size * zoom * ratio;
+        float px = ((float) x / editor.texture().getWidth()) * sclwidth + offsetx * zoom - sclwidth / 2 + getWidth() / 2;
+        float py = (float) ((float) (editor.texture().getHeight() - 1 - y) / editor.texture().getHeight()) * sclheight
+                + offsety * zoom - sclheight / 2 + getHeight() / 2;
+        return vec.set(px, py);
+    }
+
+    @Override
+    public void draw(Batch batch, float alpha) {
+        float ratio = 1f / ((float) editor.pixmap().getWidth() / editor.pixmap().getHeight());
+        float size = Math.min(width, height);
+        float sclwidth = size * zoom;
+        float sclheight = size * zoom * ratio;
+        float centerx = x + width / 2 + offsetx * zoom;
+        float centery = y + height / 2 + offsety * zoom;
+
+        image.setImageSize(editor.pixmap().getWidth(), editor.pixmap().getHeight());
+
+        batch.flush();
+        boolean pop = ScissorStack.pushScissors(rect.set(x + width / 2 - size / 2, y + height / 2 - size / 2, size, size));
+
+        batch.draw(editor.texture(), centerx - sclwidth / 2, centery - sclheight / 2, sclwidth, sclheight);
+
+        if (grid) {
+            Draw.color(Color.GRAY);
+            image.setBounds(centerx - sclwidth / 2, centery - sclheight / 2, sclwidth, sclheight);
+            image.draw(batch, alpha);
+            Draw.color();
+        }
+
+        if (tool == EditorTool.line && drawing) {
+            Vector2 v1 = unproject(startx, starty).add(x, y);
+            float sx = v1.x, sy = v1.y;
+            Vector2 v2 = unproject(lastx, lasty).add(x, y);
+
+            Draw.color(Tmp.c1.set(ColorMapper.getColor(editor.getDrawBlock())));
+            Lines.stroke(Unit.dp.scl(3f * zoom));
+            Lines.line(sx, sy, v2.x, v2.y);
+
+            Lines.poly(sx, sy, 40, editor.getBrushSize() * zoom * 3);
 
             Lines.poly(v2.x, v2.y, 40, editor.getBrushSize() * zoom * 3);
-		}
+        }
 
-		batch.flush();
-		
-		if(pop) ScissorStack.popScissors();
-		
-		Draw.color(Colors.get("accent"));
-		Lines.stroke(Unit.dp.scl(3f));
-		Lines.rect(x + width/2 - size/2, y + height/2 - size/2, size, size);
-		Draw.reset();
-	}
-	
-	private boolean active(){
-		return Core.scene.getKeyboardFocus() != null 
-				&& Core.scene.getKeyboardFocus().isDescendantOf(ui.editor)
-				&& ui.editor.isShown() && tool == EditorTool.zoom &&
-				Core.scene.hit(Graphics.mouse().x, Graphics.mouse().y, true) == this;
-	}
+        batch.flush();
 
-	@Override
-	public boolean touchDown(float x, float y, int pointer, int button){
-		return false;
-	}
+        if (pop) ScissorStack.popScissors();
 
-	@Override
-	public boolean tap(float x, float y, int count, int button){
-		return false;
-	}
+        Draw.color(Colors.get("accent"));
+        Lines.stroke(Unit.dp.scl(3f));
+        Lines.rect(x + width / 2 - size / 2, y + height / 2 - size / 2, size, size);
+        Draw.reset();
+    }
 
-	@Override
-	public boolean longPress(float x, float y){
-		return false;
-	}
+    private boolean active() {
+        return Core.scene.getKeyboardFocus() != null
+                && Core.scene.getKeyboardFocus().isDescendantOf(ui.editor)
+                && ui.editor.isShown() && tool == EditorTool.zoom &&
+                Core.scene.hit(Graphics.mouse().x, Graphics.mouse().y, true) == this;
+    }
 
-	@Override
-	public boolean fling(float velocityX, float velocityY, int button){
-		return false;
-	}
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        return false;
+    }
 
-	@Override
-	public boolean pan(float x, float y, float deltaX, float deltaY){
-		if(!active()) return false;
-		offsetx += deltaX / zoom;
-		offsety -= deltaY / zoom;
-		return false;
-	}
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        return false;
+    }
 
-	@Override
-	public boolean panStop(float x, float y, int pointer, int button){
-		return false;
-	}
+    @Override
+    public boolean longPress(float x, float y) {
+        return false;
+    }
 
-	@Override
-	public boolean zoom(float initialDistance, float distance){
-		if(!active()) return false;
-		float nzoom = distance - initialDistance;
-		zoom += nzoom / 10000f / Unit.dp.scl(1f) * zoom;
-		clampZoom();
-		return false;
-	}
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        return false;
+    }
 
-	@Override
-	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2){
-		return false;
-	}
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        if (!active()) return false;
+        offsetx += deltaX / zoom;
+        offsety -= deltaY / zoom;
+        return false;
+    }
 
-	@Override
-	public void pinchStop(){
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        return false;
+    }
 
-	}
+    @Override
+    public boolean zoom(float initialDistance, float distance) {
+        if (!active()) return false;
+        float nzoom = distance - initialDistance;
+        zoom += nzoom / 10000f / Unit.dp.scl(1f) * zoom;
+        clampZoom();
+        return false;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        return false;
+    }
+
+    @Override
+    public void pinchStop() {
+
+    }
 }

@@ -11,23 +11,23 @@ public abstract class Upgrade {
     public final String name;
     public final String description;
 
-    public Upgrade(String name){
-        this.id = lastid ++;
+    public Upgrade(String name) {
+        this.id = lastid++;
         this.name = name;
-        this.description = Bundles.getNotNull("upgrade."+name+".description");
+        this.description = Bundles.getNotNull("upgrade." + name + ".description");
 
         upgrades.add(this);
     }
 
-    public String localized(){
-        return Bundles.get("upgrade." + name + ".name");
-    }
-
-    public static Upgrade getByID(byte id){
+    public static Upgrade getByID(byte id) {
         return upgrades.get(id);
     }
 
     public static Array<Upgrade> getAllUpgrades() {
         return upgrades;
+    }
+
+    public String localized() {
+        return Bundles.get("upgrade." + name + ".name");
     }
 }

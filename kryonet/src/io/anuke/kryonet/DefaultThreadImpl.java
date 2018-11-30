@@ -18,13 +18,13 @@ public class DefaultThreadImpl implements ThreadProvider {
     }
 
     @Override
-    public void sleep(long ms) throws InterruptedException{
+    public void sleep(long ms) throws InterruptedException {
         Thread.sleep(ms);
     }
 
     @Override
     public void start(Runnable run) {
-        if(thread != null){
+        if (thread != null) {
             thread.interrupt();
             thread = null;
         }
@@ -38,14 +38,14 @@ public class DefaultThreadImpl implements ThreadProvider {
 
     @Override
     public void stop() {
-        if(thread != null){
+        if (thread != null) {
             thread.interrupt();
             thread = null;
         }
     }
 
     @Override
-    public void wait(Object object) throws InterruptedException{
+    public void wait(Object object) throws InterruptedException {
         object.wait();
     }
 
@@ -59,7 +59,7 @@ public class DefaultThreadImpl implements ThreadProvider {
         group.setContainer(new ConcurrentContainer<>());
     }
 
-    static class ConcurrentContainer<T> implements EntityContainer<T>{
+    static class ConcurrentContainer<T> implements EntityContainer<T> {
         private CopyOnWriteArrayList<T> list = new CopyOnWriteArrayList<>();
 
         @Override

@@ -2,10 +2,8 @@ package io.anuke.mindustry.net;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Base64Coder;
-import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import io.anuke.mindustry.Vars;
 import io.anuke.mindustry.entities.Player;
 import io.anuke.mindustry.entities.SyncEntity;
 import io.anuke.mindustry.io.Version;
@@ -15,31 +13,51 @@ import io.anuke.mindustry.resource.Item;
 import io.anuke.mindustry.world.Block;
 import io.anuke.ucore.entities.Entities;
 import io.anuke.ucore.entities.EntityGroup;
+
 import java.nio.ByteBuffer;
 
-/**Class for storing all packets.*/
+/**
+ * Class for storing all packets.
+ */
 public class Packets {
 
-    public static class Connect implements ImportantPacket{
+    public enum KickReason {
+        kick, invalidPassword, clientOutdated, serverOutdated, banned, gameover(true), recentKick, fastShoot;
+        public final boolean quiet;
+
+        KickReason() {
+            quiet = false;
+        }
+
+        KickReason(boolean quiet) {
+            this.quiet = quiet;
+        }
+    }
+
+    public enum AdminAction {
+        kick, ban, trace
+    }
+
+    public static class Connect implements ImportantPacket {
         public int id;
         public String addressTCP;
     }
 
-    public static class Disconnect implements ImportantPacket{
+    public static class Disconnect implements ImportantPacket {
         public int id;
         public String addressTCP;
     }
 
-    public static class WorldData extends Streamable{
+    public static class WorldData extends Streamable {
 
     }
 
-    public static class SyncPacket implements Packet, UnimportantPacket{
+    public static class SyncPacket implements Packet, UnimportantPacket {
         public byte[] data;
 
         @Override
         public void write(ByteBuffer buffer) {
-            buffer.putShort((short)data.length);
+            buffer.putShort((short) data.length);
             buffer.put(data);
         }
 
@@ -50,11 +68,11 @@ public class Packets {
         }
     }
 
-    public static class BlockSyncPacket extends Streamable{
+    public static class BlockSyncPacket extends Streamable {
 
     }
 
-    public static class ConnectPacket implements Packet{
+    public static class ConnectPacket implements Packet {
         public int version;
         public String name;
         public boolean android;
@@ -64,9 +82,9 @@ public class Packets {
         @Override
         public void write(ByteBuffer buffer) {
             buffer.putInt(Version.build);
-            buffer.put((byte)name.getBytes().length);
+            buffer.put((byte) name.getBytes().length);
             buffer.put(name.getBytes());
-            buffer.put(android ? (byte)1 : 0);
+            buffer.put(android ? (byte) 1 : 0);
             buffer.putInt(color);
             buffer.put(uuid);
         }
@@ -85,15 +103,17 @@ public class Packets {
         }
     }
 
-    public static class ConnectConfirmPacket implements Packet{
+    public static class ConnectConfirmPacket implements Packet {
         @Override
-        public void write(ByteBuffer buffer) { }
+        public void write(ByteBuffer buffer) {
+        }
 
         @Override
-        public void read(ByteBuffer buffer) { }
+        public void read(ByteBuffer buffer) {
+        }
     }
 
-    public static class DisconnectPacket implements Packet{
+    public static class DisconnectPacket implements Packet {
         public int playerid;
 
         @Override
@@ -107,7 +127,7 @@ public class Packets {
         }
     }
 
-    public static class StateSyncPacket implements Packet, UnimportantPacket{
+    public static class StateSyncPacket implements Packet, UnimportantPacket {
         public int[] items;
         public float countdown, time;
         public int enemies, wave;
@@ -115,14 +135,14 @@ public class Packets {
 
         @Override
         public void write(ByteBuffer buffer) {
-            for(int i = 0; i < items.length; i ++){
+            for (int i = 0; i < items.length; i++) {
                 buffer.putInt(items[i]);
             }
 
             buffer.putFloat(countdown);
             buffer.putFloat(time);
-            buffer.putShort((short)enemies);
-            buffer.putShort((short)wave);
+            buffer.putShort((short) enemies);
+            buffer.putShort((short) wave);
             buffer.putLong(timestamp);
         }
 
@@ -130,7 +150,7 @@ public class Packets {
         public void read(ByteBuffer buffer) {
             items = new int[Item.getAllItems().size];
 
-            for(int i = 0; i < items.length; i ++){
+            for (int i = 0; i < items.length; i++) {
                 items[i] = buffer.getInt();
             }
 
@@ -141,62 +161,62 @@ public class Packets {
             timestamp = buffer.getLong();
         }
     }
-	
-	public static class BlockLogRequestPacket implements Packet {
-		public int x;
-		public int y;
-		public Array<EditLog> editlogs;
-		
-		@Override
-		public void write(ByteBuffer buffer) {
-			buffer.putShort((short)x);
-			buffer.putShort((short)y);
-			buffer.putInt(editlogs.size);
-			for(EditLog value : editlogs) {
-				buffer.put((byte)value.playername.getBytes().length);
-				buffer.put(value.playername.getBytes());
-				buffer.putInt(value.block.id);
-				buffer.put((byte) value.rotation);
-				buffer.put((byte) value.action.ordinal());
-			}
-		}
-		
-		@Override
-		public void read(ByteBuffer buffer) {
-			x = buffer.getShort();
-			y = buffer.getShort();
-			editlogs = new Array<>();
-			int arraySize = buffer.getInt();
-			for(int a = 0; a < arraySize; a ++) {
-				byte length = buffer.get();
-				byte[] bytes = new byte[length];
-				buffer.get(bytes);
-				String name = new String(bytes);
-				
-				int blockid = buffer.getInt();
-				int rotation = buffer.get();
-				int ordinal = buffer.get();
-				
-				editlogs.add(new EditLog(name, Block.getByID(blockid), rotation, EditLog.EditAction.values()[ordinal]));
-			}
-		}
-	}
-    
+
+    public static class BlockLogRequestPacket implements Packet {
+        public int x;
+        public int y;
+        public Array<EditLog> editlogs;
+
+        @Override
+        public void write(ByteBuffer buffer) {
+            buffer.putShort((short) x);
+            buffer.putShort((short) y);
+            buffer.putInt(editlogs.size);
+            for (EditLog value : editlogs) {
+                buffer.put((byte) value.playername.getBytes().length);
+                buffer.put(value.playername.getBytes());
+                buffer.putInt(value.block.id);
+                buffer.put((byte) value.rotation);
+                buffer.put((byte) value.action.ordinal());
+            }
+        }
+
+        @Override
+        public void read(ByteBuffer buffer) {
+            x = buffer.getShort();
+            y = buffer.getShort();
+            editlogs = new Array<>();
+            int arraySize = buffer.getInt();
+            for (int a = 0; a < arraySize; a++) {
+                byte length = buffer.get();
+                byte[] bytes = new byte[length];
+                buffer.get(bytes);
+                String name = new String(bytes);
+
+                int blockid = buffer.getInt();
+                int rotation = buffer.get();
+                int ordinal = buffer.get();
+
+                editlogs.add(new EditLog(name, Block.getByID(blockid), rotation, EditLog.EditAction.values()[ordinal]));
+            }
+        }
+    }
+
     public static class RollbackRequestPacket implements Packet {
         public int rollbackTimes;
-        
+
         @Override
         public void write(ByteBuffer buffer) {
             buffer.putInt(rollbackTimes);
         }
-        
+
         @Override
         public void read(ByteBuffer buffer) {
             rollbackTimes = buffer.getInt();
         }
     }
-    
-    public static class PositionPacket implements Packet{
+
+    public static class PositionPacket implements Packet {
         public byte[] data;
 
         @Override
@@ -212,13 +232,13 @@ public class Packets {
     }
 
     //not a real packet.
-    public static class EffectPacket{
+    public static class EffectPacket {
         public int id;
         public float x, y, rotation;
         public int color;
     }
 
-    public static class ShootPacket implements Packet, UnimportantPacket{
+    public static class ShootPacket implements Packet, UnimportantPacket {
         public byte weaponid;
         public float x, y, rotation;
         public int playerid;
@@ -242,14 +262,14 @@ public class Packets {
         }
     }
 
-    public static class BulletPacket implements Packet, UnimportantPacket{
+    public static class BulletPacket implements Packet, UnimportantPacket {
         public int type, owner;
         public float x, y, angle;
         public short damage;
 
         @Override
         public void write(ByteBuffer buffer) {
-            buffer.putShort((short)type);
+            buffer.putShort((short) type);
             buffer.putInt(owner);
             buffer.putFloat(x);
             buffer.putFloat(y);
@@ -268,7 +288,7 @@ public class Packets {
         }
     }
 
-    public static class PlacePacket implements Packet{
+    public static class PlacePacket implements Packet {
         public int playerid;
         public byte rotation;
         public short x, y;
@@ -293,7 +313,7 @@ public class Packets {
         }
     }
 
-    public static class BreakPacket implements Packet{
+    public static class BreakPacket implements Packet {
         public int playerid;
         public short x, y;
 
@@ -312,13 +332,13 @@ public class Packets {
         }
     }
 
-    public static class EntitySpawnPacket implements Packet{
+    public static class EntitySpawnPacket implements Packet {
         public SyncEntity entity;
         public EntityGroup<?> group;
 
         @Override
-        public void write(ByteBuffer buffer){
-            buffer.put((byte)group.getID());
+        public void write(ByteBuffer buffer) {
+            buffer.put((byte) group.getID());
             buffer.putInt(entity.id);
             entity.writeSpawn(buffer);
         }
@@ -333,13 +353,13 @@ public class Packets {
                 entity.id = id;
                 entity.readSpawn(buffer);
                 entity.setNet(entity.x, entity.y);
-            }catch (ReflectionException e){
+            } catch (ReflectionException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    public static class EnemyDeathPacket implements Packet{
+    public static class EnemyDeathPacket implements Packet {
         public int id;
 
         @Override
@@ -353,7 +373,7 @@ public class Packets {
         }
     }
 
-    public static class BlockDestroyPacket implements Packet{
+    public static class BlockDestroyPacket implements Packet {
         public int position;
 
         @Override
@@ -367,12 +387,12 @@ public class Packets {
         }
     }
 
-    public static class BlockUpdatePacket implements Packet{
+    public static class BlockUpdatePacket implements Packet {
         public int health, position;
 
         @Override
         public void write(ByteBuffer buffer) {
-            buffer.putShort((short)health);
+            buffer.putShort((short) health);
             buffer.putInt(position);
         }
 
@@ -383,20 +403,20 @@ public class Packets {
         }
     }
 
-    public static class ChatPacket implements Packet{
+    public static class ChatPacket implements Packet {
         public String name;
         public String text;
         public int id;
 
         @Override
         public void write(ByteBuffer buffer) {
-            if(name != null) {
+            if (name != null) {
                 buffer.putShort((short) name.getBytes().length);
                 buffer.put(name.getBytes());
-            }else{
-                buffer.putShort((short)-1);
+            } else {
+                buffer.putShort((short) -1);
             }
-            buffer.putShort((short)text.getBytes().length);
+            buffer.putShort((short) text.getBytes().length);
             buffer.put(text.getBytes());
             buffer.putInt(id);
         }
@@ -404,7 +424,7 @@ public class Packets {
         @Override
         public void read(ByteBuffer buffer) {
             short nlength = buffer.getShort();
-            if(nlength != -1) {
+            if (nlength != -1) {
                 byte[] n = new byte[nlength];
                 buffer.get(n);
                 name = new String(n);
@@ -418,12 +438,12 @@ public class Packets {
         }
     }
 
-    public static class KickPacket implements Packet, ImportantPacket{
+    public static class KickPacket implements Packet, ImportantPacket {
         public KickReason reason;
 
         @Override
         public void write(ByteBuffer buffer) {
-            buffer.put((byte)reason.ordinal());
+            buffer.put((byte) reason.ordinal());
         }
 
         @Override
@@ -432,18 +452,7 @@ public class Packets {
         }
     }
 
-    public enum KickReason{
-        kick, invalidPassword, clientOutdated, serverOutdated, banned, gameover(true), recentKick, fastShoot;
-        public final boolean quiet;
-
-        KickReason(){ quiet = false; }
-
-        KickReason(boolean quiet){
-            this.quiet = quiet;
-        }
-    }
-
-    public static class UpgradePacket implements Packet{
+    public static class UpgradePacket implements Packet {
         public byte id; //weapon ID only, currently
 
         @Override
@@ -457,7 +466,7 @@ public class Packets {
         }
     }
 
-    public static class WeaponSwitchPacket implements Packet{
+    public static class WeaponSwitchPacket implements Packet {
         public int playerid;
         public byte left, right;
 
@@ -476,7 +485,7 @@ public class Packets {
         }
     }
 
-    public static class BlockTapPacket implements Packet{
+    public static class BlockTapPacket implements Packet {
         public int position;
 
         @Override
@@ -490,7 +499,7 @@ public class Packets {
         }
     }
 
-    public static class BlockConfigPacket implements Packet{
+    public static class BlockConfigPacket implements Packet {
         public int position;
         public byte data;
 
@@ -507,7 +516,7 @@ public class Packets {
         }
     }
 
-    public static class EntityRequestPacket implements Packet{
+    public static class EntityRequestPacket implements Packet {
         public int id;
         public byte group;
 
@@ -524,20 +533,22 @@ public class Packets {
         }
     }
 
-    public static class GameOverPacket implements Packet{
+    public static class GameOverPacket implements Packet {
         @Override
-        public void write(ByteBuffer buffer) { }
+        public void write(ByteBuffer buffer) {
+        }
 
         @Override
-        public void read(ByteBuffer buffer) { }
+        public void read(ByteBuffer buffer) {
+        }
     }
 
-    public static class FriendlyFireChangePacket implements Packet{
+    public static class FriendlyFireChangePacket implements Packet {
         public boolean enabled;
 
         @Override
         public void write(ByteBuffer buffer) {
-            buffer.put(enabled ? 1 : (byte)0);
+            buffer.put(enabled ? 1 : (byte) 0);
         }
 
         @Override
@@ -546,7 +557,7 @@ public class Packets {
         }
     }
 
-    public static class PlayerDeathPacket implements Packet{
+    public static class PlayerDeathPacket implements Packet {
         public int id;
 
         @Override
@@ -560,19 +571,21 @@ public class Packets {
         }
     }
 
-    public static class CustomMapPacket extends Streamable{
+    public static class CustomMapPacket extends Streamable {
 
     }
 
-    public static class MapAckPacket implements Packet{
+    public static class MapAckPacket implements Packet {
         @Override
-        public void write(ByteBuffer buffer) { }
+        public void write(ByteBuffer buffer) {
+        }
 
         @Override
-        public void read(ByteBuffer buffer) { }
+        public void read(ByteBuffer buffer) {
+        }
     }
 
-    public static class ItemTransferPacket implements Packet, UnimportantPacket{
+    public static class ItemTransferPacket implements Packet, UnimportantPacket {
         public int position;
         public byte rotation;
         public byte itemid;
@@ -586,13 +599,13 @@ public class Packets {
         @Override
         public void read(ByteBuffer buffer) {
             int i = buffer.getInt();
-            rotation = (byte)(i & 0x3);
+            rotation = (byte) (i & 0x3);
             position = i >> 2;
             itemid = buffer.get();
         }
     }
 
-    public static class ItemSetPacket implements Packet, UnimportantPacket{
+    public static class ItemSetPacket implements Packet, UnimportantPacket {
         public int position;
         public byte itemid, amount;
 
@@ -611,7 +624,7 @@ public class Packets {
         }
     }
 
-    public static class ItemOffloadPacket implements Packet{
+    public static class ItemOffloadPacket implements Packet {
         public int position;
         public byte itemid;
 
@@ -628,12 +641,12 @@ public class Packets {
         }
     }
 
-    public static class NetErrorPacket implements Packet{
+    public static class NetErrorPacket implements Packet {
         public String message;
 
         @Override
         public void write(ByteBuffer buffer) {
-            buffer.putShort((short)message.getBytes().length);
+            buffer.putShort((short) message.getBytes().length);
             buffer.put(message.getBytes());
         }
 
@@ -646,13 +659,13 @@ public class Packets {
         }
     }
 
-    public static class PlayerAdminPacket implements Packet{
+    public static class PlayerAdminPacket implements Packet {
         public boolean admin;
         public int id;
 
         @Override
         public void write(ByteBuffer buffer) {
-            buffer.put(admin ? (byte)1 : 0);
+            buffer.put(admin ? (byte) 1 : 0);
             buffer.putInt(id);
         }
 
@@ -663,13 +676,13 @@ public class Packets {
         }
     }
 
-    public static class AdministerRequestPacket implements Packet{
+    public static class AdministerRequestPacket implements Packet {
         public AdminAction action;
         public int id;
 
         @Override
         public void write(ByteBuffer buffer) {
-            buffer.put((byte)action.ordinal());
+            buffer.put((byte) action.ordinal());
             buffer.putInt(id);
         }
 
@@ -680,20 +693,16 @@ public class Packets {
         }
     }
 
-    public enum AdminAction{
-        kick, ban, trace
-    }
-
-    public static class TracePacket implements Packet{
+    public static class TracePacket implements Packet {
         public TraceInfo info;
 
         @Override
         public void write(ByteBuffer buffer) {
             buffer.putInt(info.playerid);
-            buffer.putShort((short)info.ip.getBytes().length);
+            buffer.putShort((short) info.ip.getBytes().length);
             buffer.put(info.ip.getBytes());
-            buffer.put(info.modclient ? (byte)1 : 0);
-            buffer.put(info.android ? (byte)1 : 0);
+            buffer.put(info.modclient ? (byte) 1 : 0);
+            buffer.put(info.android ? (byte) 1 : 0);
 
             buffer.putInt(info.totalBlocksBroken);
             buffer.putInt(info.structureBlocksBroken);

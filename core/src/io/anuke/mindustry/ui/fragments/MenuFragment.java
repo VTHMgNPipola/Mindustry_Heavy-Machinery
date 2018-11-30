@@ -13,72 +13,72 @@ import io.anuke.ucore.util.OS;
 
 import static io.anuke.mindustry.Vars.*;
 
-public class MenuFragment implements Fragment{
-	
-	public void build(){
-		new table(){{
-			visible(() -> state.is(State.menu));
+public class MenuFragment implements Fragment {
 
-			if(!mobile){
-				new table(){{
+    public void build() {
+        new table() {{
+            visible(() -> state.is(State.menu));
 
-					float w = 200f;
-					float bw = w * 2f + 10f;
+            if (!mobile) {
+                new table() {{
 
-					defaults().size(w, 70f).padTop(5).padRight(5);
+                    float w = 200f;
+                    float bw = w * 2f + 10f;
 
-					add(new MenuButton("icon-play-2", "$text.play", MenuFragment.this::showPlaySelect)).width(bw).colspan(2);
+                    defaults().size(w, 70f).padTop(5).padRight(5);
 
-					row();
+                    add(new MenuButton("icon-play-2", "$text.play", MenuFragment.this::showPlaySelect)).width(bw).colspan(2);
 
-					add(new MenuButton("icon-editor", "$text.editor", () -> {
-						if(gwt){
-							ui.showInfo("$text.editor.web");
-						}else{
-							ui.editor.show();
-						}
-					}));
-					
-					add(new MenuButton("icon-tools", "$text.settings", ui.settings::show));
+                    row();
 
-					row();
+                    add(new MenuButton("icon-editor", "$text.editor", () -> {
+                        if (gwt) {
+                            ui.showInfo("$text.editor.web");
+                        } else {
+                            ui.editor.show();
+                        }
+                    }));
 
-					add(new MenuButton("icon-info", "$text.about.button", ui.about::show));
+                    add(new MenuButton("icon-tools", "$text.settings", ui.settings::show));
 
-					add(new MenuButton("icon-menu", OS.isMac ? "$text.credits" : "$text.changelog.title", () -> {
-						if(OS.isMac){
-							ui.about.showCredits();
-						}else {
-							ui.changelog.show();
-						}
-					}));
+                    row();
 
-					row();
-					
-					if(!gwt){
-						add(new MenuButton("icon-exit", "$text.quit", Gdx.app::exit)).width(bw).colspan(2);
-					}
+                    add(new MenuButton("icon-info", "$text.about.button", ui.about::show));
 
-					get().margin(16);
-				}}.end();
+                    add(new MenuButton("icon-menu", OS.isMac ? "$text.credits" : "$text.changelog.title", () -> {
+                        if (OS.isMac) {
+                            ui.about.showCredits();
+                        } else {
+                            ui.changelog.show();
+                        }
+                    }));
 
-			}else {
-				new table() {{
-				    float size = 120f;
-					defaults().size(size).pad(5);
-					float isize = 14f * 4;
+                    row();
 
-					new imagebutton("icon-play-2", isize, ui.levels::show).text("$text.play").padTop(4f);
+                    if (!gwt) {
+                        add(new MenuButton("icon-exit", "$text.quit", Gdx.app::exit)).width(bw).colspan(2);
+                    }
 
-					new imagebutton("icon-tutorial", isize, () -> control.playMap(world.maps().getMap("tutorial"))).text("$text.tutorial").padTop(4f);
+                    get().margin(16);
+                }}.end();
 
-					new imagebutton("icon-load", isize, ui.load::show).text("$text.load").padTop(4f);
+            } else {
+                new table() {{
+                    float size = 120f;
+                    defaults().size(size).pad(5);
+                    float isize = 14f * 4;
 
-					new imagebutton("icon-add", isize, ui.join::show).text("$text.joingame").padTop(4f);
+                    new imagebutton("icon-play-2", isize, ui.levels::show).text("$text.play").padTop(4f);
 
-					row();
+                    new imagebutton("icon-tutorial", isize, () -> control.playMap(world.maps().getMap("tutorial"))).text("$text.tutorial").padTop(4f);
 
-					new table(){{
+                    new imagebutton("icon-load", isize, ui.load::show).text("$text.load").padTop(4f);
+
+                    new imagebutton("icon-add", isize, ui.join::show).text("$text.joingame").padTop(4f);
+
+                    row();
+
+                    new table() {{
 
                         defaults().size(size).pad(5);
 
@@ -93,60 +93,60 @@ public class MenuFragment implements Fragment{
                         }
 
                     }}.colspan(4).end();
-				}}.end();
-			}
-		}}.end();
+                }}.end();
+            }
+        }}.end();
 
-		//discord icon in top right
-		if(Platform.instance.hasDiscord()) {
-			new table() {{
-				abottom().atop().aright();
-				get().addButton("", "discord", ui.discord::show);
-			}}.end().visible(() -> state.is(State.menu));
-		}
+        //discord icon in top right
+        if (Platform.instance.hasDiscord()) {
+            new table() {{
+                abottom().atop().aright();
+                get().addButton("", "discord", ui.discord::show);
+            }}.end().visible(() -> state.is(State.menu));
+        }
 
-		//version info
-		new table(){{
-			visible(() -> state.is(State.menu));
-			abottom().aleft();
-			new label("Mindustry " + Version.code + " " + Version.type + " / " + Version.buildName);
-		}}.end();
-	}
+        //version info
+        new table() {{
+            visible(() -> state.is(State.menu));
+            abottom().aleft();
+            new label("Mindustry " + Version.code + " " + Version.type + " / " + Version.buildName);
+        }}.end();
+    }
 
-	private void showPlaySelect(){
-		float w = 200f;
-		float bw = w * 2f + 10f;
+    private void showPlaySelect() {
+        float w = 200f;
+        float bw = w * 2f + 10f;
 
-		FloatingDialog dialog = new FloatingDialog("$text.play");
-		dialog.addCloseButton();
-		dialog.content().defaults().height(70f).width(w).padRight(5f);
+        FloatingDialog dialog = new FloatingDialog("$text.play");
+        dialog.addCloseButton();
+        dialog.content().defaults().height(70f).width(w).padRight(5f);
 
-		dialog.content().add(new MenuButton("icon-play-2", "$text.newgame", () -> {
-			dialog.hide();
-			ui.levels.show();
-		})).width(bw).colspan(2);
-		dialog.content().row();
+        dialog.content().add(new MenuButton("icon-play-2", "$text.newgame", () -> {
+            dialog.hide();
+            ui.levels.show();
+        })).width(bw).colspan(2);
+        dialog.content().row();
 
-		dialog.content().add(new MenuButton("icon-add", "$text.joingame", () -> {
-			if(Platform.instance.canJoinGame()){
-				ui.join.show();
-				dialog.hide();
-			}else{
-				ui.showInfo("$text.multiplayer.web");
-			}
-		}));
-		dialog.content().add(new MenuButton("icon-tutorial", "$text.tutorial", ()-> {
-			control.playMap(world.maps().getMap("tutorial"));
-			dialog.hide();
-		}));
+        dialog.content().add(new MenuButton("icon-add", "$text.joingame", () -> {
+            if (Platform.instance.canJoinGame()) {
+                ui.join.show();
+                dialog.hide();
+            } else {
+                ui.showInfo("$text.multiplayer.web");
+            }
+        }));
+        dialog.content().add(new MenuButton("icon-tutorial", "$text.tutorial", () -> {
+            control.playMap(world.maps().getMap("tutorial"));
+            dialog.hide();
+        }));
 
-		dialog.content().row();
+        dialog.content().row();
 
-		dialog.content().add(new MenuButton("icon-load", "$text.loadgame", () -> {
-			ui.load.show();
-			dialog.hide();
-		})).width(bw).colspan(2);
+        dialog.content().add(new MenuButton("icon-load", "$text.loadgame", () -> {
+            ui.load.show();
+            dialog.hide();
+        })).width(bw).colspan(2);
 
-		dialog.show();
-	}
+        dialog.show();
+    }
 }

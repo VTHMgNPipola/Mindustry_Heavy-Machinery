@@ -15,7 +15,7 @@ public class Version {
     public static final int build;
     public static final String buildName;
 
-    static{
+    static {
         try {
             FileHandle file = Gdx.files.internal("version.properties");
 
@@ -28,7 +28,7 @@ public class Version {
             build = Strings.canParseInt(map.get("build")) ? Integer.parseInt(map.get("build")) : -1;
             buildName = build == -1 ? map.get("build") : "build " + build;
 
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

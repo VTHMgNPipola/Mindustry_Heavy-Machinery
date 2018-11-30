@@ -14,10 +14,10 @@ import java.io.IOException;
 import static io.anuke.mindustry.Vars.player;
 import static io.anuke.mindustry.Vars.ui;
 
-public class HostDialog extends FloatingDialog{
+public class HostDialog extends FloatingDialog {
     float w = 300;
 
-    public HostDialog(){
+    public HostDialog() {
         super("$text.hostserver");
 
         addCloseButton();
@@ -25,7 +25,7 @@ public class HostDialog extends FloatingDialog{
         content().table(t -> {
             t.add("$text.name").padRight(10);
             t.addField(Settings.getString("name"), text -> {
-                if(text.isEmpty()) return;
+                if (text.isEmpty()) return;
                 Vars.player.name = text;
                 Settings.put("name", text);
                 Settings.save();
@@ -49,10 +49,10 @@ public class HostDialog extends FloatingDialog{
         content().addButton("$text.host", () -> {
             ui.loadfrag.show("$text.hosting");
             Timers.runTask(5f, () -> {
-                try{
+                try {
                     Net.host(Vars.port);
                     player.isAdmin = true;
-                }catch (IOException e){
+                } catch (IOException e) {
                     ui.showError(Bundles.format("text.server.error", Strings.parseException(e, false)));
                 }
                 ui.loadfrag.hide();

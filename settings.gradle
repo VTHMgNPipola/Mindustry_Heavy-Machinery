@@ -1,6 +1,6 @@
-include 'desktop', 'html', 'core', 'android', 'kryonet', 'server', 'ios'
+include 'desktop', 'core', 'kryonet', 'server'
 
-if(System.properties["release"] == null || System.properties["release"].equals("false")){
+if (System.properties["release"] == null || System.properties["release"].equals("false")) {
     if (new File(settingsDir, '../uCore').exists()) {
         include ':uCore'
         project(':uCore').projectDir = new File(settingsDir, '../uCore')
@@ -10,6 +10,6 @@ if(System.properties["release"] == null || System.properties["release"].equals("
         include ':GDXGifRecorder'
         project(':GDXGifRecorder').projectDir = new File(settingsDir, '../GDXGifRecorder')
     }
-}else{
+} else {
     println("Not including local repositories.")
 }

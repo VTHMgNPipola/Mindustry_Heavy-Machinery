@@ -13,12 +13,12 @@ import static io.anuke.mindustry.Vars.*;
 public class MindustryServer extends ModuleCore {
     private String[] args;
 
-    public MindustryServer(String[] args){
+    public MindustryServer(String[] args) {
         this.args = args;
     }
 
     @Override
-    public void init(){
+    public void init() {
         headless = true;
 
         BundleLoader.load();

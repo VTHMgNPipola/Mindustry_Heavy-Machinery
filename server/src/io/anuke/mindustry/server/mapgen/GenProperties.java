@@ -11,79 +11,115 @@ public class GenProperties {
     public FoliageStyle foliage;
     public EnvironmentStyle environment;
 
-    enum SpawnStyle{
-        /**spawn in a wide arc with branching paths*/
+    enum SpawnStyle {
+        /**
+         * spawn in a wide arc with branching paths
+         */
         arc,
-        /**spawn in one big group*/
+        /**
+         * spawn in one big group
+         */
         grouped,
-        /**surround player spawn*/
+        /**
+         * surround player spawn
+         */
         surround
     }
 
-    enum MapStyle{
-        /**256x512*/
+    enum MapStyle {
+        /**
+         * 256x512
+         */
         longY,
-        /**128x256*/
+        /**
+         * 128x256
+         */
         smallY,
-        /**128x128*/
+        /**
+         * 128x128
+         */
         small,
-        /**256x256*/
+        /**
+         * 256x256
+         */
         normal
     }
 
-    enum OreStyle{
-        /**'vanilla' noise-distributed ores*/
+    enum OreStyle {
+        /**
+         * 'vanilla' noise-distributed ores
+         */
         normal,
-        /**ores hug the walls*/
+        /**
+         * ores hug the walls
+         */
         nearWalls,
-        /**ores hug all liquid rivers*/
+        /**
+         * ores hug all liquid rivers
+         */
         nearRivers,
-        /**large veins*/
+        /**
+         * large veins
+         */
         largeVeins
     }
 
-    enum RiverType{
+    enum RiverType {
         lava,
         water,
         oil,
         none
     }
 
-    enum RiverStyle{
-        /**long thin river spanning entire map*/
+    enum RiverStyle {
+        /**
+         * long thin river spanning entire map
+         */
         longThin,
-        /**long river branching into many others*/
+        /**
+         * long river branching into many others
+         */
         longBranch,
-        /**one long, thick river*/
+        /**
+         * one long, thick river
+         */
         longThick,
-        /**short, thick river that ends in a lake*/
+        /**
+         * short, thick river that ends in a lake
+         */
         shortLake
     }
 
-    enum TerrainStyle{
-        /**bordered around by the normal material*/
+    enum TerrainStyle {
+        /**
+         * bordered around by the normal material
+         */
         normal,
-        /**everything is islands*/
+        /**
+         * everything is islands
+         */
         waterIslands,
-        /**everything is islands: lava edition*/
+        /**
+         * everything is islands: lava edition
+         */
         lavaIslands
     }
 
-    enum FoliageStyle{
+    enum FoliageStyle {
         patches,
         veins,
         blobs,
         ridges
     }
 
-    enum FoilageType{
+    enum FoilageType {
         grass,
         sand,
         darkStone,
         ice,
     }
 
-    enum EnvironmentStyle{
+    enum EnvironmentStyle {
         desert,
         stoneDesert,
         grassy,

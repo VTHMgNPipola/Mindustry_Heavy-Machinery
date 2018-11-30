@@ -17,7 +17,7 @@ public class MapPathfinder {
     private Heuristic<Integer> heuristic;
     private MapImage image;
 
-    public Array<GridPoint2> find(int startx, int starty, int endx, int endy, Evaluator eval){
+    public Array<GridPoint2> find(int startx, int starty, int endx, int endy, Evaluator eval) {
         finder.searchNodePath(image.pack(startx, starty), image.pack(endx, endy),
                 (heuristic = (node, endNode) ->
                         eval.cost(image.get(node % image.width, node / image.width),
@@ -26,14 +26,18 @@ public class MapPathfinder {
 
         Array<GridPoint2> arr = new Array<>();
 
-        for(int i : path.nodes){
+        for (int i : path.nodes) {
             arr.add(new GridPoint2(i % image.width, i / image.width));
         }
 
         return arr;
     }
 
-    private class MapGraph extends DefaultGraphPath<Integer> implements IndexedGraph<Integer>{
+    interface Evaluator {
+        int cost(Block block, int x, int y);
+    }
+
+    private class MapGraph extends DefaultGraphPath<Integer> implements IndexedGraph<Integer> {
         private Array<Connection<Integer>> cons = new Array<>();
 
         @Override
@@ -51,8 +55,8 @@ public class MapPathfinder {
             int x = fromNode % image.width;
             int y = fromNode / image.width;
             cons.clear();
-            for(GridPoint2 p : Geometry.d4){
-                if(image.has(x + p.x, y + p.y)){
+            for (GridPoint2 p : Geometry.d4) {
+                if (image.has(x + p.x, y + p.y)) {
                     cons.add(new MapConnection(fromNode, image.pack(x + p.x, y + p.y)));
                 }
             }
@@ -60,10 +64,10 @@ public class MapPathfinder {
         }
     }
 
-    private class MapConnection implements Connection<Integer>{
+    private class MapConnection implements Connection<Integer> {
         int from, to;
 
-        MapConnection(int from, int to){
+        MapConnection(int from, int to) {
             this.from = from;
             this.to = to;
         }
@@ -82,9 +86,5 @@ public class MapPathfinder {
         public Integer getToNode() {
             return to;
         }
-    }
-
-    interface Evaluator{
-        int cost(Block block, int x, int y);
     }
 }

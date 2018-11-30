@@ -13,12 +13,12 @@ public class LoadingFragment implements Fragment {
     @Override
     public void build() {
 
-       table = new table("loadDim"){{
+        table = new table("loadDim") {{
             touchable(Touchable.enabled);
             get().addImage("white").growX()
                     .height(3f).pad(4f).growX().get().setColor(Colors.get("accent"));
             row();
-            new label("$text.loading"){{
+            new label("$text.loading") {{
                 get().setName("namelabel");
             }}.pad(10);
             row();
@@ -29,17 +29,17 @@ public class LoadingFragment implements Fragment {
         table.setVisible(false);
     }
 
-    public void show(){
+    public void show() {
         show("$text.loading");
     }
 
-    public void show(String text){
+    public void show(String text) {
         table.<Label>find("namelabel").setText(text);
         table.setVisible(true);
         table.toFront();
     }
 
-    public void hide(){
+    public void hide() {
         table.setVisible(false);
     }
 }

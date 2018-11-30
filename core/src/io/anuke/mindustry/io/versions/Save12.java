@@ -26,13 +26,14 @@ import static io.anuke.mindustry.Vars.*;
 
 public class Save12 extends SaveFileVersion {
 
-    public Save12(){
+    public Save12() {
         super(12);
     }
 
     @Override
     public void read(DataInputStream stream) throws IOException {
-        /*long loadTime = */stream.readLong();
+        /*long loadTime = */
+        stream.readLong();
 
         //general state
         byte mode = stream.readByte();
@@ -60,8 +61,8 @@ public class Save12 extends SaveFileVersion {
 
         int weapons = stream.readByte();
 
-        for(int i = 0; i < weapons; i ++){
-            control.upgrades().addWeapon((Weapon)Upgrade.getByID(stream.readByte()));
+        for (int i = 0; i < weapons; i++) {
+            control.upgrades().addWeapon((Weapon) Upgrade.getByID(stream.readByte()));
         }
 
         ui.hudfrag.updateWeapons();
@@ -72,7 +73,7 @@ public class Save12 extends SaveFileVersion {
 
         Arrays.fill(state.inventory.getItems(), 0);
 
-        for(int i = 0; i < totalItems; i ++){
+        for (int i = 0; i < totalItems; i++) {
             Item item = Item.getByID(stream.readByte());
             int amount = stream.readInt();
             state.inventory.getItems()[item.id] = amount;
@@ -88,7 +89,7 @@ public class Save12 extends SaveFileVersion {
 
         Array<Enemy> enemiesToUpdate = new Array<>();
 
-        for(int i = 0; i < enemies; i ++){
+        for (int i = 0; i < enemies; i++) {
             byte type = stream.readByte();
             int lane = stream.readByte();
             float x = stream.readFloat();
@@ -96,7 +97,7 @@ public class Save12 extends SaveFileVersion {
             byte tier = stream.readByte();
             int health = stream.readInt();
 
-            try{
+            try {
                 Enemy enemy = new Enemy(EnemyType.getByID(type));
                 enemy.lane = lane;
                 enemy.health = health;
@@ -105,7 +106,7 @@ public class Save12 extends SaveFileVersion {
                 enemy.tier = tier;
                 enemy.add(enemyGroup);
                 enemiesToUpdate.add(enemy);
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -114,7 +115,7 @@ public class Save12 extends SaveFileVersion {
         state.wave = wave;
         state.wavetime = wavetime;
 
-        if(!mobile)
+        if (!mobile)
             Vars.player.add();
 
         //map
@@ -125,22 +126,22 @@ public class Save12 extends SaveFileVersion {
         world.loadMap(world.maps().getMap(mapid), seed);
         renderer.clearTiles();
 
-        for(Enemy enemy : enemiesToUpdate){
+        for (Enemy enemy : enemiesToUpdate) {
             enemy.node = -2;
         }
 
-        for(int x = 0; x < world.width(); x ++){
-            for(int y = 0; y < world.height(); y ++){
+        for (int x = 0; x < world.width(); x++) {
+            for (int y = 0; y < world.height(); y++) {
                 Tile tile = world.tile(x, y);
 
                 //remove breakables like rocks
-                if(tile.breakable()){
+                if (tile.breakable()) {
                     world.tile(x, y).setBlock(Blocks.air);
                 }
             }
         }
 
-        for(int i = 0; i < tiles; i ++){
+        for (int i = 0; i < tiles; i++) {
             int pos = stream.readInt();
             byte link = stream.readByte();
             boolean hasEntity = stream.readBoolean();
@@ -150,7 +151,7 @@ public class Save12 extends SaveFileVersion {
             tile.setBlock(BlockLoader.getByOldID(blockid));
             tile.link = link;
 
-            if(hasEntity){
+            if (hasEntity) {
                 byte rotation = stream.readByte();
                 int health = stream.readInt();
                 int items = stream.readByte();
@@ -158,7 +159,7 @@ public class Save12 extends SaveFileVersion {
                 tile.entity.health = health;
                 tile.setRotation(rotation);
 
-                for(int j = 0; j < items; j ++){
+                for (int j = 0; j < items; j++) {
                     int itemid = stream.readByte();
                     int itemamount = stream.readInt();
                     tile.entity.items[itemid] = itemamount;
@@ -186,12 +187,12 @@ public class Save12 extends SaveFileVersion {
         stream.writeFloat(Vars.player.x); //player x/y
         stream.writeFloat(Vars.player.y);
 
-        stream.writeInt((int)Vars.player.health); //player health
+        stream.writeInt((int) Vars.player.health); //player health
 
         stream.writeByte(control.upgrades().getWeapons().size - 1); //amount of weapons
 
         //start at 1, because the first weapon is always the starter - ignore that
-        for(int i = 1; i < control.upgrades().getWeapons().size; i ++){
+        for (int i = 1; i < control.upgrades().getWeapons().size; i++) {
             stream.writeByte(control.upgrades().getWeapons().get(i).id); //weapon ordinal
         }
 
@@ -200,16 +201,16 @@ public class Save12 extends SaveFileVersion {
         int l = state.inventory.getItems().length;
         int itemsize = 0;
 
-        for(int i = 0; i < l; i ++){
-            if(state.inventory.getItems()[i] > 0){
-                itemsize ++;
+        for (int i = 0; i < l; i++) {
+            if (state.inventory.getItems()[i] > 0) {
+                itemsize++;
             }
         }
 
         stream.writeByte(itemsize); //amount of items
 
-        for(int i = 0; i < l; i ++){
-            if(state.inventory.getItems()[i] > 0){
+        for (int i = 0; i < l; i++) {
+            if (state.inventory.getItems()[i] > 0) {
                 stream.writeByte(i); //item ID
                 stream.writeInt(state.inventory.getItems()[i]); //item amount
             }
@@ -221,14 +222,14 @@ public class Save12 extends SaveFileVersion {
 
         stream.writeInt(enemies.size()); //enemy amount
 
-        for(int i = 0; i < enemies.size(); i ++){
+        for (int i = 0; i < enemies.size(); i++) {
             Enemy enemy = enemies.get(i);
             stream.writeByte(enemy.type.id); //type
             stream.writeByte(enemy.lane); //lane
             stream.writeFloat(enemy.x); //x
             stream.writeFloat(enemy.y); //y
             stream.writeByte(enemy.tier); //tier
-            stream.writeInt((int)enemy.health); //health
+            stream.writeInt((int) enemy.health); //health
         }
 
         //--MAP DATA--
@@ -238,12 +239,12 @@ public class Save12 extends SaveFileVersion {
 
         int totalblocks = 0;
 
-        for(int x = 0; x < world.width(); x ++){
-            for(int y = 0; y < world.height(); y ++){
+        for (int x = 0; x < world.width(); x++) {
+            for (int y = 0; y < world.height(); y++) {
                 Tile tile = world.tile(x, y);
 
-                if(tile.breakable()){
-                    totalblocks ++;
+                if (tile.breakable()) {
+                    totalblocks++;
                 }
             }
         }
@@ -251,28 +252,28 @@ public class Save12 extends SaveFileVersion {
         //tile amount
         stream.writeInt(totalblocks);
 
-        for(int x = 0; x < world.width(); x ++){
-            for(int y = 0; y < world.height(); y ++){
+        for (int x = 0; x < world.width(); x++) {
+            for (int y = 0; y < world.height(); y++) {
                 Tile tile = world.tile(x, y);
 
-                if(tile.breakable()){
+                if (tile.breakable()) {
 
-                    stream.writeInt(x + y*world.width()); //tile pos
+                    stream.writeInt(x + y * world.width()); //tile pos
                     stream.writeByte(tile.link);
                     stream.writeBoolean(tile.entity != null); //whether it has a tile entity
                     stream.writeInt(tile.block().id); //block ID
 
-                    if(tile.entity != null){
+                    if (tile.entity != null) {
                         stream.writeByte(tile.getRotation()); //rotation
-                        stream.writeInt((int)tile.entity.health); //health
+                        stream.writeInt((int) tile.entity.health); //health
                         int amount = 0;
-                        for(int i = 0; i < tile.entity.items.length; i ++){
-                            if(tile.entity.items[i] > 0) amount ++;
+                        for (int i = 0; i < tile.entity.items.length; i++) {
+                            if (tile.entity.items[i] > 0) amount++;
                         }
                         stream.writeByte(amount); //amount of items
 
-                        for(int i = 0; i < tile.entity.items.length; i ++){
-                            if(tile.entity.items[i] > 0){
+                        for (int i = 0; i < tile.entity.items.length; i++) {
+                            if (tile.entity.items[i] > 0) {
                                 stream.writeByte(i); //item ID
                                 stream.writeInt(tile.entity.items[i]); //item amount
                             }
