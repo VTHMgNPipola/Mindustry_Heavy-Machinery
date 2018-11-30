@@ -6,6 +6,13 @@ import io.anuke.ucore.graphics.Draw;
 import io.anuke.ucore.util.Bundles;
 
 public class Item {
+	private static final Array<Item> items = new Array<>();
+    public final int id;
+    public final String name;
+    public TextureRegion region;
+    public float explosiveness = 0f;
+    public float flammability = 0f;
+	
     public static final Item
             stone = new Item("stone"),
             iron = new Item("iron"),
@@ -16,12 +23,6 @@ public class Item {
             uranium = new Item("uranium"),
             sand = new Item("sand");
             //silicon = new Item("silicon");
-    private static final Array<Item> items = new Array<>();
-    public final int id;
-    public final String name;
-    public TextureRegion region;
-    public float explosiveness = 0f;
-    public float flammability = 0f;
 
     public Item(String name) {
         this.id = items.size;

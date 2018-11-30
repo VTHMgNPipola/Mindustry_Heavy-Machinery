@@ -35,12 +35,12 @@ public class DefenseBlocks {
         health = 270 * wallHealthMultiplier;
     }},
 
-    steelwalllarge = new Wall("steelWall-large") {{
+    steelwalllarge = new Wall("steelwall-large") {{
         health = 110 * 4 * wallHealthMultiplier;
         width = height = 2;
     }},
 
-    titaniumwalllarge = new Wall("titaniumWall-large") {{
+    titaniumwalllarge = new Wall("titaniumwall-large") {{
         health = 150 * 4 * wallHealthMultiplier;
         width = height = 2;
     }},
@@ -54,7 +54,7 @@ public class DefenseBlocks {
         health = 150 * wallHealthMultiplier;
     }},
 
-    repairTurret = new RepairTurret("repairrurret") {
+    repairTurret = new RepairTurret("repairturret") {
         {
             range = 30;
             reload = 20f;
@@ -63,7 +63,7 @@ public class DefenseBlocks {
         }
     },
 
-    megaRepairTurret = new RepairTurret("megarepairrurret") {
+    megaRepairTurret = new RepairTurret("megarepairturret") {
         {
             range = 44;
             reload = 12f;

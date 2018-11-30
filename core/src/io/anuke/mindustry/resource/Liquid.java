@@ -5,6 +5,10 @@ import com.badlogic.gdx.utils.Array;
 import io.anuke.ucore.util.Bundles;
 
 public class Liquid {
+	private static final Array<Liquid> liquids = new Array<>();
+    public final Color color;
+    public final String name;
+    public final int id;
 
     public static final Liquid
             water = new Liquid("water", Color.ROYAL),
@@ -12,10 +16,6 @@ public class Liquid {
             lava = new Liquid("lava", Color.valueOf("ed5334")),
             oil = new Liquid("oil", Color.valueOf("292929")),
             cryofluid = new Liquid("cryofluid", Color.SKY);
-    private static final Array<Liquid> liquids = new Array<>();
-    public final Color color;
-    public final String name;
-    public final int id;
 
     public Liquid(String name, Color color) {
         this.name = name;
