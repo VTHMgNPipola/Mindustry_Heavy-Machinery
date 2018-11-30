@@ -16,13 +16,13 @@ To run the game you need to have Gradle and JDK 8+ (tested on JDK 11). Here are 
 
 **_Windows_**
 
-_Building:_ `.\gradlew.bat desktop:dist`
-_Running:_ `.\gradlew.bat desktop:run`  
+_Building:_ `.\gradlew.bat desktop:dist`  
+_Running:_ `.\gradlew.bat desktop:run`
 
 **_Linux_**
 
-_Building:_ `./gradlew desktop:dist`
-_Running:_ `./gradlew desktop:run`  
+_Building:_ `./gradlew desktop:dist`  
+_Running:_ `./gradlew desktop:run`
 
 ---
 
