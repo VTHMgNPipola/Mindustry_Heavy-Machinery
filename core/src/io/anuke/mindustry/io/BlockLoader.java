@@ -46,11 +46,11 @@ public class BlockLoader {
             "steelWall", 30,
             "titaniumWall", 31,
             "duriumwall", 32,
-            "compositewall", 33,
+            "compositeWall", 33,
             "steelWall-large", 34,
             "titaniumWall-large", 35,
             "duriumwall-large", 36,
-            "titaniumshieldwall", 37,
+            "titaniumShieldWall", 37,
             "repairTurret", 38,
             "megaRepairTurret", 39,
             "shieldGenerator", 40,
@@ -115,7 +115,7 @@ public class BlockLoader {
 
         Block[] blockClasses = {
                 Blocks.air,
-                DefenseBlocks.compositewall,
+                DefenseBlocks.compositeWall,
                 DistributionBlocks.conduit,
                 ProductionBlocks.coaldrill,
                 WeaponBlocks.chainturret,

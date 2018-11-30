@@ -27,30 +27,30 @@ public class DefenseBlocks {
         health = 150 * wallHealthMultiplier;
     }},
 
-    diriumwall = new Wall("duriumwall") {{
+    diriumWall = new Wall("duriumwall") {{ // "durium"?
         health = 190 * wallHealthMultiplier;
     }},
 
-    compositewall = new Wall("compositewall") {{
+    compositeWall = new Wall("compositewall") {{
         health = 270 * wallHealthMultiplier;
     }},
 
-    steelwalllarge = new Wall("steelwall-large") {{
+    steelWallLarge = new Wall("steelwall-large") {{
         health = 110 * 4 * wallHealthMultiplier;
         width = height = 2;
     }},
 
-    titaniumwalllarge = new Wall("titaniumwall-large") {{
+    titaniumWallLarge = new Wall("titaniumwall-large") {{
         health = 150 * 4 * wallHealthMultiplier;
         width = height = 2;
     }},
 
-    diriumwalllarge = new Wall("duriumwall-large") {{
+    diriumWallLarge = new Wall("duriumwall-large") {{
         health = 190 * 4 * wallHealthMultiplier;
         width = height = 2;
     }},
 
-    titaniumshieldwall = new ShieldedWallBlock("titaniumshieldwall") {{
+    titaniumShieldWall = new ShieldedWallBlock("titaniumshieldwall") {{
         health = 150 * wallHealthMultiplier;
     }},
 
@@ -82,7 +82,7 @@ public class DefenseBlocks {
         health = 90 * wallHealthMultiplier;
     }},
 
-    largedoor = new Door("door-large") {{
+    largeDoor = new Door("door-large") {{
         openfx = Fx.dooropenlarge;
         closefx = Fx.doorcloselarge;
         health = 90 * 4 * wallHealthMultiplier;

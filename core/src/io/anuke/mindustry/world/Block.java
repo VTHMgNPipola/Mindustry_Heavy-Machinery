@@ -41,7 +41,7 @@ public class Block {
      */
     public final String formalName;
     /**
-     * Brief block description. Should be short enough fit in the place menu.
+     * Brief block description. Should be short enough to fit in the place menu.
      */
     public final String description;
     /**
@@ -73,11 +73,11 @@ public class Block {
      */
     public boolean solidifes;
     /**
-     * whether this is rotateable
+     * whether this can be rotated
      */
     public boolean rotate;
     /**
-     * whether you can break this with rightclick
+     * whether you can break this with right-click
      */
     public boolean breakable;
     /**
@@ -117,7 +117,7 @@ public class Block {
      */
     public Liquid liquidDrop = null;
     /**
-     * multiblock width/height
+     * multi-block width/height
      */
     public int width = 1, height = 1;
     /**
@@ -268,10 +268,6 @@ public class Block {
         return new TileEntity();
     }
 
-    public boolean syncEntity() {
-        return true;
-    }
-
     /**
      * Tries to put this item into a nearby container, if there are no available
      * containers, it gets added to the block's inventory.
@@ -352,12 +348,12 @@ public class Block {
     }
 
     public void draw(Tile tile) {
-        //note: multiblocks do not support rotation
+        //note: multi-blocks do not support rotation
         if (!isMultiblock()) {
             Draw.rect(variants > 0 ? (name() + Mathf.randomSeed(tile.id(), 1, variants)) : name(),
                     tile.worldx(), tile.worldy(), rotate ? tile.getRotation() * 90 : 0);
         } else {
-            //if multiblock, make sure to draw even block sizes offset, since the core block is at the BOTTOM LEFT
+            //if multi-block, make sure to draw even block sizes offset, since the core block is at the BOTTOM LEFT
             Draw.rect(name(), tile.drawx(), tile.drawy());
         }
 
@@ -377,7 +373,7 @@ public class Block {
     }
 
     /**
-     * Offset for placing and drawing multiblocks.
+     * Offset for placing and drawing multi-blocks.
      */
     public Vector2 getPlaceOffset() {
         return offset.set(((width + 1) % 2) * tilesize / 2, ((height + 1) % 2) * tilesize / 2);

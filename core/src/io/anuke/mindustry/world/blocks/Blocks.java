@@ -16,9 +16,7 @@ import io.anuke.ucore.core.Timers;
 import io.anuke.ucore.util.Mathf;
 
 public class Blocks {
-    public static final Block
-
-            air = new Block("air") {
+    public static final Block air = new Block("air") {
         //no drawing here
         public void drawCache(Tile tile) {
         }
@@ -29,7 +27,6 @@ public class Blocks {
     },
 
     blockpart = new BlockPart() {
-
     },
 
     deepwater = new Floor("deepwater") {{
