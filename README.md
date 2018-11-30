@@ -12,29 +12,24 @@ _[Discord](https://discord.gg/r8BkXNd)_
 
 ### Building
 
-Bleeding-edge live builds are generated automatically for every commit. You can see them [here](https://github.com/Anuken/Mindustry/wiki).
-
-If you'd rather compile on your own, follow these instructions.
-First, make sure you have Java 8 and JDK 8 installed. Open a terminal in the root directory, and run the following commands:
-
+To run the game you need to have Gradle and JDK 8+ (tested on JDK 11). Here are the steps on different operating systems:
 
 **_Windows_**
 
-_Running:_ `gradlew.bat desktop:run`  
-_Building:_ `gradlew.bat desktop:dist`
-
+_Building:_ `.\gradlew.bat desktop:dist`
+_Running:_ `.\gradlew.bat desktop:run`  
 
 **_Linux_**
 
-_Running:_ `./gradlew desktop:run`  
 _Building:_ `./gradlew desktop:dist`
+_Running:_ `./gradlew desktop:run`  
 
 ---
 
-Gradle may take up to several minutes to download files. Be patient. <br>
+Gradle may take up to several minutes to download files. Be patient.<br>
 After building, the output .JAR file should be in the output JAR file should be in `/desktop/build/libs/desktop-release.jar.`
 
-### Downloads
+### Downloads (original game)
 
 <a href="https://anuke.itch.io/mindustry"><img src="https://i.imgur.com/sk26hTV.png" width="auto" height="75"></a>
 
