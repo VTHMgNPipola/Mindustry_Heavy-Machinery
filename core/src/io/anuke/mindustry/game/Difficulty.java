@@ -11,7 +11,7 @@ import io.anuke.mindustry.world.blocks.types.distribution.Conveyor;
 import io.anuke.mindustry.world.blocks.types.distribution.Router;
 import io.anuke.mindustry.world.blocks.types.production.Drill;
 import io.anuke.mindustry.world.blocks.types.production.Generator;
-import io.anuke.mindustry.world.blocks.types.production.Smelter;
+import io.anuke.mindustry.world.blocks.types.production.ItemSmelter;
 import io.anuke.ucore.function.Predicate;
 import io.anuke.ucore.util.Bundles;
 
@@ -26,21 +26,21 @@ public enum Difficulty {
     normal(2f, 1f, 1f, new DestrutiveHeuristic(new Predicate<Block>() {
         @Override
         public boolean test(Block b) {
-            return b instanceof Smelter || b instanceof Generator;
+            return b instanceof ItemSmelter || b instanceof Generator;
         }
     })), // NORMAL
 
     hard(1.5f, 0.5f, 0.75f, new DestrutiveHeuristic(new Predicate<Block>() {
         @Override
         public boolean test(Block b) {
-            return b instanceof Turret || b instanceof Generator || b instanceof Drill || b instanceof Smelter;
+            return b instanceof Turret || b instanceof Generator || b instanceof Drill || b instanceof ItemSmelter;
         }
     })), // HARD
 
     insane(0.5f, 0.25f, 0.5f, new DestrutiveHeuristic(new Predicate<Block>() {
         @Override
         public boolean test(Block b) {
-            return b instanceof Generator || b instanceof Drill || b instanceof Smelter || b instanceof Router;
+            return b instanceof Generator || b instanceof Drill || b instanceof ItemSmelter || b instanceof Router;
         }
     })), // INSANE
 
@@ -48,7 +48,7 @@ public enum Difficulty {
         @Override
         public boolean test(Block b) {
             return b instanceof Generator || b instanceof Drill || b instanceof Router
-                    || b instanceof Smelter || b instanceof Conveyor || b instanceof LiquidBlock || b instanceof PowerBlock;
+                    || b instanceof ItemSmelter || b instanceof Conveyor || b instanceof LiquidBlock || b instanceof PowerBlock;
         }
     })); // PURGE
 

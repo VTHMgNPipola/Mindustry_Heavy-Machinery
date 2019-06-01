@@ -6,17 +6,19 @@ import io.anuke.mindustry.resource.Liquid;
 import io.anuke.mindustry.world.Block;
 import io.anuke.mindustry.world.blocks.types.defense.CoreBlock;
 import io.anuke.mindustry.world.blocks.types.production.Drill;
+import io.anuke.mindustry.world.blocks.types.production.ElectricSmelter;
 import io.anuke.mindustry.world.blocks.types.production.ItemPowerGenerator;
+import io.anuke.mindustry.world.blocks.types.production.ItemSmelter;
 import io.anuke.mindustry.world.blocks.types.production.LiquidCrafter;
 import io.anuke.mindustry.world.blocks.types.production.LiquidPowerGenerator;
 import io.anuke.mindustry.world.blocks.types.production.NuclearReactor;
 import io.anuke.mindustry.world.blocks.types.production.Omnidrill;
 import io.anuke.mindustry.world.blocks.types.production.Pump;
-import io.anuke.mindustry.world.blocks.types.production.Smelter;
 import io.anuke.mindustry.world.blocks.types.production.WeaponFactory;
 
 public class ProductionBlocks {
-    public static final Block core = new CoreBlock("core") {},
+    public static final Block core = new CoreBlock("core") {
+    },
 
     pump = new Pump("pump") {
     },
@@ -27,7 +29,11 @@ public class ProductionBlocks {
         }
     },
 
-    smelter = new Smelter("smelter") {
+    smelter = new ItemSmelter("smelter") {
+        @Override
+        public void selfUpdate() {
+        }
+
         {
             health = 70;
             inputs = new Item[]{Item.iron};
@@ -36,7 +42,11 @@ public class ProductionBlocks {
         }
     },
 
-    crucible = new Smelter("crucible") {
+    crucible = new ItemSmelter("crucible") {
+        @Override
+        public void selfUpdate() {
+        }
+
         {
             health = 90;
             inputs = new Item[]{Item.titanium, Item.steel};
@@ -44,6 +54,20 @@ public class ProductionBlocks {
             result = Item.dirium;
             burnDuration = 40f;
             craftTime = 20f;
+        }
+    },
+
+    inductionSmelter = new ElectricSmelter("inductionsmelter") {
+        @Override
+        public void selfUpdate() {
+            // Craft time gets smaller as the block fills with power
+            System.out.println();
+        }
+
+        {
+            health = 250;
+            inputs = new Item[]{Item.iron};
+            result = Item.steel;
         }
     },
 
@@ -80,7 +104,7 @@ public class ProductionBlocks {
             purifyTime = 60;
             output = Item.coal;
             health = 80;
-            craftEffect = Fx.purifyoil;
+            craftEffect = Fx.purifyOil;
         }
     },
 
@@ -93,7 +117,7 @@ public class ProductionBlocks {
             purifyTime = 12;
             output = Item.stone;
             health = 80;
-            craftEffect = Fx.purifystone;
+            craftEffect = Fx.purifyStone;
         }
     },
 
@@ -107,7 +131,7 @@ public class ProductionBlocks {
             purifyTime = 30;
             output = Item.steel;
             health = 80;
-            craftEffect = Fx.purifystone;
+            craftEffect = Fx.purifyStone;
         }
     },
 
@@ -167,50 +191,55 @@ public class ProductionBlocks {
             time = 4;
         }
     },
-            coalgenerator = new ItemPowerGenerator("coalgenerator") {
-                {
-                    generateItem = Item.coal;
-                    powerOutput = 0.04f;
-                    powerCapacity = 40f;
-                }
-            },
-            thermalgenerator = new LiquidPowerGenerator("thermalgenerator") {
-                {
-                    generateLiquid = Liquid.lava;
-                    maxLiquidGenerate = 0.5f;
-                    powerPerLiquid = 0.08f;
-                    powerCapacity = 40f;
-                    generateEffect = Fx.redgeneratespark;
-                }
-            },
-            combustiongenerator = new LiquidPowerGenerator("combustiongenerator") {
-                {
-                    generateLiquid = Liquid.oil;
-                    maxLiquidGenerate = 0.4f;
-                    powerPerLiquid = 0.12f;
-                    powerCapacity = 40f;
-                }
-            },
-            rtgenerator = new ItemPowerGenerator("rtgenerator") {
-                {
-                    generateItem = Item.uranium;
-                    powerCapacity = 40f;
-                    powerOutput = 0.03f;
-                    itemDuration = 240f;
-                }
-            },
-            nuclearReactor = new NuclearReactor("nuclearreactor") {
-                {
-                    width = 3;
-                    height = 3;
-                    health = 600;
-                    breaktime *= 2.3f;
-                }
-            },
-            weaponFactory = new WeaponFactory("weaponfactory") {
-                {
-                    width = height = 2;
-                    health = 250;
-                }
-            };
+
+    coalgenerator = new ItemPowerGenerator("coalgenerator") {
+        {
+            generateItem = Item.coal;
+            powerOutput = 0.04f;
+            powerCapacity = 40f;
+        }
+    },
+
+    thermalgenerator = new LiquidPowerGenerator("thermalgenerator") {
+        {
+            generateLiquid = Liquid.lava;
+            maxLiquidGenerate = 0.5f;
+            powerPerLiquid = 0.08f;
+            powerCapacity = 40f;
+            generateEffect = Fx.redGenerateSpark;
+        }
+    },
+
+    combustiongenerator = new LiquidPowerGenerator("combustiongenerator") {
+        {
+            generateLiquid = Liquid.oil;
+            maxLiquidGenerate = 0.4f;
+            powerPerLiquid = 0.12f;
+            powerCapacity = 40f;
+        }
+    },
+
+    rtgenerator = new ItemPowerGenerator("rtgenerator") {
+        {
+            generateItem = Item.uranium;
+            powerCapacity = 40f;
+            powerOutput = 0.03f;
+            itemDuration = 240f;
+        }
+    },
+
+    nuclearReactor = new NuclearReactor("nuclearreactor") {
+        {
+            width = height = 3;
+            health = 600;
+            breaktime *= 2.3f;
+        }
+    },
+
+    weaponFactory = new WeaponFactory("weaponfactory") {
+        {
+            width = height = 2;
+            health = 250;
+        }
+    };
 }

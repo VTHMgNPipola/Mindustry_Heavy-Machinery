@@ -10,7 +10,10 @@ import io.anuke.ucore.core.Core;
 import io.anuke.ucore.core.Graphics;
 import io.anuke.ucore.scene.ui.layout.Table;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.tilesize;
 
 public class ToolFragment implements Fragment {
     public int px, py, px2, py2;

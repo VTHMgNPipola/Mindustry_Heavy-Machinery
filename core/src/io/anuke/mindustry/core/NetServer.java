@@ -63,12 +63,16 @@ import io.anuke.ucore.entities.EntityGroup;
 import io.anuke.ucore.modules.Module;
 import io.anuke.ucore.util.Log;
 import io.anuke.ucore.util.Timer;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.headless;
+import static io.anuke.mindustry.Vars.netCommon;
+import static io.anuke.mindustry.Vars.playerGroup;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public class NetServer extends Module {
     private final static float serverSyncTime = 4, itemSyncTime = 10, kickDuration = 30 * 1000;

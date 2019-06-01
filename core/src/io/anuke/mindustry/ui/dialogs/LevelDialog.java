@@ -23,7 +23,11 @@ import io.anuke.ucore.scene.utils.Elements;
 import io.anuke.ucore.util.Bundles;
 import io.anuke.ucore.util.Mathf;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.debug;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public class LevelDialog extends FloatingDialog {
     private Map selectedMap = world.maps().getMap(0);

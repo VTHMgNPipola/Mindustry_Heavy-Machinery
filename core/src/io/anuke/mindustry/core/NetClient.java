@@ -61,10 +61,20 @@ import io.anuke.ucore.entities.EntityGroup;
 import io.anuke.ucore.modules.Module;
 import io.anuke.ucore.util.Log;
 import io.anuke.ucore.util.Timer;
-
 import java.nio.ByteBuffer;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.clientDebug;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.currentEditLogs;
+import static io.anuke.mindustry.Vars.debugNet;
+import static io.anuke.mindustry.Vars.enemyGroup;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.playerGroup;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.threads;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public class NetClient extends Module {
     private final static float dataTimeout = 60 * 18; //18 seconds timeout
@@ -241,7 +251,7 @@ public class NetClient extends Module {
 
         Net.handleClient(BulletPacket.class, packet -> {
             //TODO shoot effects for enemies, clientside as well as serverside
-            BulletType type = (BulletType) BaseBulletType.getByID(packet.type);
+            BulletType type = BaseBulletType.getByID(packet.type);
             Entity owner = enemyGroup.getByID(packet.owner);
             new Bullet(type, owner, packet.x, packet.y, packet.angle).add();
         });

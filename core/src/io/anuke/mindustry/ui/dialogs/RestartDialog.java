@@ -3,7 +3,9 @@ package io.anuke.mindustry.ui.dialogs;
 import io.anuke.mindustry.core.GameState.State;
 import io.anuke.ucore.scene.ui.Dialog;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.logic;
+import static io.anuke.mindustry.Vars.state;
 
 public class RestartDialog extends Dialog {
 

@@ -89,7 +89,7 @@ public class WeaponBlocks {
             bullet = BulletType.sniper;
             ammo = Item.steel;
             health = 70;
-            shootEffect = Fx.railshot;
+            shootEffect = Fx.railShot;
         }
     },
 
@@ -105,7 +105,7 @@ public class WeaponBlocks {
             ammo = Item.coal;
             ammoMultiplier = 5;
             health = 110;
-            shootEffect = Fx.mortarshot;
+            shootEffect = Fx.mortarShot;
             shootShake = 2f;
         }
     },
@@ -167,7 +167,7 @@ public class WeaponBlocks {
             shootCone = 9f;
             ammoMultiplier = 8;
             shots = 2;
-            shootEffect = Fx.chainshot;
+            shootEffect = Fx.chainShot;
         }
 
         @Override
@@ -200,7 +200,7 @@ public class WeaponBlocks {
             width = height = 3;
             rotatespeed = 0.07f;
             shootCone = 9f;
-            shootEffect = Fx.titanshot;
+            shootEffect = Fx.titanShot;
             shootShake = 3f;
         }
     };

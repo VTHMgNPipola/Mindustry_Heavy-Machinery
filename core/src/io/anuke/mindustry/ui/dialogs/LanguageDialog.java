@@ -7,7 +7,6 @@ import io.anuke.ucore.scene.ui.ScrollPane;
 import io.anuke.ucore.scene.ui.TextButton;
 import io.anuke.ucore.scene.ui.layout.Table;
 import io.anuke.ucore.util.Log;
-
 import java.util.Locale;
 
 import static io.anuke.mindustry.Vars.locales;

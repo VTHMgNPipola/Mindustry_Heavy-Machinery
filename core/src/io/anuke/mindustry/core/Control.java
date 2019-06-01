@@ -40,7 +40,22 @@ import io.anuke.ucore.util.Atlas;
 import io.anuke.ucore.util.InputProxy;
 import io.anuke.ucore.util.Mathf;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.baseControllerSpeed;
+import static io.anuke.mindustry.Vars.console;
+import static io.anuke.mindustry.Vars.controllerMin;
+import static io.anuke.mindustry.Vars.effectGroup;
+import static io.anuke.mindustry.Vars.gwt;
+import static io.anuke.mindustry.Vars.logic;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.playerColors;
+import static io.anuke.mindustry.Vars.port;
+import static io.anuke.mindustry.Vars.renderer;
+import static io.anuke.mindustry.Vars.saveSlots;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.tilesize;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 /**
  * Control module.
@@ -204,7 +219,7 @@ public class Control extends Module {
             for (int i = 0; i < 16; i++) {
                 Timers.run(i * 2, () -> Effects.effect(Fx.explosion, world.getCore().worldx() + Mathf.range(40), world.getCore().worldy() + Mathf.range(40)));
             }
-            Effects.effect(Fx.coreexplosion, world.getCore().worldx(), world.getCore().worldy());
+            Effects.effect(Fx.coreExplosion, world.getCore().worldx(), world.getCore().worldy());
 
             ui.restart.show();
 

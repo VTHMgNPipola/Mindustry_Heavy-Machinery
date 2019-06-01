@@ -83,8 +83,8 @@ public class DefenseBlocks {
     }},
 
     largeDoor = new Door("door-large") {{
-        openfx = Fx.dooropenlarge;
-        closefx = Fx.doorcloselarge;
+        openfx = Fx.doorOpenLarge;
+        closefx = Fx.doorCloseLarge;
         health = 90 * 4 * wallHealthMultiplier;
         width = height = 2;
     }};

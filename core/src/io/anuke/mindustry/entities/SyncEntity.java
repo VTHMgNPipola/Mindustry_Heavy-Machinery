@@ -9,7 +9,6 @@ import io.anuke.mindustry.entities.enemies.Enemy;
 import io.anuke.ucore.core.Timers;
 import io.anuke.ucore.entities.DestructibleEntity;
 import io.anuke.ucore.util.Mathf;
-
 import java.nio.ByteBuffer;
 
 import static io.anuke.mindustry.Vars.threads;

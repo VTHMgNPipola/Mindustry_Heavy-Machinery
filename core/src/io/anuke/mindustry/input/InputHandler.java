@@ -14,7 +14,14 @@ import io.anuke.mindustry.world.blocks.Blocks;
 import io.anuke.ucore.core.Graphics;
 import io.anuke.ucore.util.Mathf;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.placerange;
+import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.tilesize;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public abstract class InputHandler extends InputAdapter {
     public float breaktime = 0;

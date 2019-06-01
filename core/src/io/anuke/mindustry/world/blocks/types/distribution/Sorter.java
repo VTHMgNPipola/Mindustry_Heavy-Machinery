@@ -13,13 +13,11 @@ import io.anuke.ucore.scene.ui.ImageButton;
 import io.anuke.ucore.scene.ui.layout.Table;
 import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Tmp;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class Sorter extends Block {
-
     public Sorter(String name) {
         super(name);
         update = true;

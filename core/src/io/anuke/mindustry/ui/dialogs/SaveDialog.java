@@ -7,7 +7,9 @@ import io.anuke.ucore.core.Timers;
 import io.anuke.ucore.scene.ui.TextButton;
 import io.anuke.ucore.util.Bundles;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.ui;
 
 public class SaveDialog extends LoadDialog {
 

@@ -35,7 +35,11 @@ import io.anuke.mindustry.world.Block;
 import io.anuke.mindustry.world.Tile;
 import io.anuke.ucore.entities.Entity;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.headless;
+import static io.anuke.mindustry.Vars.netCommon;
+import static io.anuke.mindustry.Vars.netServer;
+import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.ui;
 
 public class NetEvents {
 

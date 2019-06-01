@@ -22,27 +22,32 @@ public class DistributionBlocks {
         health = 45;
     }},
 
-    pulseconduit = new Conduit("pulseconduit") {{
+    pulseConduit = new Conduit("pulseconduit") {{
         liquidCapacity = 16f;
         flowfactor = 4.9f;
         health = 65;
     }},
 
-    liquidrouter = new LiquidRouter("liquidrouter") {{
+    liquidRouter = new LiquidRouter("liquidrouter") {{
 
     }},
 
     conveyor = new Conveyor("conveyor") {{
     }},
 
-    steelconveyor = new Conveyor("steelconveyor") {{
+    steelConveyor = new Conveyor("steelconveyor") {{
         health = 55;
         speed = 0.04f;
     }},
 
-    pulseconveyor = new Conveyor("poweredconveyor") {{
+    pulseConveyor = new Conveyor("poweredconveyor") {{
         health = 75;
         speed = 0.09f;
+    }},
+
+    expressConveyor = new Conveyor("expressconveyor") {{
+        health = 100;
+        speed = 0.14f;
     }},
 
     router = new Router("router") {{
@@ -52,23 +57,30 @@ public class DistributionBlocks {
     junction = new Junction("junction") {{
 
     }},
-            tunnel = new TunnelConveyor("conveyortunnel") {{
-            }},
-            liquidjunction = new LiquidJunction("liquidjunction") {{
 
-            }},
-            powerbooster = new PowerBooster("powerbooster") {{
-                powerRange = 4;
-            }},
-            powerlaser = new PowerLaser("powerlaser") {{
-            }},
-            powerlaserrouter = new PowerLaserRouter("powerlaserrouter") {{
-            }},
-            powerlasercorner = new PowerLaserRouter("powerlasercorner") {{
-                laserDirections = 2;
-            }},
-            teleporter = new Teleporter("teleporter") {{
-            }},
-            sorter = new Sorter("sorter") {{
-            }};
+    tunnel = new TunnelConveyor("conveyortunnel") {{
+    }},
+
+    liquidJunction = new LiquidJunction("liquidjunction") {{
+    }},
+
+    powerBooster = new PowerBooster("powerbooster") {{
+        powerRange = 4;
+    }},
+
+    powerLaser = new PowerLaser("powerlaser") {{
+    }},
+
+    powerLaserRouter = new PowerLaserRouter("powerlaserrouter") {{
+    }},
+
+    powerLaserCorner = new PowerLaserRouter("powerlasercorner") {{
+        laserDirections = 2;
+    }},
+
+    teleporter = new Teleporter("teleporter") {{
+    }},
+
+    sorter = new Sorter("sorter") {{
+    }};
 }

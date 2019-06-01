@@ -12,7 +12,9 @@ import io.anuke.ucore.util.Angles;
 import io.anuke.ucore.util.Log;
 import io.anuke.ucore.util.Mathf;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.enemyGroup;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.world;
 
 public class Pathfind {
     /**

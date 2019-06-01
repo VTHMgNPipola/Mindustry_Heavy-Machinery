@@ -9,7 +9,6 @@ import io.anuke.mindustry.game.GameMode;
 import io.anuke.mindustry.world.Map;
 import io.anuke.ucore.core.Settings;
 import io.anuke.ucore.core.Timers;
-
 import java.io.IOException;
 
 import static io.anuke.mindustry.Vars.saveSlots;

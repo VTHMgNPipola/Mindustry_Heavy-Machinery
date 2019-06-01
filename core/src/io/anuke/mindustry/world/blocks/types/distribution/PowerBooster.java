@@ -65,7 +65,7 @@ public class PowerBooster extends Generator {
         return entity.power + 0.001f <= powerCapacity;
     }
 
-    //TODO better distribution
+    // TODO better distribution
     protected void distributePower(Tile tile) {
         PowerEntity p = tile.entity();
 
@@ -102,7 +102,7 @@ public class PowerBooster extends Generator {
                 }
             }
 
-            //TODO better distribution scheme
+            // TODO better distribution scheme
             if (i == 0 && acceptors > 0) {
                 flow = Mathf.clamp(p.power / acceptors, 0f, powerSpeed / acceptors * Timers.delta());
             }

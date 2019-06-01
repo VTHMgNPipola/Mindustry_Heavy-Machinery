@@ -58,7 +58,7 @@ public class Blocks {
             }
 
             if (Mathf.chance(0.002 * Timers.delta())) {
-                Effects.effect(Fx.lavabubble, tile.worldx() + Mathf.range(3f), tile.worldy() + Mathf.range(3f));
+                Effects.effect(Fx.lavaBubble, tile.worldx() + Mathf.range(3f), tile.worldy() + Mathf.range(3f));
             }
         }
     },
@@ -74,7 +74,7 @@ public class Blocks {
         @Override
         public void update(Tile tile) {
             if (Mathf.chance(0.0022 * Timers.delta())) {
-                Effects.effect(Fx.oilbubble, tile.worldx() + Mathf.range(2f), tile.worldy() + Mathf.range(2f));
+                Effects.effect(Fx.oilBubble, tile.worldx() + Mathf.range(2f), tile.worldy() + Mathf.range(2f));
             }
         }
     },

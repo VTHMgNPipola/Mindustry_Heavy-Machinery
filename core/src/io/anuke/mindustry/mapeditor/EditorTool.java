@@ -6,7 +6,6 @@ import com.badlogic.gdx.utils.IntSet;
 import io.anuke.mindustry.world.Block;
 import io.anuke.mindustry.world.ColorMapper;
 import io.anuke.mindustry.world.ColorMapper.BlockPair;
-
 import java.util.Stack;
 
 import static io.anuke.mindustry.Vars.ui;

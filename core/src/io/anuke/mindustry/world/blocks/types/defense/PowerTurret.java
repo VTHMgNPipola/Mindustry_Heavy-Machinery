@@ -10,7 +10,6 @@ import io.anuke.mindustry.world.blocks.types.PowerAcceptor;
 import io.anuke.ucore.graphics.Draw;
 import io.anuke.ucore.graphics.Lines;
 import io.anuke.ucore.util.Strings;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

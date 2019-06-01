@@ -5,7 +5,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
 import io.anuke.ucore.util.Strings;
-
 import java.io.IOException;
 
 public class Version {

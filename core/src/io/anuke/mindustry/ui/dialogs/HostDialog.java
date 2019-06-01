@@ -8,7 +8,6 @@ import io.anuke.ucore.core.Timers;
 import io.anuke.ucore.scene.ui.ImageButton;
 import io.anuke.ucore.util.Bundles;
 import io.anuke.ucore.util.Strings;
-
 import java.io.IOException;
 
 import static io.anuke.mindustry.Vars.player;

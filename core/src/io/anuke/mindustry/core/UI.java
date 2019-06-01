@@ -51,11 +51,17 @@ import io.anuke.ucore.scene.ui.TextField.TextFieldFilter;
 import io.anuke.ucore.scene.ui.TooltipManager;
 import io.anuke.ucore.scene.ui.layout.Unit;
 import io.anuke.ucore.util.Mathf;
-
 import java.util.Locale;
 
 import static io.anuke.mindustry.Vars.control;
-import static io.anuke.ucore.scene.actions.Actions.*;
+import static io.anuke.ucore.scene.actions.Actions.alpha;
+import static io.anuke.ucore.scene.actions.Actions.fadeIn;
+import static io.anuke.ucore.scene.actions.Actions.fadeOut;
+import static io.anuke.ucore.scene.actions.Actions.moveToAligned;
+import static io.anuke.ucore.scene.actions.Actions.originCenter;
+import static io.anuke.ucore.scene.actions.Actions.parallel;
+import static io.anuke.ucore.scene.actions.Actions.scaleTo;
+import static io.anuke.ucore.scene.actions.Actions.sequence;
 
 public class UI extends SceneModule {
     public final MenuFragment menufrag = new MenuFragment();

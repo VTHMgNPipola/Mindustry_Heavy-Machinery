@@ -15,10 +15,14 @@ import io.anuke.ucore.scene.ui.layout.Table;
 import io.anuke.ucore.util.Bundles;
 import io.anuke.ucore.util.Log;
 import io.anuke.ucore.util.Strings;
-
 import java.io.IOException;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.gwt;
+import static io.anuke.mindustry.Vars.ios;
+import static io.anuke.mindustry.Vars.logic;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.ui;
 
 public class LoadDialog extends FloatingDialog {
     ScrollPane pane;

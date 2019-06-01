@@ -6,7 +6,9 @@ import io.anuke.ucore.entities.BulletEntity;
 import io.anuke.ucore.entities.Entity;
 import io.anuke.ucore.util.Timer;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.bulletGroup;
+import static io.anuke.mindustry.Vars.threads;
+import static io.anuke.mindustry.Vars.world;
 
 public class Bullet extends BulletEntity {
     public Timer timer = new Timer(3);

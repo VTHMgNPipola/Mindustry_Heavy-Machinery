@@ -14,7 +14,16 @@ import io.anuke.mindustry.io.BundleLoader;
 import io.anuke.ucore.modules.ModuleCore;
 import io.anuke.ucore.util.Log;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.debug;
+import static io.anuke.mindustry.Vars.logic;
+import static io.anuke.mindustry.Vars.netClient;
+import static io.anuke.mindustry.Vars.netCommon;
+import static io.anuke.mindustry.Vars.netServer;
+import static io.anuke.mindustry.Vars.renderer;
+import static io.anuke.mindustry.Vars.threads;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public class Mindustry extends ModuleCore {
 

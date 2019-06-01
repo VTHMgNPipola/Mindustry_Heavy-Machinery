@@ -19,7 +19,10 @@ import io.anuke.ucore.core.Settings;
 import io.anuke.ucore.graphics.Pixmaps;
 import io.anuke.ucore.util.Log;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.customMapDirectory;
+import static io.anuke.mindustry.Vars.gwt;
+import static io.anuke.mindustry.Vars.headless;
+import static io.anuke.mindustry.Vars.ui;
 
 public class Maps implements Disposable {
     private IntMap<Map> maps = new IntMap<>();

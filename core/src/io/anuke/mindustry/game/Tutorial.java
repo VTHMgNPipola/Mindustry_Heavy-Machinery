@@ -21,7 +21,12 @@ import io.anuke.ucore.util.Bundles;
 import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Tmp;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.logic;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public class Tutorial {
     private Stage stage;
@@ -499,7 +504,7 @@ public class Tutorial {
                 blockPlaceX = 4;
                 blockPlaceY = 4;
                 blockRotation = 2;
-                targetBlock = DistributionBlocks.powerlaser;
+                targetBlock = DistributionBlocks.powerLaser;
             }
 
             void onSwitch() {
@@ -604,8 +609,6 @@ public class Tutorial {
 
         void update(Tutorial t) {
         }
-
-        ;
 
         void onSwitch() {
         }

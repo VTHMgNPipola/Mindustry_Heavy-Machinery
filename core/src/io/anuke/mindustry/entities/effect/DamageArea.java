@@ -15,7 +15,11 @@ import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Physics;
 import io.anuke.ucore.util.Translator;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.enemyGroup;
+import static io.anuke.mindustry.Vars.playerGroup;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.tilesize;
+import static io.anuke.mindustry.Vars.world;
 
 public class DamageArea {
     private static Rectangle rect = new Rectangle();

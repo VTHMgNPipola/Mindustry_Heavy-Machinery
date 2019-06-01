@@ -18,7 +18,7 @@ public class ItemPowerGenerator extends Generator {
     public Item generateItem;
     public float powerOutput;
     public float itemDuration = 70f;
-    public Effect generateEffect = Fx.generatespark;
+    public Effect generateEffect = Fx.generateSpark;
     public Color heatColor = Color.valueOf("ff9b59");
 
     public ItemPowerGenerator(String name) {

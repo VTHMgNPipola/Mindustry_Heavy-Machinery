@@ -21,7 +21,9 @@ import io.anuke.ucore.scene.ui.layout.Table;
 import io.anuke.ucore.util.Bundles;
 import io.anuke.ucore.util.Mathf;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.syncBlockState;
+import static io.anuke.mindustry.Vars.tilesize;
 
 public class Block {
     protected static TextureRegion temp = new TextureRegion();
@@ -45,13 +47,13 @@ public class Block {
      */
     public final String description;
     /**
-     * Detailed description of the block. Can be as long as necesary.
+     * Detailed description of the block. Can be as long as necessary.
      */
     public final String fullDescription;
     /**
      * played on destroy
      */
-    public Effect explosionEffect = Fx.blockexplosion;
+    public Effect explosionEffect = Fx.blockExplosion;
     /**
      * played on destroy
      */
@@ -267,10 +269,10 @@ public class Block {
     public TileEntity getEntity() {
         return new TileEntity();
     }
-	
-	public boolean syncEntity() { // IntelliJ says this is not used, but it is overwritten by extending classes.
-		return true; // TODO: Check if this method is really used.
-	}
+
+    public boolean syncEntity() { // IntelliJ says this is not used, but it is overwritten by extending classes.
+        return true; // TODO: Check if this method is really used.
+    }
 
     /**
      * Tries to put this item into a nearby container, if there are no available
@@ -296,6 +298,7 @@ public class Block {
             i++;
             i %= 4;
         }
+
         tile.setDump(pdump);
         handleItem(item, tile, tile);
     }
@@ -310,7 +313,7 @@ public class Block {
     /**
      * Try dumping any item near the tile. -1 = any direction
      */
-    protected boolean tryDump(Tile tile, int direction, Item todump) {
+    protected boolean tryDump(Tile tile, int direction, Item toDump) {
         if (Net.client() && syncBlockState) return false;
 
         int i = tile.getDump() % 4;
@@ -320,8 +323,7 @@ public class Block {
 
             if (i == direction || direction == -1) {
                 for (Item item : Item.getAllItems()) {
-
-                    if (todump != null && item != todump) continue;
+                    if (toDump != null && item != toDump) continue;
 
                     if (tile.entity.hasItem(item) && other != null && other.block().acceptItem(item, other, tile)) {
                         other.block().handleItem(item, other, tile);
@@ -332,6 +334,7 @@ public class Block {
                     }
                 }
             }
+
             i++;
             i %= 4;
         }
@@ -384,7 +387,7 @@ public class Block {
     }
 
     public boolean isMultiblock() {
-        return width != 1 || height != 1;
+        return width > 1 || height > 1;
     }
 
     public Array<Object> getDebugInfo(Tile tile) {

@@ -24,7 +24,6 @@ import io.anuke.ucore.scene.ui.TextField;
 import io.anuke.ucore.scene.ui.layout.Table;
 import io.anuke.ucore.scene.ui.layout.Unit;
 import io.anuke.ucore.util.OS;
-
 import java.util.Arrays;
 
 public class FileChooser extends FloatingDialog {
@@ -285,6 +284,7 @@ public class FileChooser extends FloatingDialog {
     public void fileSelected(Consumer<FileHandle> listener) {
         this.selectListener = listener;
     }
+
     public interface FileHandleFilter {
         boolean accept(FileHandle file);
     }

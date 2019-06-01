@@ -12,7 +12,6 @@ import io.anuke.ucore.core.Timers;
 import io.anuke.ucore.graphics.Draw;
 import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Strings;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class LiquidPowerGenerator extends Generator implements LiquidAcceptor {
      */
     public float maxLiquidGenerate = 0.4f;
     public float liquidCapacity = 30f;
-    public Effect generateEffect = Fx.generatespark;
+    public Effect generateEffect = Fx.generateSpark;
 
     public LiquidPowerGenerator(String name) {
         super(name);

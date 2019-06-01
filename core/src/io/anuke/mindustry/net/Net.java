@@ -19,10 +19,13 @@ import io.anuke.ucore.core.Timers;
 import io.anuke.ucore.function.BiConsumer;
 import io.anuke.ucore.function.Consumer;
 import io.anuke.ucore.util.Log;
-
 import java.io.IOException;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.clientDebug;
+import static io.anuke.mindustry.Vars.debugNet;
+import static io.anuke.mindustry.Vars.headless;
+import static io.anuke.mindustry.Vars.serverDebug;
+import static io.anuke.mindustry.Vars.ui;
 
 public class Net {
     private static boolean server;

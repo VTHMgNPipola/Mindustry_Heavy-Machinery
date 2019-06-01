@@ -17,7 +17,7 @@ import io.anuke.ucore.util.Tmp;
 
 public class LaserTurret extends PowerTurret {
     protected Color beamColor = Color.WHITE.cpy();
-    protected Effect hiteffect = Fx.laserhit;
+    protected Effect hiteffect = Fx.laserHit;
     protected int damage = 4;
     protected float cone = 15f;
 

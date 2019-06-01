@@ -7,7 +7,6 @@ import io.anuke.mindustry.core.Platform;
 import io.anuke.ucore.core.Core;
 import io.anuke.ucore.core.Settings;
 import io.anuke.ucore.util.Log;
-
 import java.util.Locale;
 
 import static io.anuke.mindustry.Vars.headless;

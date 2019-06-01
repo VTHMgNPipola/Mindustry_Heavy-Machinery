@@ -6,7 +6,6 @@ import io.anuke.mindustry.entities.TileEntity;
 import io.anuke.mindustry.world.Block;
 import io.anuke.mindustry.world.BlockBar;
 import io.anuke.mindustry.world.Tile;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -39,6 +38,7 @@ public abstract class PowerBlock extends Block implements PowerAcceptor {
             entity.power += amount;
             return true;
         }
+
         return false;
     }
 
@@ -49,12 +49,13 @@ public abstract class PowerBlock extends Block implements PowerAcceptor {
         return entity.power + 0.001f <= powerCapacity;
     }
 
-    //TODO voltage requirement so blocks need specific voltage
+    // TODO: Voltage requirement so blocks need specific voltage
     @Override
     public float addPower(Tile tile, float amount) {
         if (amount < voltage) {
             return amount;
         }
+
         PowerEntity entity = tile.entity();
 
         float canAccept = Math.min(powerCapacity - entity.power, amount);
@@ -77,7 +78,7 @@ public abstract class PowerBlock extends Block implements PowerAcceptor {
 
     public static class PowerEntity extends TileEntity {
         public float power;
-        public float time; //generator time. this is a bit of a hack
+        public float time; // Generator time. This is a bit of a hack
 
         @Override
         public void write(DataOutputStream stream) throws IOException {

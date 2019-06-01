@@ -16,7 +16,22 @@ import io.anuke.ucore.scene.ui.layout.Table;
 import io.anuke.ucore.util.Log;
 import io.anuke.ucore.util.Log.LogHandler;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.clientDebug;
+import static io.anuke.mindustry.Vars.console;
+import static io.anuke.mindustry.Vars.debug;
+import static io.anuke.mindustry.Vars.enemyGroup;
+import static io.anuke.mindustry.Vars.netClient;
+import static io.anuke.mindustry.Vars.noclip;
+import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.playerGroup;
+import static io.anuke.mindustry.Vars.serverDebug;
+import static io.anuke.mindustry.Vars.showBlockDebug;
+import static io.anuke.mindustry.Vars.showPaths;
+import static io.anuke.mindustry.Vars.showPlayer;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.tileGroup;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public class DebugFragment implements Fragment {
     private static StringBuilder log = new StringBuilder();

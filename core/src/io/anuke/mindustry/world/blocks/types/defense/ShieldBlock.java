@@ -76,7 +76,7 @@ public class ShieldBlock extends PowerBlock {
         }
 
         bullet.remove();
-        Effects.effect(bullet.damage > 5 ? Fx.shieldhit : Fx.laserhit, bullet);
+        Effects.effect(bullet.damage > 5 ? Fx.shieldHit : Fx.laserHit, bullet);
         if (!headless) renderer.addShieldHit(bullet.x, bullet.y);
 
         entity.power -= bullet.getDamage() * powerPerDamage;

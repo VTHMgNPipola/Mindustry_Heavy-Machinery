@@ -2,7 +2,6 @@ package io.anuke.mindustry.game;
 
 import io.anuke.mindustry.resource.Item;
 import io.anuke.mindustry.resource.ItemStack;
-
 import java.util.Arrays;
 
 import static io.anuke.mindustry.Vars.debug;

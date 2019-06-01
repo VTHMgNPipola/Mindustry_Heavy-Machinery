@@ -21,7 +21,13 @@ import io.anuke.ucore.graphics.Lines;
 import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Strings;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.enemyGroup;
+import static io.anuke.mindustry.Vars.fontscale;
+import static io.anuke.mindustry.Vars.playerGroup;
+import static io.anuke.mindustry.Vars.showPaths;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.tilesize;
+import static io.anuke.mindustry.Vars.world;
 
 public class EnemyType {
 

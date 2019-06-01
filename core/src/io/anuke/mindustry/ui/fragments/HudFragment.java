@@ -18,7 +18,13 @@ import io.anuke.ucore.scene.ui.Label;
 import io.anuke.ucore.scene.ui.layout.Table;
 import io.anuke.ucore.util.Bundles;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.fontscale;
+import static io.anuke.mindustry.Vars.gwt;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.threads;
+import static io.anuke.mindustry.Vars.ui;
 
 public class HudFragment implements Fragment {
     public final BlocksFragment blockfrag = new BlocksFragment();

@@ -11,7 +11,13 @@ import io.anuke.ucore.scene.builders.imagebutton;
 import io.anuke.ucore.scene.ui.ImageButton;
 import io.anuke.ucore.util.Bundles;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.gwt;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.netClient;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public class PausedDialog extends FloatingDialog {
     public boolean wasPaused = false;

@@ -15,7 +15,14 @@ import io.anuke.ucore.core.Effects;
 import io.anuke.ucore.entities.Entities;
 import io.anuke.ucore.entities.SolidEntity;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.breakDropAmount;
+import static io.anuke.mindustry.Vars.enemyGroup;
+import static io.anuke.mindustry.Vars.enemyspawnspace;
+import static io.anuke.mindustry.Vars.playerGroup;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.threads;
+import static io.anuke.mindustry.Vars.tilesize;
+import static io.anuke.mindustry.Vars.world;
 
 public class Placement {
     private static final Rectangle rect = new Rectangle();

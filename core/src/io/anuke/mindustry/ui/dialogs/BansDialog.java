@@ -4,7 +4,9 @@ import io.anuke.mindustry.net.Administration.PlayerInfo;
 import io.anuke.ucore.scene.ui.ScrollPane;
 import io.anuke.ucore.scene.ui.layout.Table;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.gwt;
+import static io.anuke.mindustry.Vars.netServer;
+import static io.anuke.mindustry.Vars.ui;
 
 public class BansDialog extends FloatingDialog {
 

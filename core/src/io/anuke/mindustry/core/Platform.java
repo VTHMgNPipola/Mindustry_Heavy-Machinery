@@ -8,7 +8,6 @@ import io.anuke.ucore.entities.Entity;
 import io.anuke.ucore.entities.EntityGroup;
 import io.anuke.ucore.function.Consumer;
 import io.anuke.ucore.scene.ui.TextField;
-
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;

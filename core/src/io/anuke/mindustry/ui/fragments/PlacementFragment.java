@@ -21,7 +21,9 @@ import io.anuke.ucore.scene.ui.layout.Unit;
 import io.anuke.ucore.util.Bundles;
 import io.anuke.ucore.util.Mathf;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.state;
 
 public class PlacementFragment implements Fragment {
     boolean shown = false, placing = false;

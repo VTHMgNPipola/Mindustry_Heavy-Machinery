@@ -13,7 +13,6 @@ import io.anuke.ucore.graphics.Draw;
 import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Timer;
 import io.anuke.ucore.util.Translator;
-
 import java.nio.ByteBuffer;
 
 import static io.anuke.mindustry.Vars.enemyGroup;

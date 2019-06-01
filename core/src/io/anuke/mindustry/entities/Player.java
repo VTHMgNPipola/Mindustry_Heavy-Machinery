@@ -22,10 +22,21 @@ import io.anuke.ucore.util.Angles;
 import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Timer;
 import io.anuke.ucore.util.Translator;
-
 import java.nio.ByteBuffer;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.debug;
+import static io.anuke.mindustry.Vars.noclip;
+import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.playerGroup;
+import static io.anuke.mindustry.Vars.respawnduration;
+import static io.anuke.mindustry.Vars.showPlayer;
+import static io.anuke.mindustry.Vars.showUI;
+import static io.anuke.mindustry.Vars.snapCamera;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.tilesize;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public class Player extends SyncEntity {
     static final float speed = 1.1f;
@@ -200,7 +211,7 @@ public class Player extends SyncEntity {
         }
 
         if (dashing && timer.get(timerDash, 3) && movement.len() > 0) {
-            Effects.effect(Fx.dashsmoke, x + Angles.trnsx(angle + 180f, 3f), y + Angles.trnsy(angle + 180f, 3f));
+            Effects.effect(Fx.dashSmoke, x + Angles.trnsx(angle + 180f, 3f), y + Angles.trnsy(angle + 180f, 3f));
         }
 
         movement.limit(speed);
@@ -301,11 +312,11 @@ public class Player extends SyncEntity {
         float ty = y + Angles.trnsy(angle + 180f, 4f);
 
         if (isAndroid && i.target.dst(i.last) > 2f && timer.get(timerDash, 1)) {
-            Effects.effect(Fx.dashsmoke, tx, ty);
+            Effects.effect(Fx.dashSmoke, tx, ty);
         }
 
         if (dashing && !dead && timer.get(timerDash, 3) && i.target.dst(i.last) > 1f) {
-            Effects.effect(Fx.dashsmoke, tx, ty);
+            Effects.effect(Fx.dashSmoke, tx, ty);
         }
     }
 

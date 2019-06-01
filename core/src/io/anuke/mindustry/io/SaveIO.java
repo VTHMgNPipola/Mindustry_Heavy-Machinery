@@ -9,7 +9,6 @@ import io.anuke.mindustry.io.versions.Save13;
 import io.anuke.mindustry.io.versions.Save14;
 import io.anuke.mindustry.io.versions.Save15;
 import io.anuke.ucore.core.Settings;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -18,7 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.gwt;
+import static io.anuke.mindustry.Vars.logic;
+import static io.anuke.mindustry.Vars.saveDirectory;
 
 public class SaveIO {
     public static final IntMap<SaveFileVersion> versions = new IntMap<>();

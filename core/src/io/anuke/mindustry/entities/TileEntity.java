@@ -12,7 +12,6 @@ import io.anuke.ucore.core.Timers;
 import io.anuke.ucore.entities.Entity;
 import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Timer;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

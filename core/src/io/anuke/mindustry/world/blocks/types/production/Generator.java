@@ -23,7 +23,9 @@ import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Strings;
 import io.anuke.ucore.util.Translator;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.tilesize;
+import static io.anuke.mindustry.Vars.world;
 
 public class Generator extends PowerBlock {
     public static final int powerTime = 2;
@@ -112,12 +114,12 @@ public class Generator extends PowerBlock {
         if (explosive) {
             float x = tile.worldx(), y = tile.worldy();
 
-            Effects.effect(Fx.shellsmoke, x, y);
-            Effects.effect(Fx.blastsmoke, x, y);
+            Effects.effect(Fx.shellSmoke, x, y);
+            Effects.effect(Fx.blastSmoke, x, y);
 
             Timers.run(Mathf.random(8f + Mathf.random(6f)), () -> {
                 Effects.shake(6f, 8f, x, y);
-                Effects.effect(Fx.generatorexplosion, x, y);
+                Effects.effect(Fx.generatorExplosion, x, y);
                 Effects.effect(Fx.shockwave, x, y);
 
                 Timers.run(12f + Mathf.random(20f), () -> {
@@ -193,7 +195,7 @@ public class Generator extends PowerBlock {
                 Draw.tint(Hue.mix(Color.SCARLET, Color.WHITE, 0.902f + Mathf.sin(Timers.time(), 1.7f, 0.08f)));
 
                 if (state.is(State.playing) && Mathf.chance(Timers.delta() * 0.033)) {
-                    Effects.effect(Fx.laserspark, target.worldx() - t1.x, target.worldy() - t1.y);
+                    Effects.effect(Fx.laserSpark, target.worldx() - t1.x, target.worldy() - t1.y);
                 }
             }
 

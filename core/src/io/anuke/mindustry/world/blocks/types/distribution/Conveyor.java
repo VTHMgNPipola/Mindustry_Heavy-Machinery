@@ -14,7 +14,6 @@ import io.anuke.ucore.util.Log;
 import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Strings;
 import io.anuke.ucore.util.Translator;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -251,7 +250,7 @@ public class Conveyor extends Block {
         }
     }
 
-    //Container class. Do not instantiate.
+    // Container class. Do not instantiate.
     static class ItemPos {
         private static short[] writeShort = new short[4];
         private static byte[] writeByte = new byte[4];

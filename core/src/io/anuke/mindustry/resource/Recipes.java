@@ -8,7 +8,12 @@ import io.anuke.mindustry.world.blocks.DistributionBlocks;
 import io.anuke.mindustry.world.blocks.ProductionBlocks;
 import io.anuke.mindustry.world.blocks.WeaponBlocks;
 
-import static io.anuke.mindustry.resource.Section.*;
+import static io.anuke.mindustry.resource.Section.crafting;
+import static io.anuke.mindustry.resource.Section.defense;
+import static io.anuke.mindustry.resource.Section.distribution;
+import static io.anuke.mindustry.resource.Section.power;
+import static io.anuke.mindustry.resource.Section.production;
+import static io.anuke.mindustry.resource.Section.weapon;
 
 public class Recipes {
     private static final Array<Recipe> list = Array.with(
@@ -25,15 +30,16 @@ public class Recipes {
             new Recipe(defense, DefenseBlocks.titaniumShieldWall, stack(Item.titanium, 16)),
 
             new Recipe(distribution, DistributionBlocks.conveyor, stack(Item.stone, 1)),
-            new Recipe(distribution, DistributionBlocks.steelconveyor, stack(Item.steel, 1)),
-            new Recipe(distribution, DistributionBlocks.pulseconveyor, stack(Item.dirium, 1)),
+            new Recipe(distribution, DistributionBlocks.steelConveyor, stack(Item.steel, 1)),
+            new Recipe(distribution, DistributionBlocks.pulseConveyor, stack(Item.dirium, 1)),
+            new Recipe(distribution, DistributionBlocks.expressConveyor, stack(Item.dirium, 5), stack(Item.steel, 5)),
             new Recipe(distribution, DistributionBlocks.router, stack(Item.stone, 2)),
             new Recipe(distribution, DistributionBlocks.junction, stack(Item.iron, 2)),
             new Recipe(distribution, DistributionBlocks.tunnel, stack(Item.iron, 2)),
             new Recipe(distribution, DistributionBlocks.conduit, stack(Item.steel, 1)),
-            new Recipe(distribution, DistributionBlocks.pulseconduit, stack(Item.titanium, 1), stack(Item.steel, 1)),
-            new Recipe(distribution, DistributionBlocks.liquidrouter, stack(Item.steel, 2)),
-            new Recipe(distribution, DistributionBlocks.liquidjunction, stack(Item.steel, 2)),
+            new Recipe(distribution, DistributionBlocks.pulseConduit, stack(Item.titanium, 1), stack(Item.steel, 1)),
+            new Recipe(distribution, DistributionBlocks.liquidRouter, stack(Item.steel, 2)),
+            new Recipe(distribution, DistributionBlocks.liquidJunction, stack(Item.steel, 2)),
             new Recipe(distribution, DistributionBlocks.sorter, stack(Item.steel, 2)),
 
             new Recipe(weapon, WeaponBlocks.turret, stack(Item.stone, 4)),
@@ -51,6 +57,7 @@ public class Recipes {
 
             new Recipe(crafting, ProductionBlocks.smelter, stack(Item.stone, 40), stack(Item.iron, 40)),
             new Recipe(crafting, ProductionBlocks.crucible, stack(Item.titanium, 50), stack(Item.steel, 50)),
+            new Recipe(crafting, ProductionBlocks.inductionSmelter, stack(Item.dirium, 50), stack(Item.titanium, 65), stack(Item.steel, 65)),
             new Recipe(crafting, ProductionBlocks.coalpurifier, stack(Item.steel, 10), stack(Item.iron, 10)),
             new Recipe(crafting, ProductionBlocks.titaniumpurifier, stack(Item.steel, 30), stack(Item.iron, 30)),
             new Recipe(crafting, ProductionBlocks.oilrefinery, stack(Item.steel, 15), stack(Item.iron, 15)),
@@ -70,10 +77,10 @@ public class Recipes {
             new Recipe(power, ProductionBlocks.combustiongenerator, stack(Item.iron, 30), stack(Item.stone, 20)),
             new Recipe(power, ProductionBlocks.rtgenerator, stack(Item.titanium, 20), stack(Item.steel, 20)),
             new Recipe(power, ProductionBlocks.nuclearReactor, stack(Item.titanium, 40), stack(Item.dirium, 40), stack(Item.steel, 50)),
-            new Recipe(power, DistributionBlocks.powerbooster, stack(Item.steel, 8), stack(Item.iron, 8)),
-            new Recipe(power, DistributionBlocks.powerlaser, stack(Item.steel, 3), stack(Item.iron, 3)),
-            new Recipe(power, DistributionBlocks.powerlasercorner, stack(Item.steel, 4), stack(Item.iron, 4)),
-            new Recipe(power, DistributionBlocks.powerlaserrouter, stack(Item.steel, 5), stack(Item.iron, 5)),
+            new Recipe(power, DistributionBlocks.powerBooster, stack(Item.steel, 8), stack(Item.iron, 8)),
+            new Recipe(power, DistributionBlocks.powerLaser, stack(Item.steel, 3), stack(Item.iron, 3)),
+            new Recipe(power, DistributionBlocks.powerLaserCorner, stack(Item.steel, 4), stack(Item.iron, 4)),
+            new Recipe(power, DistributionBlocks.powerLaserRouter, stack(Item.steel, 5), stack(Item.iron, 5)),
 
             new Recipe(power, DefenseBlocks.shieldGenerator, stack(Item.titanium, 30), stack(Item.dirium, 30)),
 

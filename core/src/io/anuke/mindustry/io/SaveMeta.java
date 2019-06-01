@@ -4,7 +4,6 @@ import io.anuke.mindustry.core.Platform;
 import io.anuke.mindustry.game.Difficulty;
 import io.anuke.mindustry.game.GameMode;
 import io.anuke.mindustry.world.Map;
-
 import java.util.Date;
 
 import static io.anuke.mindustry.Vars.world;

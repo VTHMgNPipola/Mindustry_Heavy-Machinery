@@ -14,7 +14,6 @@ import static io.anuke.mindustry.Vars.respawnduration;
 import static io.anuke.mindustry.Vars.tilesize;
 
 public class Fx {
-
     public static Color lightOrange = Color.valueOf("f68021");
     public static Color lighterOrange = Color.valueOf("f6e096");
     public static Color whiteOrange = Hue.mix(lightOrange, Color.WHITE, 0.6f);
@@ -25,8 +24,7 @@ public class Fx {
     public static Color beamLight = Color.valueOf("ddffe9");
     public static Color lightRed = Hue.mix(Color.WHITE, Color.FIREBRICK, 0.1f);
     public static final Effect
-
-            generatorexplosion = new Effect(28, 40f, e -> {
+            generatorExplosion = new Effect(28, 40f, e -> {
         Angles.randLenVectors(e.id, 16, 10f + e.fin() * 8f, (x, y) -> {
             float size = e.fout() * 12f + 1f;
             Draw.color(Color.WHITE, lightOrange, e.fin());
@@ -35,7 +33,7 @@ public class Fx {
         });
     }),
 
-    reactorsmoke = new Effect(17, e -> {
+    reactorSmoke = new Effect(17, e -> {
         Angles.randLenVectors(e.id, 4, e.fin() * 8f, (x, y) -> {
             float size = 1f + e.fout() * 5f;
             Draw.color(Color.LIGHT_GRAY, Color.GRAY, e.fin());
@@ -44,7 +42,7 @@ public class Fx {
         });
     }),
 
-    nuclearsmoke = new Effect(40, e -> {
+    nuclearSmoke = new Effect(40, e -> {
         Angles.randLenVectors(e.id, 4, e.fin() * 13f, (x, y) -> {
             float size = e.finpow() * 4f;
             Draw.color(Color.LIGHT_GRAY, Color.GRAY, e.fin());
@@ -53,7 +51,7 @@ public class Fx {
         });
     }),
 
-    nuclearcloud = new Effect(90, 200f, e -> {
+    nuclearCloud = new Effect(90, 200f, e -> {
         Angles.randLenVectors(e.id, 10, e.finpow() * 90f, (x, y) -> {
             float size = e.fout() * 14f;
             Draw.color(Color.LIME, Color.GRAY, e.fin());
@@ -62,7 +60,7 @@ public class Fx {
         });
     }),
 
-    chainshot = new Effect(9f, e -> {
+    chainShot = new Effect(9f, e -> {
         Draw.color(Color.WHITE, lightOrange, e.fin());
         Lines.stroke(e.fout() * 4f);
         Lines.lineAngle(e.x, e.y, e.rotation, e.fout() * 7f);
@@ -71,7 +69,7 @@ public class Fx {
         Draw.reset();
     }),
 
-    mortarshot = new Effect(10f, e -> {
+    mortarShot = new Effect(10f, e -> {
         Draw.color(Color.WHITE, Color.DARK_GRAY, e.fin());
         Lines.stroke(e.fout() * 6f);
         Lines.lineAngle(e.x, e.y, e.rotation, e.fout() * 10f);
@@ -82,7 +80,7 @@ public class Fx {
         Draw.reset();
     }),
 
-    railshot = new Effect(9f, e -> {
+    railShot = new Effect(9f, e -> {
         Draw.color(Color.WHITE, Color.DARK_GRAY, e.fin());
         Lines.stroke(e.fout() * 5f);
         Lines.lineAngle(e.x, e.y, e.rotation, e.fout() * 8f);
@@ -93,7 +91,7 @@ public class Fx {
         Draw.reset();
     }),
 
-    titanshot = new Effect(12f, e -> {
+    titanShot = new Effect(12f, e -> {
         Draw.color(Color.WHITE, lightOrange, e.fin());
         Lines.stroke(e.fout() * 7f);
         Lines.lineAngle(e.x, e.y, e.rotation, e.fout() * 12f);
@@ -136,14 +134,14 @@ public class Fx {
         Draw.reset();
     }),
 
-    empshockwave = new Effect(7f, e -> {
+    empShockwave = new Effect(7f, e -> {
         Draw.color(Color.WHITE, Color.SKY, e.fin());
         Lines.stroke(e.fout() * 2f);
         Lines.circle(e.x, e.y, e.fin() * 40f);
         Draw.reset();
     }),
 
-    empspark = new Effect(13, e -> {
+    empSpark = new Effect(13, e -> {
         Angles.randLenVectors(e.id, 7, 1f + e.fin() * 12f, (x, y) -> {
             float len = 1f + e.fout() * 6f;
             Draw.color(Color.SKY);
@@ -152,7 +150,7 @@ public class Fx {
         });
     }),
 
-    redgeneratespark = new Effect(18, e -> {
+    redGenerateSpark = new Effect(18, e -> {
         Angles.randLenVectors(e.id, 5, e.fin() * 8f, (x, y) -> {
             float len = e.fout() * 4f;
             Draw.color(Color.valueOf("fbb97f"), Color.GRAY, e.fin());
@@ -162,7 +160,7 @@ public class Fx {
         });
     }),
 
-    generatespark = new Effect(18, e -> {
+    generateSpark = new Effect(18, e -> {
         Angles.randLenVectors(e.id, 5, e.fin() * 8f, (x, y) -> {
             float len = e.fout() * 4f;
             Draw.color(Color.valueOf("d2b29c"), Color.GRAY, e.fin());
@@ -172,7 +170,7 @@ public class Fx {
         });
     }),
 
-    fuelburn = new Effect(23, e -> {
+    fuelBurn = new Effect(23, e -> {
         Angles.randLenVectors(e.id, 5, e.fin() * 9f, (x, y) -> {
             float len = e.fout() * 4f;
             Draw.color(Color.LIGHT_GRAY, Color.GRAY, e.fin());
@@ -182,7 +180,7 @@ public class Fx {
         });
     }),
 
-    laserspark = new Effect(14, e -> {
+    laserSpark = new Effect(14, e -> {
         Angles.randLenVectors(e.id, 8, 1f + e.fin() * 11f, (x, y) -> {
             float len = 1f + e.fout() * 5f;
             Draw.color(Color.WHITE, Color.CORAL, e.fin());
@@ -192,7 +190,7 @@ public class Fx {
         });
     }),
 
-    shellsmoke = new Effect(20, e -> {
+    shellSmoke = new Effect(20, e -> {
         Angles.randLenVectors(e.id, 8, 3f + e.fin() * 17f, (x, y) -> {
             float size = 2f + e.fout() * 5f;
             Draw.color(Color.LIGHT_GRAY, Color.DARK_GRAY, e.fin());
@@ -201,7 +199,7 @@ public class Fx {
         });
     }),
 
-    blastsmoke = new Effect(26, e -> {
+    blastSmoke = new Effect(26, e -> {
         Angles.randLenVectors(e.id, 12, 1f + e.fin() * 23f, (x, y) -> {
             float size = 2f + e.fout() * 6f;
             Draw.color(Color.LIGHT_GRAY, Color.DARK_GRAY, e.fin());
@@ -219,7 +217,7 @@ public class Fx {
         });
     }),
 
-    lavabubble = new Effect(45f, e -> {
+    lavaBubble = new Effect(45f, e -> {
         Draw.color(Color.ORANGE);
         float scl = 0.35f;
         Lines.stroke(1f - Mathf.clamp(e.fin() - (1f - scl)) * (1f / scl));
@@ -227,7 +225,7 @@ public class Fx {
         Draw.reset();
     }),
 
-    oilbubble = new Effect(64f, e -> {
+    oilBubble = new Effect(64f, e -> {
         Draw.color(Color.DARK_GRAY);
         float scl = 0.25f;
         Lines.stroke(1f - Mathf.clamp(e.fin() - (1f - scl)) * (1f / scl));
@@ -235,14 +233,14 @@ public class Fx {
         Draw.reset();
     }),
 
-    shellexplosion = new Effect(9, e -> {
+    shellExplosion = new Effect(9, e -> {
         Lines.stroke(2f - e.fin() * 1.7f);
         Draw.color(Color.WHITE, Color.LIGHT_GRAY, e.fin());
         Lines.circle(e.x, e.y, 3f + e.fin() * 9f);
         Draw.reset();
     }),
 
-    blastexplosion = new Effect(14, e -> {
+    blastExplosion = new Effect(14, e -> {
         Lines.stroke(1.2f - e.fin());
         Draw.color(Color.WHITE, lightOrange, e.fin());
         Lines.circle(e.x, e.y, 1.5f + e.fin() * 9f);
@@ -255,25 +253,25 @@ public class Fx {
         Draw.reset();
     }),
 
-    dooropen = new Effect(10, e -> {
+    doorOpen = new Effect(10, e -> {
         Lines.stroke(e.fout() * 1.6f);
         Lines.square(e.x, e.y, tilesize / 2f + e.fin() * 2f);
         Draw.reset();
     }),
 
-    doorclose = new Effect(10, e -> {
+    doorClose = new Effect(10, e -> {
         Lines.stroke(e.fout() * 1.6f);
         Lines.square(e.x, e.y, tilesize / 2f + e.fout() * 2f);
         Draw.reset();
     }),
 
-    dooropenlarge = new Effect(10, e -> {
+    doorOpenLarge = new Effect(10, e -> {
         Lines.stroke(e.fout() * 1.6f);
         Lines.square(e.x, e.y, tilesize + e.fin() * 2f);
         Draw.reset();
     }),
 
-    doorcloselarge = new Effect(10, e -> {
+    doorCloseLarge = new Effect(10, e -> {
         Lines.stroke(e.fout() * 1.6f);
         Lines.square(e.x, e.y, tilesize + e.fout() * 2f);
         Draw.reset();
@@ -286,14 +284,14 @@ public class Fx {
         Draw.reset();
     }),
 
-    purifyoil = new Effect(10, e -> {
+    purifyOil = new Effect(10, e -> {
         Draw.color(Color.BLACK, Color.GRAY, e.fin());
         Lines.stroke(2f);
         Lines.spikes(e.x, e.y, e.fin() * 4f, 2, 6);
         Draw.reset();
     }),
 
-    purifystone = new Effect(10, e -> {
+    purifyStone = new Effect(10, e -> {
         Draw.color(Color.ORANGE, Color.GRAY, e.fin());
         Lines.stroke(2f);
         Lines.spikes(e.x, e.y, e.fin() * 4f, 2, 6);
@@ -314,7 +312,7 @@ public class Fx {
         Draw.reset();
     }),
 
-    sparkbig = new Effect(11, e -> {
+    sparkBig = new Effect(11, e -> {
         Lines.stroke(1f);
         Draw.color(lightRed, Color.GRAY, e.fin());
         Lines.spikes(e.x, e.y, e.fin() * 5f, 2.3f, 8);
@@ -342,14 +340,14 @@ public class Fx {
         Draw.reset();
     }),
 
-    laserhit = new Effect(10, e -> {
+    laserHit = new Effect(10, e -> {
         Lines.stroke(1f);
         Draw.color(Color.WHITE, Color.SKY, e.fin());
         Lines.spikes(e.x, e.y, e.fin() * 2f, 2, 6);
         Draw.reset();
     }),
 
-    shieldhit = new Effect(9, e -> {
+    shieldHit = new Effect(9, e -> {
         Lines.stroke(1f);
         Draw.color(Color.WHITE, Color.SKY, e.fin());
         Lines.spikes(e.x, e.y, e.fin() * 5f, 2, 6);
@@ -395,7 +393,7 @@ public class Fx {
         Draw.reset();
     }),
 
-    beamhit = new Effect(8, e -> {
+    beamHit = new Effect(8, e -> {
         Draw.color(beamLight, beam, e.fin());
         Lines.stroke(e.fout() * 3f + 0.5f);
         Lines.circle(e.x, e.y, e.fin() * 8f);
@@ -432,7 +430,7 @@ public class Fx {
     }),
 
 
-    blockexplosion = new Effect(13, e -> {
+    blockExplosion = new Effect(13, e -> {
         Angles.randLenVectors(e.id + 1, 8, 5f + e.fin() * 11f, (x, y) -> {
             float size = 2f + e.fout() * 8f;
             Draw.color(Color.LIGHT_GRAY, Color.DARK_GRAY, e.fin());
@@ -453,7 +451,7 @@ public class Fx {
         Draw.reset();
     }),
 
-    clusterbomb = new Effect(10f, e -> {
+    clusterBomb = new Effect(10f, e -> {
         Draw.color(Color.WHITE, lightOrange, e.fin());
         Lines.stroke(e.fout() * 1.5f);
         Lines.poly(e.x, e.y, 4, e.fout() * 8f);
@@ -461,7 +459,7 @@ public class Fx {
         Draw.reset();
     }),
 
-    coreexplosion = new Effect(13, e -> {
+    coreExplosion = new Effect(13, e -> {
         Lines.stroke(3f - e.fin() * 2f);
         Draw.color(Color.ORANGE, Color.WHITE, e.fin());
         Lines.spikes(e.x, e.y, 5f + e.fin() * 40f, 6, 6);
@@ -476,21 +474,21 @@ public class Fx {
         Draw.reset();
     }),
 
-    railsmoke = new Effect(30, e -> {
+    railSmoke = new Effect(30, e -> {
         Draw.color(Color.LIGHT_GRAY, Color.WHITE, e.fin());
         float size = e.fout() * 4f;
         Draw.rect("circle", e.x, e.y, size, size);
         Draw.reset();
     }),
 
-    chainsmoke = new Effect(30, e -> {
+    chainSmoke = new Effect(30, e -> {
         Draw.color(lightGray);
         float size = e.fout() * 4f;
         Draw.rect("circle", e.x, e.y, size, size);
         Draw.reset();
     }),
 
-    dashsmoke = new Effect(30, e -> {
+    dashSmoke = new Effect(30, e -> {
         Draw.color(Color.CORAL, Color.GRAY, e.fin());
         float size = e.fout() * 4f;
         Draw.rect("circle", e.x, e.y, size, size);

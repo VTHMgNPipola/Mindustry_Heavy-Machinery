@@ -22,7 +22,18 @@ import io.anuke.ucore.entities.Entities;
 import io.anuke.ucore.modules.Module;
 import io.anuke.ucore.util.Mathf;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.aheadPathfinding;
+import static io.anuke.mindustry.Vars.bulletGroup;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.enemyGroup;
+import static io.anuke.mindustry.Vars.maxwavespace;
+import static io.anuke.mindustry.Vars.playerGroup;
+import static io.anuke.mindustry.Vars.shieldGroup;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.tileGroup;
+import static io.anuke.mindustry.Vars.tilesize;
+import static io.anuke.mindustry.Vars.wavespace;
+import static io.anuke.mindustry.Vars.world;
 
 /**
  * Logic module.

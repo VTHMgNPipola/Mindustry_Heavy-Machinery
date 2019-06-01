@@ -11,7 +11,13 @@ import io.anuke.ucore.scene.builders.label;
 import io.anuke.ucore.scene.builders.table;
 import io.anuke.ucore.util.OS;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.gwt;
+import static io.anuke.mindustry.Vars.ios;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public class MenuFragment implements Fragment {
 

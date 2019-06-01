@@ -14,7 +14,7 @@ public class Omnidrill extends Drill {
 
     public Omnidrill(String name) {
         super(name);
-        drillEffect = Fx.sparkbig;
+        drillEffect = Fx.sparkBig;
         resource = null;
         result = null;
     }

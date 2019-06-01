@@ -47,7 +47,26 @@ import io.anuke.ucore.util.Angles;
 import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Tmp;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.baseCameraScale;
+import static io.anuke.mindustry.Vars.bulletGroup;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.debug;
+import static io.anuke.mindustry.Vars.effectGroup;
+import static io.anuke.mindustry.Vars.enemyGroup;
+import static io.anuke.mindustry.Vars.enemyspawnspace;
+import static io.anuke.mindustry.Vars.fontscale;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.playerGroup;
+import static io.anuke.mindustry.Vars.renderer;
+import static io.anuke.mindustry.Vars.shieldGroup;
+import static io.anuke.mindustry.Vars.showBlockDebug;
+import static io.anuke.mindustry.Vars.showUI;
+import static io.anuke.mindustry.Vars.snapCamera;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.tilesize;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 import static io.anuke.ucore.core.Core.batch;
 import static io.anuke.ucore.core.Core.camera;
 

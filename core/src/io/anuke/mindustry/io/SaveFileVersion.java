@@ -1,7 +1,6 @@
 package io.anuke.mindustry.io;
 
 import io.anuke.mindustry.game.Difficulty;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

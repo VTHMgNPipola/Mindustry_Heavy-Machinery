@@ -11,18 +11,19 @@ import io.anuke.ucore.core.Effects.Effect;
 import io.anuke.ucore.entities.Entities;
 import io.anuke.ucore.entities.SolidEntity;
 import io.anuke.ucore.graphics.Draw;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.enemyGroup;
+import static io.anuke.mindustry.Vars.playerGroup;
+import static io.anuke.mindustry.Vars.tilesize;
 
 public class Door extends Wall {
     protected final Rectangle rect = new Rectangle();
 
-    protected Effect openfx = Fx.dooropen;
-    protected Effect closefx = Fx.doorclose;
+    protected Effect openfx = Fx.doorOpen;
+    protected Effect closefx = Fx.doorClose;
 
     public Door(String name) {
         super(name);

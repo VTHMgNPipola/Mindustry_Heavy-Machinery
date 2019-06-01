@@ -8,7 +8,11 @@ import io.anuke.ucore.core.Inputs;
 import io.anuke.ucore.scene.ui.layout.Unit;
 import io.anuke.ucore.util.Mathf;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.renderer;
+import static io.anuke.mindustry.Vars.state;
+import static io.anuke.mindustry.Vars.ui;
 
 public class GestureHandler extends GestureAdapter {
     AndroidInput input;

@@ -33,10 +33,13 @@ import io.anuke.ucore.util.Bundles;
 import io.anuke.ucore.util.Input;
 import io.anuke.ucore.util.Log;
 import io.anuke.ucore.util.Strings;
-
 import java.util.Arrays;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.gwt;
+import static io.anuke.mindustry.Vars.ios;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public class MapEditorDialog extends Dialog {
     private MapEditor editor;

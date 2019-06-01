@@ -14,7 +14,10 @@ import io.anuke.mindustry.resource.Weapon;
 import io.anuke.mindustry.world.Tile;
 import io.anuke.ucore.modules.Module;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.headless;
+import static io.anuke.mindustry.Vars.playerGroup;
+import static io.anuke.mindustry.Vars.ui;
+import static io.anuke.mindustry.Vars.world;
 
 public class NetCommon extends Module {
 

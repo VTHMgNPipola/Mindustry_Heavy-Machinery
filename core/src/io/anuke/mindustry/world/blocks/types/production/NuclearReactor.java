@@ -15,7 +15,6 @@ import io.anuke.ucore.graphics.Draw;
 import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Strings;
 import io.anuke.ucore.util.Translator;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -89,7 +88,7 @@ public class NuclearReactor extends LiquidPowerGenerator {
         if (entity.heat > smokeThreshold) {
             float smoke = 1.0f + (entity.heat - smokeThreshold) / (1f - smokeThreshold); //ranges from 1.0 to 2.0
             if (Mathf.chance(smoke / 20.0 * Timers.delta())) {
-                Effects.effect(Fx.reactorsmoke, tile.worldx() + Mathf.range(width * tilesize / 2f),
+                Effects.effect(Fx.reactorSmoke, tile.worldx() + Mathf.range(width * tilesize / 2f),
                         tile.worldy() + Mathf.random(height * tilesize / 2f));
             }
         }
@@ -132,7 +131,7 @@ public class NuclearReactor extends LiquidPowerGenerator {
         Effects.effect(explosionEffect, tile.worldx(), tile.worldy());
         for (int i = 0; i < 6; i++) {
             Timers.run(Mathf.random(40), () -> {
-                Effects.effect(Fx.nuclearcloud, tile.worldx(), tile.worldy());
+                Effects.effect(Fx.nuclearCloud, tile.worldx(), tile.worldy());
             });
         }
 
@@ -149,7 +148,7 @@ public class NuclearReactor extends LiquidPowerGenerator {
         for (int i = 0; i < 70; i++) {
             Timers.run(Mathf.random(80), () -> {
                 tr.rnd(Mathf.random(120f));
-                Effects.effect(Fx.nuclearsmoke, tr.x + tile.worldx(), tr.y + tile.worldy());
+                Effects.effect(Fx.nuclearSmoke, tr.x + tile.worldx(), tr.y + tile.worldy());
             });
         }
     }

@@ -35,7 +35,12 @@ import io.anuke.ucore.util.Bundles;
 import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Strings;
 
-import static io.anuke.mindustry.Vars.*;
+import static io.anuke.mindustry.Vars.control;
+import static io.anuke.mindustry.Vars.currentEditLogs;
+import static io.anuke.mindustry.Vars.fontscale;
+import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.state;
 
 public class BlocksFragment implements Fragment {
     private Table desctable, itemtable, blocks, weapons;
@@ -340,7 +345,7 @@ public class BlocksFragment implements Fragment {
             if (s.contains(":")) {
                 String color = s.substring(0, s.indexOf("]") + 1);
                 String first = s.substring(color.length(), s.indexOf(":")).replace("/", "").replace(" ", "").toLowerCase();
-                String last = s.substring(s.indexOf(":"), s.length());
+                String last = s.substring(s.indexOf(":"));
                 s = color + Bundles.get("text.blocks." + first) + last;
             }
             table.add(s).left();
