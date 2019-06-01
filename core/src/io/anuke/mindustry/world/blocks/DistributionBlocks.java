@@ -16,9 +16,7 @@ import io.anuke.mindustry.world.blocks.types.distribution.TunnelConveyor;
 
 public class DistributionBlocks {
 
-    public static final Block
-
-            conduit = new Conduit("conduit") {{
+    public static final Block conduit = new Conduit("conduit") {{
         health = 45;
     }},
 
@@ -29,7 +27,6 @@ public class DistributionBlocks {
     }},
 
     liquidRouter = new LiquidRouter("liquidrouter") {{
-
     }},
 
     conveyor = new Conveyor("conveyor") {{
@@ -51,11 +48,9 @@ public class DistributionBlocks {
     }},
 
     router = new Router("router") {{
-
     }},
 
     junction = new Junction("junction") {{
-
     }},
 
     tunnel = new TunnelConveyor("conveyortunnel") {{
