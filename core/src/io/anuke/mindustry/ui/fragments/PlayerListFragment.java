@@ -68,7 +68,7 @@ public class PlayerListFragment implements Fragment {
 
                     new button("$text.server.rollback", () -> {
                         ui.rollback.show();
-                    }).padTop(-12).padBottom(-12).padRight(-12).fillY().cell.disabled(b -> !player.isAdmin);
+                    }).padTop(-12).padBottom(-12).padRight(-12).fillY().cell.disabled(b -> !player.admin);
 
                 }}.pad(10f).growX().end();
             }}.end();
@@ -102,18 +102,18 @@ public class PlayerListFragment implements Fragment {
         for (Player player : playerGroup.all()) {
             NetConnection connection = gwt ? null : Net.getConnection(player.clientid);
 
-            if (connection == null && Net.server() && !player.isLocal) continue;
+            if (connection == null && Net.server() && !player.local) continue;
 
             Table button = new Table("button");
             button.left();
             button.margin(5).marginBottom(10);
 
             Stack stack = new Stack();
-            BorderImage image = new BorderImage(Draw.region(player.isAndroid ? "ship-standard" : "mech-standard-icon"), 3f);
+            BorderImage image = new BorderImage(Draw.region(player.enabled ? "ship-standard" : "mech-standard-icon"), 3f);
 
             stack.add(image);
 
-            if (!player.isAndroid) {
+            if (!player.enabled) {
 
                 stack.add(new Element() {
                     public void draw() {
@@ -129,9 +129,9 @@ public class PlayerListFragment implements Fragment {
             button.labelWrap("[#" + player.getColor().toString().toUpperCase() + "]" + player.name).width(170f).pad(10);
             button.add().grow();
 
-            button.addImage("icon-admin").size(14 * 2).visible(() -> player.isAdmin && !(!player.isLocal && Net.server())).padRight(5);
+            button.addImage("icon-admin").size(14 * 2).visible(() -> player.admin && !(!player.local && Net.server())).padRight(5);
 
-            if ((Net.server() || Vars.player.isAdmin) && !player.isLocal && (!player.isAdmin || Net.server())) {
+            if ((Net.server() || Vars.player.admin) && !player.local && (!player.admin || Net.server())) {
                 button.add().growY();
 
                 float bs = (h + 14) / 2f;
@@ -177,7 +177,7 @@ public class PlayerListFragment implements Fragment {
                             });
                         }
                     }).update(b -> {
-                        b.setChecked(player.isAdmin);
+                        b.setChecked(player.admin);
                         b.setDisabled(Net.client());
                     }).get().setTouchable(() -> Net.client() ? Touchable.disabled : Touchable.enabled);
 

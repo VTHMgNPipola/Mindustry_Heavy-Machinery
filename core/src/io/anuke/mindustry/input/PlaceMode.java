@@ -16,6 +16,7 @@ import io.anuke.ucore.util.Translator;
 
 import static io.anuke.mindustry.Vars.control;
 import static io.anuke.mindustry.Vars.mobile;
+import static io.anuke.mindustry.Vars.playerDisabled;
 import static io.anuke.mindustry.Vars.renderer;
 import static io.anuke.mindustry.Vars.state;
 import static io.anuke.mindustry.Vars.tilesize;
@@ -180,7 +181,7 @@ public enum PlaceMode {
             endx = this.endx;
             endy = this.endy;
 
-            if (mobile) {
+            if (mobile || playerDisabled) {
                 ToolFragment t = ui.toolfrag;
                 if (!t.confirming || t.px != tilex || t.py != tiley || t.px2 != endx || t.py2 != endy) {
                     t.confirming = true;

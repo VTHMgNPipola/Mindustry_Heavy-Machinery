@@ -132,7 +132,7 @@ public class Placement {
 
         if (type.solid || type.solidifes) {
             for (Player player : playerGroup.all()) {
-                if (!player.isAndroid && rect.overlaps(player.hitbox.getRect(player.x, player.y))) {
+                if (!player.enabled && rect.overlaps(player.hitbox.getRect(player.x, player.y))) {
                     return false;
                 }
             }

@@ -55,6 +55,9 @@ public class Recipes {
             new Recipe(weapon, WeaponBlocks.chainturret, stack(Item.steel, 50), stack(Item.titanium, 25), stack(Item.dirium, 40)),
             new Recipe(weapon, WeaponBlocks.titanturret, stack(Item.steel, 70), stack(Item.titanium, 50), stack(Item.dirium, 55)),
 
+            // TODO: Fix shots being fired at random directions
+            //new Recipe(weapon, WeaponBlocks.antimatterTurret, stack(Item.dirium, 1000), stack(Item.titanium, 5000), stack(Item.steel, 10000)),
+
             new Recipe(crafting, ProductionBlocks.smelter, stack(Item.stone, 40), stack(Item.iron, 40)),
             new Recipe(crafting, ProductionBlocks.crucible, stack(Item.titanium, 50), stack(Item.steel, 50)),
             new Recipe(crafting, ProductionBlocks.inductionSmelter, stack(Item.dirium, 50), stack(Item.titanium, 65), stack(Item.steel, 65)),
@@ -81,6 +84,12 @@ public class Recipes {
             new Recipe(power, DistributionBlocks.powerLaser, stack(Item.steel, 3), stack(Item.iron, 3)),
             new Recipe(power, DistributionBlocks.powerLaserCorner, stack(Item.steel, 4), stack(Item.iron, 4)),
             new Recipe(power, DistributionBlocks.powerLaserRouter, stack(Item.steel, 5), stack(Item.iron, 5)),
+            new Recipe(power, DistributionBlocks.highPowerLaser, stack(Item.steel, 25), stack(Item.iron, 25), stack(Item.titanium, 15)),
+            new Recipe(power, DistributionBlocks.highPowerLaserCorner, stack(Item.steel, 30), stack(Item.iron, 30), stack(Item.titanium, 20)),
+            new Recipe(power, DistributionBlocks.highPowerLaserRouter, stack(Item.steel, 35), stack(Item.iron, 35), stack(Item.titanium, 25)),
+            new Recipe(power, DistributionBlocks.veryHighPowerLaser, stack(Item.steel, 75), stack(Item.iron, 75), stack(Item.dirium, 30)),
+            new Recipe(power, DistributionBlocks.veryHighPowerLaserCorner, stack(Item.steel, 90), stack(Item.iron, 90), stack(Item.dirium, 45)),
+            new Recipe(power, DistributionBlocks.veryHighPowerLaserRouter, stack(Item.steel, 105), stack(Item.iron, 105), stack(Item.dirium, 60)),
 
             new Recipe(power, DefenseBlocks.shieldGenerator, stack(Item.titanium, 30), stack(Item.dirium, 30)),
 

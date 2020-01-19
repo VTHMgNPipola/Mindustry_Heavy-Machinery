@@ -92,7 +92,7 @@ public class NetClient extends Module {
     public NetClient() {
 
         Net.handleClient(Connect.class, packet -> {
-            player.isAdmin = false;
+            player.admin = false;
 
             Net.setClientLoaded(false);
             recieved.clear();
@@ -339,7 +339,7 @@ public class NetClient extends Module {
 
         Net.handleClient(PlayerAdminPacket.class, packet -> {
             Player player = playerGroup.getByID(packet.id);
-            player.isAdmin = packet.admin;
+            player.admin = packet.admin;
             ui.listfrag.rebuild();
         });
 

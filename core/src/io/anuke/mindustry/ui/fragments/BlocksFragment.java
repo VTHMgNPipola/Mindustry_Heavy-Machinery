@@ -40,6 +40,7 @@ import static io.anuke.mindustry.Vars.currentEditLogs;
 import static io.anuke.mindustry.Vars.fontscale;
 import static io.anuke.mindustry.Vars.mobile;
 import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.playerDisabled;
 import static io.anuke.mindustry.Vars.state;
 
 public class BlocksFragment implements Fragment {
@@ -214,7 +215,7 @@ public class BlocksFragment implements Fragment {
     }
 
     public void updateWeapons() {
-        if (mobile) return;
+        if (mobile || playerDisabled) return;
 
         weapons.clearChildren();
         weapons.left();

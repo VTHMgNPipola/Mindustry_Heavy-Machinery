@@ -49,6 +49,7 @@ import static io.anuke.mindustry.Vars.logic;
 import static io.anuke.mindustry.Vars.mobile;
 import static io.anuke.mindustry.Vars.player;
 import static io.anuke.mindustry.Vars.playerColors;
+import static io.anuke.mindustry.Vars.playerDisabled;
 import static io.anuke.mindustry.Vars.port;
 import static io.anuke.mindustry.Vars.renderer;
 import static io.anuke.mindustry.Vars.saveSlots;
@@ -87,7 +88,7 @@ public class Control extends Module {
 
         Gdx.input.setCatchBackKey(true);
 
-        if (mobile) {
+        if (mobile || playerDisabled) {
             input = new AndroidInput();
         } else {
             input = new DesktopInput();
@@ -147,7 +148,7 @@ public class Control extends Module {
                 "port", port + "",
                 "name", mobile || gwt ? "player" : UCore.getProperty("user.name"),
                 "servers", "",
-                "color", Color.rgba8888(playerColors[8]),
+                "color", Color.rgba8888(playerColors[9]),
                 "lastVersion", "3.2",
                 "lastBuild", 0
         );
@@ -160,9 +161,9 @@ public class Control extends Module {
 
         player = new Player();
         player.name = Settings.getString("name");
-        player.isAndroid = mobile;
+        player.enabled = playerDisabled;
         player.color.set(Settings.getInt("color"));
-        player.isLocal = true;
+        player.local = true;
 
         saves.load();
 

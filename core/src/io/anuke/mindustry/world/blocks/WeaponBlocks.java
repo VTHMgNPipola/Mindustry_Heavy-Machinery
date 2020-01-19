@@ -11,6 +11,7 @@ import io.anuke.mindustry.world.blocks.types.defense.LaserTurret;
 import io.anuke.mindustry.world.blocks.types.defense.PowerTurret;
 import io.anuke.mindustry.world.blocks.types.defense.Turret;
 import io.anuke.ucore.core.Effects;
+import io.anuke.ucore.graphics.Draw;
 import io.anuke.ucore.util.Angles;
 import io.anuke.ucore.util.Mathf;
 
@@ -202,6 +203,23 @@ public class WeaponBlocks {
             shootCone = 9f;
             shootEffect = Fx.titanShot;
             shootShake = 3f;
+        }
+    },
+
+    antimatterTurret = new PowerTurret("antimatterturret") {
+        {
+            shootsound = "laser";
+            range = 100f;
+            reload = 1000f;
+            bullet = BulletType.antimatter;
+            health = 1500;
+            powerCapacity = 50_000f;
+            inaccuracy = 0.1f;
+        }
+
+        @Override
+        public void drawLayer(Tile tile) {
+            Draw.rect(name(), tile.drawx(), tile.drawy(), 0);
         }
     };
 }

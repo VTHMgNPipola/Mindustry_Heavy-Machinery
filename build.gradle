@@ -88,6 +88,12 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-controllers-lwjgl3:$gdxVersion"
         compile 'com.github.MinnDevelopment:java-discord-rpc:v2.0.0'
     }
+
+    jar {
+        manifest {
+            attributes 'Main-Class': 'io.anuke.mindustry.desktop.DesktopLauncher'
+        }
+    }
 }
 
 project(":core") {

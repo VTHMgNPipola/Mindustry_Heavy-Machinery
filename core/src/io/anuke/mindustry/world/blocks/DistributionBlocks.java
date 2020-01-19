@@ -73,6 +73,44 @@ public class DistributionBlocks {
         laserDirections = 2;
     }},
 
+    highPowerLaser = new PowerLaser("highpowerlaser") {{
+        laserRange *= 2;
+        powerSpeed *= 2;
+        powerCapacity *= 3;
+    }},
+
+    highPowerLaserRouter = new PowerLaserRouter("highpowerlaserrouter") {{
+        laserRange *= 2;
+        powerSpeed *= 2;
+        powerCapacity *= 3;
+    }},
+
+    highPowerLaserCorner = new PowerLaserRouter("highpowerlasercorner") {{
+        laserRange *= 2;
+        powerSpeed *= 2;
+        powerCapacity *= 3;
+        laserDirections = 2;
+    }},
+
+    veryHighPowerLaser = new PowerLaser("veryhighpowerlaser") {{
+        laserRange *= 3;
+        powerSpeed *= 3;
+        powerCapacity *= 4;
+    }},
+
+    veryHighPowerLaserRouter = new PowerLaserRouter("veryhighpowerlaserrouter") {{
+        laserRange *= 3;
+        powerSpeed *= 3;
+        powerCapacity *= 4;
+    }},
+
+    veryHighPowerLaserCorner = new PowerLaserRouter("veryhighpowerlasercorner") {{
+        laserRange *= 3;
+        powerSpeed *= 3;
+        powerCapacity *= 4;
+        laserDirections = 2;
+    }},
+
     teleporter = new Teleporter("teleporter") {{
     }},
 

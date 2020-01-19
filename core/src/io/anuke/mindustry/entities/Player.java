@@ -48,8 +48,8 @@ public class Player extends SyncEntity {
     static final int timerRegen = 3;
 
     public String name = "name";
-    public boolean isAndroid;
-    public boolean isAdmin;
+    public boolean enabled;
+    public boolean admin;
     public Color color = new Color();
 
     public Weapon weaponLeft = Weapon.blaster;
@@ -60,7 +60,7 @@ public class Player extends SyncEntity {
     public boolean dashing = false;
 
     public int clientid = -1;
-    public boolean isLocal = false;
+    public boolean local = false;
     public Timer timer = new Timer(4);
 
     private Vector2 movement = new Vector2();
@@ -76,10 +76,10 @@ public class Player extends SyncEntity {
 
     @Override
     public void damage(float amount) {
-        if (debug || isAndroid) return;
+        if (debug || enabled) return;
 
         health -= amount;
-        if (health <= 0 && !dead && isLocal) { //remote players don't die normally
+        if (health <= 0 && !dead && local) { // remote players don't die normally
             onDeath();
             dead = true;
         }
@@ -93,7 +93,7 @@ public class Player extends SyncEntity {
                 return false;
             }
         }
-        return !isDead() && super.collides(other) && !isAndroid;
+        return !isDead() && super.collides(other) && !enabled;
     }
 
     @Override
@@ -112,7 +112,7 @@ public class Player extends SyncEntity {
     }
 
     /**
-     * called when a remote player death event is recieved
+     * Called when a remote player death event is received
      */
     public void doRespawn() {
         dead = true;
@@ -129,10 +129,10 @@ public class Player extends SyncEntity {
 
     @Override
     public void drawSmooth() {
-        if ((debug && (!showPlayer || !showUI)) || (isAndroid && isLocal) || dead) return;
-        boolean snap = snapCamera && Settings.getBool("smoothcam") && Settings.getBool("pixelate") && isLocal;
+        if ((debug && (!showPlayer || !showUI)) || (enabled && local) || dead) return;
+        boolean snap = snapCamera && Settings.getBool("smoothcam") && Settings.getBool("pixelate") && local;
 
-        String part = isAndroid ? "ship" : "mech";
+        String part = enabled ? "ship" : "mech";
 
         Shaders.outline.color.set(getColor());
         Shaders.outline.lighten = 0f;
@@ -140,7 +140,7 @@ public class Player extends SyncEntity {
 
         Shaders.outline.apply();
 
-        if (!isAndroid) {
+        if (!enabled) {
             for (int i : Mathf.signs) {
                 Weapon weapon = i < 0 ? weaponLeft : weaponRight;
                 tr.trns(angle - 90, 3 * i, 2);
@@ -164,11 +164,11 @@ public class Player extends SyncEntity {
 
     @Override
     public void update() {
-        if (!isLocal || isAndroid) {
-            if (isAndroid && isLocal) {
+        if (!local || enabled) {
+            if (enabled && local) {
                 angle = Mathf.slerpDelta(angle, targetAngle, 0.2f);
             }
-            if (!isLocal) interpolate();
+            if (!local) interpolate();
             return;
         }
 
@@ -242,7 +242,7 @@ public class Player extends SyncEntity {
 
     @Override
     public String toString() {
-        return "Player{" + id + ", android=" + isAndroid + ", local=" + isLocal + ", " + x + ", " + y + "}\n";
+        return "Player{" + id + ", android=" + enabled + ", local=" + local + ", " + x + ", " + y + "}\n";
     }
 
     @Override
@@ -251,8 +251,8 @@ public class Player extends SyncEntity {
         buffer.put(name.getBytes());
         buffer.put(weaponLeft.id);
         buffer.put(weaponRight.id);
-        buffer.put(isAndroid ? 1 : (byte) 0);
-        buffer.put(isAdmin ? 1 : (byte) 0);
+        buffer.put(enabled ? 1 : (byte) 0);
+        buffer.put(admin ? 1 : (byte) 0);
         buffer.putInt(Color.rgba8888(color));
         buffer.putFloat(x);
         buffer.putFloat(y);
@@ -266,8 +266,8 @@ public class Player extends SyncEntity {
         name = new String(n);
         weaponLeft = (Weapon) Upgrade.getByID(buffer.get());
         weaponRight = (Weapon) Upgrade.getByID(buffer.get());
-        isAndroid = buffer.get() == 1;
-        isAdmin = buffer.get() == 1;
+        enabled = buffer.get() == 1;
+        admin = buffer.get() == 1;
         color.set(buffer.getInt());
         x = buffer.getFloat();
         y = buffer.getFloat();
@@ -276,7 +276,7 @@ public class Player extends SyncEntity {
 
     @Override
     public void write(ByteBuffer data) {
-        if (Net.client() || isLocal) {
+        if (Net.client() || local) {
             data.putFloat(x);
             data.putFloat(y);
         } else {
@@ -311,7 +311,7 @@ public class Player extends SyncEntity {
         float tx = x + Angles.trnsx(angle + 180f, 4f);
         float ty = y + Angles.trnsy(angle + 180f, 4f);
 
-        if (isAndroid && i.target.dst(i.last) > 2f && timer.get(timerDash, 1)) {
+        if (enabled && i.target.dst(i.last) > 2f && timer.get(timerDash, 1)) {
             Effects.effect(Fx.dashSmoke, tx, ty);
         }
 

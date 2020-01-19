@@ -95,10 +95,10 @@ public class DebugFragment implements Fragment {
             result.append(player.y);
             result.append("\n");
             result.append("   android: ");
-            result.append(player.isAndroid);
+            result.append(player.enabled);
             result.append("\n");
             result.append("   local: ");
-            result.append(player.isLocal);
+            result.append(player.local);
             result.append("\n");
 
             result.append("\n");

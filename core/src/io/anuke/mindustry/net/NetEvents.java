@@ -185,7 +185,7 @@ public class NetEvents {
         PlayerAdminPacket packet = new PlayerAdminPacket();
         packet.admin = admin;
         packet.id = player.id;
-        player.isAdmin = admin;
+        player.admin = admin;
         Net.send(packet, SendMode.tcp);
     }
 

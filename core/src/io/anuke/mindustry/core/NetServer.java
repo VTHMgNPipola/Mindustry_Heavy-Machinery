@@ -140,10 +140,10 @@ public class NetServer extends Module {
             }
 
             Player player = new Player();
-            player.isAdmin = admins.isAdmin(uuid, ip);
+            player.admin = admins.isAdmin(uuid, ip);
             player.clientid = id;
             player.name = packet.name;
-            player.isAndroid = packet.android;
+            player.enabled = packet.android;
             player.set(world.getSpawnX(), world.getSpawnY());
             player.setNet(player.x, player.y);
             player.setNet(player.x, player.y);
@@ -369,7 +369,7 @@ public class NetServer extends Module {
         Net.handleServer(AdministerRequestPacket.class, (id, packet) -> {
             Player player = connections.get(id);
 
-            if (!player.isAdmin) {
+            if (!player.admin) {
                 Log.err("ACCESS DENIED: Player {0} / {1} attempted to perform admin action without proper security access.",
                         player.name, Net.getConnection(player.clientid).address);
                 return;
@@ -377,7 +377,7 @@ public class NetServer extends Module {
 
             Player other = playerGroup.getByID(packet.id);
 
-            if (other == null || other.isAdmin) {
+            if (other == null || other.admin) {
                 Log.err("{0} attempted to perform admin action on nonexistant or admin player.", player.name);
                 return;
             }
@@ -407,7 +407,7 @@ public class NetServer extends Module {
         Net.handleServer(RollbackRequestPacket.class, (id, packet) -> {
             Player player = connections.get(id);
 
-            if (!player.isAdmin) {
+            if (!player.admin) {
                 Log.err("ACCESS DENIED: Player {0} / {1} attempted to perform a rollback without proper security access.",
                         player.name, Net.getConnection(player.clientid).address);
                 return;

@@ -57,6 +57,7 @@ import static io.anuke.mindustry.Vars.enemyspawnspace;
 import static io.anuke.mindustry.Vars.fontscale;
 import static io.anuke.mindustry.Vars.mobile;
 import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.playerDisabled;
 import static io.anuke.mindustry.Vars.playerGroup;
 import static io.anuke.mindustry.Vars.renderer;
 import static io.anuke.mindustry.Vars.shieldGroup;
@@ -165,7 +166,7 @@ public class Renderer extends RendererModule {
 
             float deltax = camera.position.x - prex, deltay = camera.position.y - prey;
 
-            if (mobile) {
+            if (mobile || playerDisabled) {
                 player.x += camera.position.x - prevx;
                 player.y += camera.position.y - prevy;
             }
@@ -218,7 +219,7 @@ public class Renderer extends RendererModule {
 
         Graphics.shader(Shaders.outline, false);
         Entities.draw(enemyGroup);
-        Entities.draw(playerGroup, p -> !p.isAndroid);
+        Entities.draw(playerGroup, p -> !p.enabled);
         Graphics.shader();
 
         Entities.draw(Entities.defaultGroup());
@@ -226,7 +227,7 @@ public class Renderer extends RendererModule {
         blocks.drawBlocks(true);
 
         Graphics.shader(Shaders.outline, false);
-        Entities.draw(playerGroup, p -> p.isAndroid);
+        Entities.draw(playerGroup, p -> p.enabled);
         Graphics.shader();
 
         Entities.draw(bulletGroup);
@@ -292,7 +293,7 @@ public class Renderer extends RendererModule {
 
         Draw.tscl(0.25f / 2);
         for (Player player : playerGroup.all()) {
-            if (!player.isLocal && !player.isDead()) {
+            if (!player.local && !player.isDead()) {
                 layout.setText(Core.font, player.name);
                 Draw.color(0f, 0f, 0f, 0.3f);
                 Draw.rect("blank", player.getDrawPosition().x, player.getDrawPosition().y + 8 - layout.height / 2, layout.width + 2, layout.height + 2);
@@ -300,7 +301,7 @@ public class Renderer extends RendererModule {
                 Draw.tcolor(player.getColor());
                 Draw.text(player.name, player.getDrawPosition().x, player.getDrawPosition().y + 8);
 
-                if (player.isAdmin) {
+                if (player.admin) {
                     Draw.color(player.getColor());
                     float s = 3f;
                     Draw.rect("icon-admin-small", player.getDrawPosition().x + layout.width / 2f + 2 + 1, player.getDrawPosition().y + 7f, s, s);
@@ -431,7 +432,7 @@ public class Renderer extends RendererModule {
         int tilex = control.input().getBlockX();
         int tiley = control.input().getBlockY();
 
-        if (mobile) {
+        if (mobile || playerDisabled) {
             Vector2 vec = Graphics.world(Gdx.input.getX(0), Gdx.input.getY(0));
             tilex = Mathf.scl2(vec.x, tilesize);
             tiley = Mathf.scl2(vec.y, tilesize);
@@ -554,7 +555,7 @@ public class Renderer extends RendererModule {
             }
 
             for (Player player : playerGroup.all()) {
-                if (!player.isDead() && !player.isAndroid) drawHealth(player);
+                if (!player.isDead() && !player.enabled) drawHealth(player);
             }
         }
     }

@@ -134,7 +134,7 @@ public class NetworkIO {
 
             stream.writeBoolean(state.friendlyFire); //friendly fire state
             stream.writeInt(player.id); //player remap ID
-            stream.writeBoolean(player.isAdmin);
+            stream.writeBoolean(player.admin);
 
             //--INVENTORY--
 
@@ -289,7 +289,7 @@ public class NetworkIO {
 
             Entities.clear();
             player.id = pid;
-            player.isAdmin = admin;
+            player.admin = admin;
             player.add();
 
             //map

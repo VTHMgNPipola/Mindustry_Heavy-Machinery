@@ -33,11 +33,11 @@ import io.anuke.ucore.util.OS;
 import java.util.Locale;
 
 public class Vars {
-
     //shorthand for whether or not this is running on android
     public static final boolean testMobile = false;
     public static final boolean mobile = (Gdx.app.getType() == ApplicationType.Android) ||
             Gdx.app.getType() == ApplicationType.iOS || testMobile;
+    public static final boolean playerDisabled = mobile; // TODO: Change this value based on playerDisabled setting
     public static final boolean ios = Gdx.app.getType() == ApplicationType.iOS;
     public static final boolean android = Gdx.app.getType() == ApplicationType.Android;
     //shorthand for whether or not this is running on GWT
@@ -82,22 +82,22 @@ public class Vars {
     public static final Locale[] locales = {new Locale("en"), new Locale("fr"), new Locale("ru"), new Locale("uk", "UA"), new Locale("pl"),
             new Locale("de"), new Locale("pt", "BR"), new Locale("ko"), new Locale("in", "ID"), new Locale("ita"), new Locale("es")};
     public static final Color[] playerColors = {
-            Color.valueOf("82759a"),
-            Color.valueOf("c0c1c5"),
-            Color.valueOf("fff0e7"),
-            Color.valueOf("7d2953"),
-            Color.valueOf("ff074e"),
-            Color.valueOf("ff072a"),
-            Color.valueOf("ff76a6"),
-            Color.valueOf("a95238"),
-            Color.valueOf("ffa108"),
-            Color.valueOf("feeb2c"),
-            Color.valueOf("ffcaa8"),
-            Color.valueOf("008551"),
-            Color.valueOf("00e339"),
-            Color.valueOf("423c7b"),
-            Color.valueOf("4b5ef1"),
-            Color.valueOf("2cabfe"),
+            Color.valueOf("000000"),
+            Color.valueOf("1d2b53"),
+            Color.valueOf("7e2553"),
+            Color.valueOf("008751"),
+            Color.valueOf("ab5236"),
+            Color.valueOf("5f574f"),
+            Color.valueOf("c2c3c7"),
+            Color.valueOf("fff1e8"),
+            Color.valueOf("ff004d"),
+            Color.valueOf("ffa300"),
+            Color.valueOf("ffff27"),
+            Color.valueOf("00e756"),
+            Color.valueOf("29adff"),
+            Color.valueOf("83769c"),
+            Color.valueOf("ff77a8"),
+            Color.valueOf("ffccaa"),
     };
     //server port
     public static final int port = 6567;
