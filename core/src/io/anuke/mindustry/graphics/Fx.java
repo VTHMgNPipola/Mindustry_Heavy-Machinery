@@ -24,41 +24,34 @@ public class Fx {
     public static Color beamLight = Color.valueOf("ddffe9");
     public static Color lightRed = Hue.mix(Color.WHITE, Color.FIREBRICK, 0.1f);
     public static final Effect
-            generatorExplosion = new Effect(28, 40f, e -> {
-        Angles.randLenVectors(e.id, 16, 10f + e.fin() * 8f, (x, y) -> {
-            float size = e.fout() * 12f + 1f;
-            Draw.color(Color.WHITE, lightOrange, e.fin());
-            Draw.rect("circle", e.x + x, e.y + y, size, size);
-            Draw.reset();
-        });
-    }),
+            generatorExplosion = new Effect(28, 40f,
+            e -> Angles.randLenVectors(e.id, 16, 10f + e.fin() * 8f, (x, y) -> {
+                float size = e.fout() * 12f + 1f;
+                Draw.color(Color.WHITE, lightOrange, e.fin());
+                Draw.rect("circle", e.x + x, e.y + y, size, size);
+                Draw.reset();
+            })),
 
-    reactorSmoke = new Effect(17, e -> {
-        Angles.randLenVectors(e.id, 4, e.fin() * 8f, (x, y) -> {
-            float size = 1f + e.fout() * 5f;
-            Draw.color(Color.LIGHT_GRAY, Color.GRAY, e.fin());
-            Draw.rect("circle", e.x + x, e.y + y, size, size);
-            Draw.reset();
-        });
-    }),
+    reactorSmoke = new Effect(17, e -> Angles.randLenVectors(e.id, 4, e.fin() * 8f, (x, y) -> {
+        float size = 1f + e.fout() * 5f;
+        Draw.color(Color.LIGHT_GRAY, Color.GRAY, e.fin());
+        Draw.rect("circle", e.x + x, e.y + y, size, size);
+        Draw.reset();
+    })),
 
-    nuclearSmoke = new Effect(40, e -> {
-        Angles.randLenVectors(e.id, 4, e.fin() * 13f, (x, y) -> {
-            float size = e.finpow() * 4f;
-            Draw.color(Color.LIGHT_GRAY, Color.GRAY, e.fin());
-            Draw.rect("circle", e.x + x, e.y + y, size, size);
-            Draw.reset();
-        });
-    }),
+    nuclearSmoke = new Effect(40, e -> Angles.randLenVectors(e.id, 4, e.fin() * 13f, (x, y) -> {
+        float size = e.finpow() * 4f;
+        Draw.color(Color.LIGHT_GRAY, Color.GRAY, e.fin());
+        Draw.rect("circle", e.x + x, e.y + y, size, size);
+        Draw.reset();
+    })),
 
-    nuclearCloud = new Effect(90, 200f, e -> {
-        Angles.randLenVectors(e.id, 10, e.finpow() * 90f, (x, y) -> {
-            float size = e.fout() * 14f;
-            Draw.color(Color.LIME, Color.GRAY, e.fin());
-            Draw.rect("circle", e.x + x, e.y + y, size, size);
-            Draw.reset();
-        });
-    }),
+    nuclearCloud = new Effect(90, 200f, e -> Angles.randLenVectors(e.id, 10, e.finpow() * 90f, (x, y) -> {
+        float size = e.fout() * 14f;
+        Draw.color(Color.LIME, Color.GRAY, e.fin());
+        Draw.rect("circle", e.x + x, e.y + y, size, size);
+        Draw.reset();
+    })),
 
     chainShot = new Effect(9f, e -> {
         Draw.color(Color.WHITE, lightOrange, e.fin());
@@ -141,81 +134,65 @@ public class Fx {
         Draw.reset();
     }),
 
-    empSpark = new Effect(13, e -> {
-        Angles.randLenVectors(e.id, 7, 1f + e.fin() * 12f, (x, y) -> {
-            float len = 1f + e.fout() * 6f;
-            Draw.color(Color.SKY);
-            Lines.lineAngle(e.x + x, e.y + y, Mathf.atan2(x, y), len);
-            Draw.reset();
-        });
-    }),
+    empSpark = new Effect(13, e -> Angles.randLenVectors(e.id, 7, 1f + e.fin() * 12f, (x, y) -> {
+        float len = 1f + e.fout() * 6f;
+        Draw.color(Color.SKY);
+        Lines.lineAngle(e.x + x, e.y + y, Mathf.atan2(x, y), len);
+        Draw.reset();
+    })),
 
-    redGenerateSpark = new Effect(18, e -> {
-        Angles.randLenVectors(e.id, 5, e.fin() * 8f, (x, y) -> {
-            float len = e.fout() * 4f;
-            Draw.color(Color.valueOf("fbb97f"), Color.GRAY, e.fin());
-            //Draw.alpha(e.fout());
-            Draw.rect("circle", e.x + x, e.y + y, len, len);
-            Draw.reset();
-        });
-    }),
+    redGenerateSpark = new Effect(18, e -> Angles.randLenVectors(e.id, 5, e.fin() * 8f, (x, y) -> {
+        float len = e.fout() * 4f;
+        Draw.color(Color.valueOf("fbb97f"), Color.GRAY, e.fin());
+        //Draw.alpha(e.fout());
+        Draw.rect("circle", e.x + x, e.y + y, len, len);
+        Draw.reset();
+    })),
 
-    generateSpark = new Effect(18, e -> {
-        Angles.randLenVectors(e.id, 5, e.fin() * 8f, (x, y) -> {
-            float len = e.fout() * 4f;
-            Draw.color(Color.valueOf("d2b29c"), Color.GRAY, e.fin());
-            //Draw.alpha(e.fout());
-            Draw.rect("circle", e.x + x, e.y + y, len, len);
-            Draw.reset();
-        });
-    }),
+    generateSpark = new Effect(18, e -> Angles.randLenVectors(e.id, 5, e.fin() * 8f, (x, y) -> {
+        float len = e.fout() * 4f;
+        Draw.color(Color.valueOf("d2b29c"), Color.GRAY, e.fin());
+        //Draw.alpha(e.fout());
+        Draw.rect("circle", e.x + x, e.y + y, len, len);
+        Draw.reset();
+    })),
 
-    fuelBurn = new Effect(23, e -> {
-        Angles.randLenVectors(e.id, 5, e.fin() * 9f, (x, y) -> {
-            float len = e.fout() * 4f;
-            Draw.color(Color.LIGHT_GRAY, Color.GRAY, e.fin());
-            //Draw.alpha(e.fout());
-            Draw.rect("circle", e.x + x, e.y + y, len, len);
-            Draw.reset();
-        });
-    }),
+    fuelBurn = new Effect(23, e -> Angles.randLenVectors(e.id, 5, e.fin() * 9f, (x, y) -> {
+        float len = e.fout() * 4f;
+        Draw.color(Color.LIGHT_GRAY, Color.GRAY, e.fin());
+        //Draw.alpha(e.fout());
+        Draw.rect("circle", e.x + x, e.y + y, len, len);
+        Draw.reset();
+    })),
 
-    laserSpark = new Effect(14, e -> {
-        Angles.randLenVectors(e.id, 8, 1f + e.fin() * 11f, (x, y) -> {
-            float len = 1f + e.fout() * 5f;
-            Draw.color(Color.WHITE, Color.CORAL, e.fin());
-            Draw.alpha(e.fin() / 1.3f);
-            Lines.lineAngle(e.x + x, e.y + y, Mathf.atan2(x, y), len);
-            Draw.reset();
-        });
-    }),
+    laserSpark = new Effect(14, e -> Angles.randLenVectors(e.id, 8, 1f + e.fin() * 11f, (x, y) -> {
+        float len = 1f + e.fout() * 5f;
+        Draw.color(Color.WHITE, Color.CORAL, e.fin());
+        Draw.alpha(e.fin() / 1.3f);
+        Lines.lineAngle(e.x + x, e.y + y, Mathf.atan2(x, y), len);
+        Draw.reset();
+    })),
 
-    shellSmoke = new Effect(20, e -> {
-        Angles.randLenVectors(e.id, 8, 3f + e.fin() * 17f, (x, y) -> {
-            float size = 2f + e.fout() * 5f;
-            Draw.color(Color.LIGHT_GRAY, Color.DARK_GRAY, e.fin());
-            Draw.rect("circle", e.x + x, e.y + y, size, size);
-            Draw.reset();
-        });
-    }),
+    shellSmoke = new Effect(20, e -> Angles.randLenVectors(e.id, 8, 3f + e.fin() * 17f, (x, y) -> {
+        float size = 2f + e.fout() * 5f;
+        Draw.color(Color.LIGHT_GRAY, Color.DARK_GRAY, e.fin());
+        Draw.rect("circle", e.x + x, e.y + y, size, size);
+        Draw.reset();
+    })),
 
-    blastSmoke = new Effect(26, e -> {
-        Angles.randLenVectors(e.id, 12, 1f + e.fin() * 23f, (x, y) -> {
-            float size = 2f + e.fout() * 6f;
-            Draw.color(Color.LIGHT_GRAY, Color.DARK_GRAY, e.fin());
-            Draw.rect("circle", e.x + x, e.y + y, size, size);
-            Draw.reset();
-        });
-    }),
+    blastSmoke = new Effect(26, e -> Angles.randLenVectors(e.id, 12, 1f + e.fin() * 23f, (x, y) -> {
+        float size = 2f + e.fout() * 6f;
+        Draw.color(Color.LIGHT_GRAY, Color.DARK_GRAY, e.fin());
+        Draw.rect("circle", e.x + x, e.y + y, size, size);
+        Draw.reset();
+    })),
 
-    lava = new Effect(18, e -> {
-        Angles.randLenVectors(e.id, 3, 1f + e.fin() * 10f, (x, y) -> {
-            float size = e.finpow() * 4f;
-            Draw.color(Color.ORANGE, Color.GRAY, e.fin());
-            Draw.rect("circle", e.x + x, e.y + y, size, size);
-            Draw.reset();
-        });
-    }),
+    lava = new Effect(18, e -> Angles.randLenVectors(e.id, 3, 1f + e.fin() * 10f, (x, y) -> {
+        float size = e.finpow() * 4f;
+        Draw.color(Color.ORANGE, Color.GRAY, e.fin());
+        Draw.rect("circle", e.x + x, e.y + y, size, size);
+        Draw.reset();
+    })),
 
     lavaBubble = new Effect(45f, e -> {
         Draw.color(Color.ORANGE);
@@ -408,9 +385,7 @@ public class Fx {
 
         Draw.color(e.fin() < 0.5f ? whiteOrange : Color.DARK_GRAY);
         float rad = e.fout() * 10f + 5f;
-        Angles.randLenVectors(e.id, 5, 9f, (x, y) -> {
-            Draw.rect("circle2", e.x + x, e.y + y, rad, rad);
-        });
+        Angles.randLenVectors(e.id, 5, 9f, (x, y) -> Draw.rect("circle2", e.x + x, e.y + y, rad, rad));
 
         Draw.reset();
     }),
@@ -422,9 +397,7 @@ public class Fx {
 
         Draw.color(e.fin() < 0.5f ? Color.WHITE : Color.DARK_GRAY);
         float rad = e.fout() * 10f + 5f;
-        Angles.randLenVectors(e.id, 5, 8f, (x, y) -> {
-            Draw.rect("circle2", e.x + x, e.y + y, rad, rad);
-        });
+        Angles.randLenVectors(e.id, 5, 8f, (x, y) -> Draw.rect("circle2", e.x + x, e.y + y, rad, rad));
 
         Draw.reset();
     }),
@@ -444,9 +417,7 @@ public class Fx {
 
         Draw.color(e.fin() < 0.5f ? Color.WHITE : Color.DARK_GRAY);
         float rad = e.fout() * 10f + 2f;
-        Angles.randLenVectors(e.id, 5, 8f, (x, y) -> {
-            Draw.rect("circle2", e.x + x, e.y + y, rad, rad);
-        });
+        Angles.randLenVectors(e.id, 5, 8f, (x, y) -> Draw.rect("circle2", e.x + x, e.y + y, rad, rad));
 
         Draw.reset();
     }),

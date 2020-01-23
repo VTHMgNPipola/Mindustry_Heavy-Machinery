@@ -98,5 +98,4 @@ public class Shield extends Entity {
         active = false;
         uptime = 0f;
     }
-
 }

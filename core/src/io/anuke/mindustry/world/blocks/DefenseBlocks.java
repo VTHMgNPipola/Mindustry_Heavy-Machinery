@@ -78,6 +78,26 @@ public class DefenseBlocks {
         }
     },
 
+    advancedShieldGenerator = new ShieldBlock("advancedshieldgenerator") {
+        {
+            health = 250 * wallHealthMultiplier;
+            shieldRadius = maxRadius = 60f;
+            powerCapacity = 50f;
+            powerDrain = 0.0075f;
+            powerPerDamage = 0.075f;
+        }
+    },
+
+    extremeShieldGenerator = new ShieldBlock("extremeshieldgenerator") {
+        {
+            health = 600 * wallHealthMultiplier;
+            shieldRadius = maxRadius = 90f;
+            powerCapacity = 100f;
+            powerDrain = 0.01f;
+            powerPerDamage = 0.1f;
+        }
+    },
+
     door = new Door("door") {{
         health = 90 * wallHealthMultiplier;
     }},

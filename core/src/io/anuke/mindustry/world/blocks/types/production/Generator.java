@@ -122,9 +122,7 @@ public class Generator extends PowerBlock {
                 Effects.effect(Fx.generatorExplosion, x, y);
                 Effects.effect(Fx.shockwave, x, y);
 
-                Timers.run(12f + Mathf.random(20f), () -> {
-                    tile.damageNearby(4, 60, 0f);
-                });
+                Timers.run(12f + Mathf.random(20f), () -> tile.damageNearby(4, 60, 0f));
 
                 Effects.sound(explosionSound, x, y);
             });
@@ -178,7 +176,6 @@ public class Generator extends PowerBlock {
     }
 
     protected void drawLaserTo(Tile tile, int rotation) {
-
         Tile target = laserTarget(tile, rotation);
 
         if (target != null) {
@@ -248,5 +245,4 @@ public class Generator extends PowerBlock {
         }
         return null;
     }
-
 }

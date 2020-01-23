@@ -91,7 +91,9 @@ public class Recipes {
             new Recipe(power, DistributionBlocks.veryHighPowerLaserCorner, stack(Item.steel, 90), stack(Item.iron, 90), stack(Item.dirium, 45)),
             new Recipe(power, DistributionBlocks.veryHighPowerLaserRouter, stack(Item.steel, 105), stack(Item.iron, 105), stack(Item.dirium, 60)),
 
-            new Recipe(power, DefenseBlocks.shieldGenerator, stack(Item.titanium, 30), stack(Item.dirium, 30)),
+            new Recipe(power, DefenseBlocks.shieldGenerator, stack(Item.dirium, 30), stack(Item.titanium, 30)),
+            new Recipe(power, DefenseBlocks.advancedShieldGenerator, stack(Item.dirium, 60), stack(Item.titanium, 60)),
+            new Recipe(power, DefenseBlocks.extremeShieldGenerator, stack(Item.dirium, 90), stack(Item.titanium, 90)),
 
             new Recipe(distribution, DistributionBlocks.teleporter, stack(Item.steel, 30), stack(Item.dirium, 40)),
 
